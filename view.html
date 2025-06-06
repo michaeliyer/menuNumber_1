@@ -826,6 +826,28 @@
       function renderDivider() {
         return `<div class="divider"></div>`;
       }
+
+      window.addEventListener("beforeprint", function () {
+        const cardBackgroundColor = document.getElementById(
+          "cardBackgroundColor"
+        ).value;
+        const priceColor = document.getElementById("priceColor").value;
+        const mainHeaderBackground = document.getElementById(
+          "mainHeaderBackground"
+        ).value;
+        document.documentElement.style.setProperty(
+          "--card-background-color",
+          cardBackgroundColor
+        );
+        document.documentElement.style.setProperty("--price-color", priceColor);
+        document.documentElement.style.setProperty(
+          "--main-header-background",
+          mainHeaderBackground
+        );
+      });
+      window.addEventListener("afterprint", function () {
+        window.updateStyle();
+      });
     </script>
   </body>
 </html>

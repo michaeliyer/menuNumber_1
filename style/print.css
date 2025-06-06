@@ -1,10 +1,16 @@
 /* Base print styles */
 body {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+  background-color: var(--card-background-color, #000000) !important;
+  color: var(--text-color, #ffffff) !important;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
   color-adjust: exact !important;
+  font-family: var(
+    --card-font-family,
+    "Montserrat",
+    Arial,
+    sans-serif
+  ) !important;
 }
 
 .menu-card {
@@ -27,13 +33,19 @@ select {
 
   /* Reset body styles */
   body {
-    background-color: #000000 !important;
+    background-color: var(--card-background-color, #000000) !important;
     margin: 0 !important;
     padding: 0 !important;
-    color: #ffffff !important;
+    color: var(--text-color, #ffffff) !important;
     min-height: 100vh !important;
     max-height: 100vh !important;
     overflow: hidden !important;
+    font-family: var(
+      --card-font-family,
+      "Montserrat",
+      Arial,
+      sans-serif
+    ) !important;
   }
 
   /* Optimize menu container */
@@ -42,7 +54,7 @@ select {
     max-width: 1000px !important;
     margin: 0 auto !important;
     padding: 1rem !important;
-    background-color: #000000 !important;
+    background-color: var(--card-background-color, #000000) !important;
     min-height: 100vh !important;
     max-height: 100vh !important;
     overflow: hidden !important;
@@ -52,37 +64,49 @@ select {
   .menu-header {
     padding: 0.5rem 0 !important;
     margin-bottom: 0.5rem !important;
-    background-color: #000000 !important;
+    background-color: var(--main-header-background, #000000) !important;
     box-shadow: none !important;
   }
 
   .menu-header h1 {
-    font-size: var(--main-header-size) !important;
+    font-size: var(--main-header-size, 36px) !important;
     margin: 0 !important;
-    color: #ffffff !important;
+    color: var(--main-header-color, #ffffff) !important;
+    font-family: var(
+      --main-header-font-family,
+      "Montserrat",
+      Arial,
+      sans-serif
+    ) !important;
   }
 
   .menu-header p {
-    font-size: var(--date-size) !important;
+    font-size: var(--date-size, 16px) !important;
     margin: 0.25rem 0 0 !important;
-    color: #ffffff !important;
+    color: var(--main-header-color, #ffffff) !important;
   }
 
   /* Optimize sections */
   .menu-sections {
     padding: 0 !important;
     max-width: none !important;
-    background-color: #000000 !important;
+    background-color: var(--card-background-color, #000000) !important;
   }
 
   h2 {
-    font-size: var(--header-size) !important;
+    font-size: var(--header-size, 28px) !important;
     margin: 0.5rem 0 0.25rem !important;
-    color: #ffffff !important;
-    border-bottom: 2px solid #ff0000 !important;
+    color: var(--header-color, #ffffff) !important;
+    border-bottom: 2px solid var(--accent-color, #ff0000) !important;
     padding-bottom: 0.25rem !important;
     text-align: center !important;
     page-break-after: avoid !important;
+    font-family: var(
+      --section-header-font-family,
+      "Montserrat",
+      Arial,
+      sans-serif
+    ) !important;
   }
 
   /* Optimize menu grid */
@@ -91,21 +115,28 @@ select {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.25rem !important;
     margin: 0.5rem auto !important;
-    background-color: #000000 !important;
+    background-color: var(--card-background-color, #000000) !important;
     justify-content: center !important;
     max-width: 900px !important;
   }
 
   /* Make all cards the same width and center them */
   .menu-card {
-    background-color: #ff0000 !important;
+    background-color: var(--card-background-color, #ff0000) !important;
+    color: var(--card-text-color, #ffffff) !important;
     padding: 0.25rem !important;
     margin: 0 auto !important;
-    border: 1px solid #ddd !important;
+    border: 1px solid var(--accent-color, #ddd) !important;
     box-shadow: none !important;
     page-break-inside: avoid !important;
     width: 95% !important;
     max-width: 400px !important;
+    font-family: var(
+      --card-font-family,
+      "Montserrat",
+      Arial,
+      sans-serif
+    ) !important;
   }
 
   /* Center the last odd card in a section */
@@ -114,20 +145,21 @@ select {
     justify-self: center !important;
   }
 
-  .menu-card:hover {
-    transform: none !important;
-    box-shadow: none !important;
-  }
-
   .menu-card h3 {
-    font-size: var(--card-title-size) !important;
+    font-size: var(--card-title-size, 20px) !important;
     margin: 0 0 0.25rem !important;
-    color: #ffffff !important;
+    color: var(--card-text-color, #ffffff) !important;
+    font-family: var(
+      --card-font-family,
+      "Montserrat",
+      Arial,
+      sans-serif
+    ) !important;
   }
 
   .menu-card .price {
-    font-size: var(--price-size) !important;
-    color: #ffffff !important;
+    font-size: var(--price-size, 16px) !important;
+    color: var(--price-color, #ffffff) !important;
     padding: 0 1rem !important;
     margin: 0 !important;
     white-space: nowrap !important;
@@ -135,15 +167,15 @@ select {
 
   .menu-card .ingredients,
   .menu-card .description {
-    font-size: var(--card-text-size) !important;
+    font-size: var(--card-text-size, 16px) !important;
     margin: 0.25rem 0 !important;
-    color: #ffffff !important;
+    color: var(--card-text-color, #ffffff) !important;
   }
 
   /* Optimize dividers */
   .divider {
     margin: 0.25rem 0 !important;
-    background: #ff0000 !important;
+    background: var(--accent-color, #ff0000) !important;
     height: 1px !important;
   }
 
@@ -158,6 +190,6 @@ select {
   @page {
     size: auto !important;
     margin: 0 !important;
-    background-color: #000000 !important;
+    background-color: var(--card-background-color, #000000) !important;
   }
 }

@@ -92,7 +92,7 @@ h2 {
 }
 
 .menu-card .price {
-  color: var(--accent-color);
+  color: var(--price-color, var(--accent-color));
   font-weight: 600;
   font-size: var(--price-size);
 }
