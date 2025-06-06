@@ -1,4 +1,4 @@
-import { initDB, saveMenu, getAllMenus } from "./db.js";
+import { initDB, saveMenu, getAllMenus, deleteMenu, getMenu } from "./db.js";
 
 // Initialize database and set up event listeners
 initDB()
@@ -94,12 +94,61 @@ window.listMenus = function () {
       menus.forEach((menu) => {
         const li = document.createElement("li");
         const a = document.createElement("a");
-
         a.href = `view.html?id=${menu.id}`;
         a.textContent = `${menu.date} - ${menu.type}`;
-        a.target = "_blank"; // open in new tab
-
+        a.target = "_blank";
         li.appendChild(a);
+
+        // Edit button
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.style.marginLeft = "1em";
+        editBtn.onclick = async function () {
+          const loadedMenu = await getMenu(menu.id);
+          if (!loadedMenu) return alert("Menu not found");
+          // Populate form fields
+          document.querySelector('[name="type"]').value = loadedMenu.type;
+          document.querySelector('[name="date"]').value = loadedMenu.date;
+          document.querySelector('[name="background"]').value =
+            loadedMenu.background;
+          ["appetizers", "entrees", "desserts"].forEach((section) => {
+            const container = document.getElementById(section);
+            container.innerHTML = "";
+            (loadedMenu.items[section] || []).forEach((item, idx) => {
+              const div = document.createElement("div");
+              div.innerHTML = `
+                <input type="text" placeholder="Name" name="${section}-name-${idx}" required value="${
+                item.name || ""
+              }">
+                <input type="text" placeholder="Price" name="${section}-price-${idx}" required value="${
+                item.price || ""
+              }">
+                <input type="text" placeholder="Ingredients" name="${section}-ingredients-${idx}" value="${
+                item.ingredients || ""
+              }">
+                <input type="text" placeholder="Description" name="${section}-description-${idx}" value="${
+                item.description || ""
+              }">
+                <br><br>
+              `;
+              container.appendChild(div);
+            });
+          });
+        };
+        li.appendChild(editBtn);
+
+        // Delete button
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+        delBtn.style.marginLeft = "0.5em";
+        delBtn.onclick = async function () {
+          if (confirm(`Delete menu ${menu.date} - ${menu.type}?`)) {
+            await deleteMenu(menu.id);
+            listMenus();
+          }
+        };
+        li.appendChild(delBtn);
+
         ul.appendChild(li);
       });
     })

@@ -1,58 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Create Menu</title>
-  <link rel="stylesheet" href="style/base.css">
-  <link rel="stylesheet" href="style/forms.css">
-</head>
-<body>
-  <h1>Create a New Menu</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Menu</title>
+    <link rel="stylesheet" href="style/base.css" />
+    <link rel="stylesheet" href="style/forms.css" />
+  </head>
+  <body>
+    <h1>Create a New Menu</h1>
 
-  <form id="menuForm">
-    <label>
-      Menu Type:
-      <select name="type">
-        <option value="Lunch">Lunch</option>
-        <option value="Dinner">Dinner</option>
-      </select>
-    </label>
+    <form id="menuForm">
+      <label>
+        Menu Type:
+        <select name="type">
+          <option value="Lunch">Lunch</option>
+          <option value="Dinner">Dinner</option>
+        </select>
+      </label>
 
-    <label>
-      Date:
-      <input type="date" name="date" required>
-    </label>
+      <label>
+        Date:
+        <input type="date" name="date" required />
+      </label>
 
-    <label>
-      Background:
-      <select name="background">
-        <option value="#ffffff">White</option>
-        <option value="#f0f0f0">Light Gray</option>
-        <option value="wood-pattern.jpg">Wood Pattern</option>
-      </select>
-    </label>
+      <label>
+        Background:
+        <select name="background">
+          <option value="#ffffff">White</option>
+          <option value="#f0f0f0">Light Gray</option>
+          <option value="wood-pattern.jpg">Wood Pattern</option>
+        </select>
+      </label>
 
-    <h2>Appetizers</h2>
-    <div id="appetizers" class="section"></div>
-    <button type="button" onclick="addItem('appetizers')">+ Add Appetizer</button>
+      <h2>Appetizers</h2>
+      <div id="appetizers" class="section"></div>
+      <button type="button" onclick="addItem('appetizers')">
+        + Add Appetizer
+      </button>
 
-    <h2>Entrées</h2>
-    <div id="entrees" class="section"></div>
-    <button type="button" onclick="addItem('entrees')">+ Add Entrée</button>
+      <h2>Entrées</h2>
+      <div id="entrees" class="section"></div>
+      <button type="button" onclick="addItem('entrees')">+ Add Entrée</button>
 
-    <h2>Desserts</h2>
-    <div id="desserts" class="section"></div>
-    <button type="button" onclick="addItem('desserts')">+ Add Dessert</button>
+      <h2>Desserts</h2>
+      <div id="desserts" class="section"></div>
+      <button type="button" onclick="addItem('desserts')">+ Add Dessert</button>
 
-    <br><br>
-    <button type="submit">Save Menu</button>
-  </form>
+      <br /><br />
+      <button type="submit">Save Menu</button>
+    </form>
 
-  <hr>
+    <hr />
 
-  <button onclick="listMenus()">View Saved Menus</button>
-  <ul id="savedMenusList"></ul>
+    <button onclick="listMenus()">View Saved Menus</button>
+    <ul id="savedMenusList"></ul>
 
-  <script type="module" src="script/main.js"></script>
-</body>
+    <script type="module" src="script/main.js"></script>
+  </body>
 </html>
