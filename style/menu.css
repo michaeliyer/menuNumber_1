@@ -1,0 +1,153 @@
+:root {
+  --accent-color: #e74c3c;
+  --text-color: #2c3e50;
+  --text-light: #7f8c8d;
+  --background-light: #f8f9fa;
+  --main-header-color: #2c3e50;
+  --main-header-background: #ffffff;
+  --main-header-size: 36px;
+  --date-size: 16px;
+  --header-color: #2c3e50;
+  --header-size: 28px;
+  --card-background-color: #ffffff;
+  --card-text-color: #34495e;
+  --card-text-size: 16px;
+  --card-title-size: 20px;
+  --price-size: 16px;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 2rem;
+  font-family: "Playfair Display", Georgia, serif;
+  color: #2c3e50;
+}
+
+.menu-header {
+  text-align: center;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  background-color: var(--main-header-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-header h1 {
+  font-size: var(--main-header-size);
+  color: var(--main-header-color);
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.menu-header p {
+  font-size: var(--date-size);
+  color: var(--main-header-color);
+  margin: 0.5rem 0 0;
+}
+
+.menu-sections {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+h2 {
+  font-size: var(--header-size);
+  margin: 2rem 0 1rem;
+  color: var(--header-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.menu-card {
+  background-color: var(--card-background-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-card h3 {
+  font-size: var(--card-title-size);
+  color: var(--card-text-color);
+  margin: 0 0 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.menu-card .price {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: var(--price-size);
+}
+
+.menu-card .ingredients {
+  font-size: var(--card-text-size);
+  color: var(--card-text-color);
+  margin: 0.25rem 0;
+  font-style: italic;
+}
+
+.menu-card .description {
+  font-size: var(--card-text-size);
+  color: var(--card-text-color);
+  margin: 0.5rem 0 0;
+  line-height: 1.4;
+}
+
+.divider {
+  margin: 2rem auto;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--accent-color),
+    transparent
+  );
+  width: 80%;
+  max-width: 600px;
+}
+
+/* Print-specific styles */
+@media print {
+  body {
+    padding: 0;
+    background: white !important;
+  }
+
+  .menu-header {
+    box-shadow: none;
+    padding: 1rem 0;
+  }
+
+  .menu-card {
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .menu-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .divider {
+    background: var(--accent-color);
+  }
+}

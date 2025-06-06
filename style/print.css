@@ -1,0 +1,163 @@
+/* Base print styles */
+body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+.menu-card {
+  page-break-inside: avoid;
+}
+
+button,
+input,
+select {
+  display: none !important;
+}
+
+@media print {
+  /* Hide UI elements */
+  .settings-panel,
+  .print-button,
+  .toggle-settings {
+    display: none !important;
+  }
+
+  /* Reset body styles */
+  body {
+    background-color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #ffffff !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  /* Optimize menu container */
+  #menuContainer {
+    width: auto !important;
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+    padding: 1rem !important;
+    background-color: #000000 !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  /* Optimize menu header */
+  .menu-header {
+    padding: 0.5rem 0 !important;
+    margin-bottom: 0.5rem !important;
+    background-color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  .menu-header h1 {
+    font-size: var(--main-header-size) !important;
+    margin: 0 !important;
+    color: #ffffff !important;
+  }
+
+  .menu-header p {
+    font-size: var(--date-size) !important;
+    margin: 0.25rem 0 0 !important;
+    color: #ffffff !important;
+  }
+
+  /* Optimize sections */
+  .menu-sections {
+    padding: 0 !important;
+    max-width: none !important;
+    background-color: #000000 !important;
+  }
+
+  h2 {
+    font-size: var(--header-size) !important;
+    margin: 0.5rem 0 0.25rem !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid #ff0000 !important;
+    padding-bottom: 0.25rem !important;
+    text-align: center !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Optimize menu grid */
+  .menu-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.25rem !important;
+    margin: 0.5rem auto !important;
+    background-color: #000000 !important;
+    justify-content: center !important;
+    max-width: 900px !important;
+  }
+
+  /* Make all cards the same width and center them */
+  .menu-card {
+    background-color: #ff0000 !important;
+    padding: 0.25rem !important;
+    margin: 0 auto !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    width: 95% !important;
+    max-width: 400px !important;
+  }
+
+  /* Center the last odd card in a section */
+  .menu-grid > .menu-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+  }
+
+  .menu-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .menu-card h3 {
+    font-size: var(--card-title-size) !important;
+    margin: 0 0 0.25rem !important;
+    color: #ffffff !important;
+  }
+
+  .menu-card .price {
+    font-size: var(--price-size) !important;
+    color: #ffffff !important;
+    padding: 0 1rem !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .menu-card .ingredients,
+  .menu-card .description {
+    font-size: var(--card-text-size) !important;
+    margin: 0.25rem 0 !important;
+    color: #ffffff !important;
+  }
+
+  /* Optimize dividers */
+  .divider {
+    margin: 0.25rem 0 !important;
+    background: #ff0000 !important;
+    height: 1px !important;
+  }
+
+  /* Force background colors and images to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Ensure background colors are visible in print */
+  @page {
+    size: auto !important;
+    margin: 0 !important;
+    background-color: #000000 !important;
+  }
+}

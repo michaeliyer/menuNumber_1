@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>View Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Open+Sans:wght@400;500&family=Lato:wght@400;500&family=Montserrat:wght@400;500&family=Poppins:wght@400;500&family=Raleway:wght@400;500&family=Nunito:wght@400;500&family=Oswald:wght@400;500&family=Merriweather:wght@400;500&family=Quicksand:wght@400;500&family=Playfair+Display:wght@400;600;700&family=Dancing+Script:wght@400;500&family=Pacifico:wght@400&family=Indie+Flower:wght@400&family=Bangers:wght@400&family=Anton:wght@400&family=Concert+One:wght@400&family=Cinzel:wght@400;500&family=Fredoka:wght@400;500&family=Caveat:wght@400;500&family=Carter+One:wght@400&family=Courgette:wght@400&family=Julius+Sans+One:wght@400&family=Matemasie:wght@400&family=Kalam:wght@400&family=Lobster:wght@400&family=Lora:wght@400;500&family=Merriweather+Sans:wght@400;500&family=Oxygen:wght@400;500&family=PT+Sans:wght@400;500&family=Bungee+Shade:wght@400&family=Silkscreen:wght@400&family=Righteous:wght@400&family=Shadows+Into+Light:wght@400&family=Satisfy:wght@400&family=Rock+Salt:wght@400&family=Spicy+Rice:wght@400&family=Alfa+Slab+One:wght@400&family=Cormorant:wght@400;500&family=Ga+Maamli:wght@400&family=Luckiest+Guy:wght@400&family=Protest+Riot:wght@400&family=Big+Shoulders+Stencil:wght@400&family=Akaya+Kanadaka:wght@400&family=Passion+One:wght@400&family=Rubik+Mono+One:wght@400&family=Salsa:wght@400&family=Sixtyfour:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style/base.css" />
+    <link rel="stylesheet" href="style/layout.css" />
+    <link rel="stylesheet" href="style/menu.css" />
+    <link rel="stylesheet" href="style/print.css" media="print" />
+    <style>
+      .settings-panel {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        max-width: 300px;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        display: none;
+      }
+
+      .settings-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .settings-panel::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      .settings-panel::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+
+      .settings-panel::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      .settings-panel h3 {
+        margin: 0 0 1rem;
+        color: #2c3e50;
+        font-size: 1.2rem;
+      }
+
+      .settings-group {
+        margin-bottom: 1rem;
+      }
+
+      .settings-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #34495e;
+        font-size: 0.9rem;
+      }
+
+      .settings-group select,
+      .settings-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+
+      .settings-group input[type="color"] {
+        height: 40px;
+        padding: 2px;
+      }
+
+      .print-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        padding: 1rem 2rem;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-family: "Playfair Display", serif;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+      }
+
+      .print-button:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .toggle-settings {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      @media print {
+        .settings-panel,
+        .print-button,
+        .toggle-settings {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="toggle-settings" onclick="toggleSettings()">
+      ⚙️ Settings
+    </button>
+    <div id="settingsPanel" class="settings-panel">
+      <h3>Menu Settings</h3>
+      <div class="settings-group">
+        <label for="fontFamily">Font Family</label>
+        <select id="fontFamily" onchange="updateStyle()">
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Lato', sans-serif">Lato</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+          <option value="'Poppins', sans-serif">Poppins</option>
+          <option value="'Raleway', sans-serif">Raleway</option>
+          <option value="'Nunito', sans-serif">Nunito</option>
+          <option value="'Oswald', sans-serif">Oswald</option>
+          <option value="'Merriweather', serif">Merriweather</option>
+          <option value="'Quicksand', sans-serif">Quicksand</option>
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Dancing Script', cursive">Dancing Script</option>
+          <option value="'Pacifico', cursive">Pacifico</option>
+          <option value="'Indie Flower', cursive">Indie Flower</option>
+          <option value="'Bangers', cursive">Bangers</option>
+          <option value="'Anton', sans-serif">Anton</option>
+          <option value="'Concert One', cursive">Concert One</option>
+          <option value="'Cinzel', serif">Cinzel</option>
+          <option value="'Fredoka', sans-serif">Fredoka</option>
+          <option value="'Caveat', cursive">Caveat</option>
+          <option value="'Carter One', cursive">Carter One</option>
+          <option value="'Courgette', cursive">Courgette</option>
+          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
+          <option value="'Matemasie', cursive">Matemasie</option>
+          <option value="'Kalam', cursive">Kalam</option>
+          <option value="'Lobster', cursive">Lobster</option>
+          <option value="'Lora', serif">Lora</option>
+          <option value="'Merriweather Sans', sans-serif">
+            Merriweather Sans
+          </option>
+          <option value="'Oxygen', sans-serif">Oxygen</option>
+          <option value="'PT Sans', sans-serif">PT Sans</option>
+          <option value="'Bungee Shade', cursive">Bungee Shade</option>
+          <option value="'Silkscreen', cursive">Silkscreen</option>
+          <option value="'Righteous', cursive">Righteous</option>
+          <option value="'Shadows Into Light', cursive">
+            Shadows Into Light
+          </option>
+          <option value="'Satisfy', cursive">Satisfy</option>
+          <option value="'Rock Salt', cursive">Rock Salt</option>
+          <option value="'Spicy Rice', cursive">Spicy Rice</option>
+          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+          <option value="'Cormorant', serif">Cormorant</option>
+          <option value="'Ga Maamli', cursive">Ga Maamli</option>
+          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+          <option value="'Protest Riot', sans-serif">Protest Riot</option>
+          <option value="'Big Shoulders Stencil', cursive">
+            Big Shoulders Stencil
+          </option>
+          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+          <option value="'Passion One', cursive">Passion One</option>
+          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
+          <option value="'Salsa', cursive">Salsa</option>
+          <option value="'Sixtyfour', monospace">Sixtyfour</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="backgroundType">Background Type</label>
+        <select id="backgroundType" onchange="updateBackgroundOptions()">
+          <option value="color">Solid Color</option>
+          <option value="pattern">Pattern</option>
+          <option value="image">Image</option>
+        </select>
+      </div>
+
+      <div id="colorOption" class="settings-group">
+        <label for="backgroundColor">Background Color</label>
+        <input type="color" id="backgroundColor" onchange="updateStyle()" />
+      </div>
+
+      <div id="patternOption" class="settings-group" style="display: none">
+        <label for="backgroundPattern">Pattern</label>
+        <select id="backgroundPattern" onchange="updateStyle()">
+          <option value="wood-pattern.svg">Wood Pattern</option>
+          <option value="marble-pattern.svg">Marble Pattern</option>
+          <option value="subtle-pattern.svg">Subtle Pattern</option>
+        </select>
+      </div>
+
+      <div id="imageOption" class="settings-group" style="display: none">
+        <label for="backgroundImage">Image</label>
+        <select id="backgroundImage" onchange="updateStyle()">
+          <option value="flickImageOne.jpg">Flick Image One</option>
+          <option value="flickImageTwo.jpg">Flick Image Two</option>
+          <option value="flickImageThree.jpg">Flick Image Three</option>
+          <option value="flickImageFour.jpg">Flick Image Four</option>
+          <option value="flickImageFive.jpg">Flick Image Five</option>
+          <option value="flickImageSix.jpg">Flick Image Six</option>
+          <option value="flickImageSeven.jpg">Flick Image Seven</option>
+          <option value="flick1111.jpg">Flick Image 1111</option>
+        </select>
+      </div>
+
+      <h3>Main Menu Header</h3>
+      <div class="settings-group">
+        <label for="mainHeaderFont">Font Family</label>
+        <select id="mainHeaderFont" onchange="updateStyle()">
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Dancing Script', cursive">Dancing Script</option>
+          <option value="'Pacifico', cursive">Pacifico</option>
+          <option value="'Bangers', cursive">Bangers</option>
+          <option value="'Anton', sans-serif">Anton</option>
+          <option value="'Concert One', cursive">Concert One</option>
+          <option value="'Cinzel', serif">Cinzel</option>
+          <option value="'Fredoka', sans-serif">Fredoka</option>
+          <option value="'Caveat', cursive">Caveat</option>
+          <option value="'Carter One', cursive">Carter One</option>
+          <option value="'Courgette', cursive">Courgette</option>
+          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
+          <option value="'Matemasie', cursive">Matemasie</option>
+          <option value="'Kalam', cursive">Kalam</option>
+          <option value="'Lobster', cursive">Lobster</option>
+          <option value="'Lora', serif">Lora</option>
+          <option value="'Merriweather Sans', sans-serif">
+            Merriweather Sans
+          </option>
+          <option value="'Oxygen', sans-serif">Oxygen</option>
+          <option value="'PT Sans', sans-serif">PT Sans</option>
+          <option value="'Bungee Shade', cursive">Bungee Shade</option>
+          <option value="'Silkscreen', cursive">Silkscreen</option>
+          <option value="'Righteous', cursive">Righteous</option>
+          <option value="'Shadows Into Light', cursive">
+            Shadows Into Light
+          </option>
+          <option value="'Satisfy', cursive">Satisfy</option>
+          <option value="'Rock Salt', cursive">Rock Salt</option>
+          <option value="'Spicy Rice', cursive">Spicy Rice</option>
+          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+          <option value="'Cormorant', serif">Cormorant</option>
+          <option value="'Ga Maamli', cursive">Ga Maamli</option>
+          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+          <option value="'Protest Riot', sans-serif">Protest Riot</option>
+          <option value="'Big Shoulders Stencil', cursive">
+            Big Shoulders Stencil
+          </option>
+          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+          <option value="'Passion One', cursive">Passion One</option>
+          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
+          <option value="'Salsa', cursive">Salsa</option>
+          <option value="'Sixtyfour', monospace">Sixtyfour</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="mainHeaderColor">Header Color</label>
+        <input
+          type="color"
+          id="mainHeaderColor"
+          value="#2c3e50"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="mainHeaderBackground">Background Color</label>
+        <input
+          type="color"
+          id="mainHeaderBackground"
+          value="#ffffff"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="mainHeaderSize">Header Size (px)</label>
+        <input
+          type="number"
+          id="mainHeaderSize"
+          value="36"
+          min="24"
+          max="72"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="dateSize">Date Size (px)</label>
+        <input
+          type="number"
+          id="dateSize"
+          value="16"
+          min="12"
+          max="32"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+
+      <h3>Section Headers</h3>
+      <div class="settings-group">
+        <label for="sectionHeaderFont">Font Family</label>
+        <select id="sectionHeaderFont" onchange="updateStyle()">
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Dancing Script', cursive">Dancing Script</option>
+          <option value="'Pacifico', cursive">Pacifico</option>
+          <option value="'Bangers', cursive">Bangers</option>
+          <option value="'Anton', sans-serif">Anton</option>
+          <option value="'Concert One', cursive">Concert One</option>
+          <option value="'Cinzel', serif">Cinzel</option>
+          <option value="'Fredoka', sans-serif">Fredoka</option>
+          <option value="'Caveat', cursive">Caveat</option>
+          <option value="'Carter One', cursive">Carter One</option>
+          <option value="'Courgette', cursive">Courgette</option>
+          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
+          <option value="'Matemasie', cursive">Matemasie</option>
+          <option value="'Kalam', cursive">Kalam</option>
+          <option value="'Lobster', cursive">Lobster</option>
+          <option value="'Lora', serif">Lora</option>
+          <option value="'Merriweather Sans', sans-serif">
+            Merriweather Sans
+          </option>
+          <option value="'Oxygen', sans-serif">Oxygen</option>
+          <option value="'PT Sans', sans-serif">PT Sans</option>
+          <option value="'Bungee Shade', cursive">Bungee Shade</option>
+          <option value="'Silkscreen', cursive">Silkscreen</option>
+          <option value="'Righteous', cursive">Righteous</option>
+          <option value="'Shadows Into Light', cursive">
+            Shadows Into Light
+          </option>
+          <option value="'Satisfy', cursive">Satisfy</option>
+          <option value="'Rock Salt', cursive">Rock Salt</option>
+          <option value="'Spicy Rice', cursive">Spicy Rice</option>
+          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+          <option value="'Cormorant', serif">Cormorant</option>
+          <option value="'Ga Maamli', cursive">Ga Maamli</option>
+          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+          <option value="'Protest Riot', sans-serif">Protest Riot</option>
+          <option value="'Big Shoulders Stencil', cursive">
+            Big Shoulders Stencil
+          </option>
+          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+          <option value="'Passion One', cursive">Passion One</option>
+          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
+          <option value="'Salsa', cursive">Salsa</option>
+          <option value="'Sixtyfour', monospace">Sixtyfour</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="headerColor">Header Color</label>
+        <input
+          type="color"
+          id="headerColor"
+          value="#2c3e50"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="headerSize">Header Size (px)</label>
+        <input
+          type="number"
+          id="headerSize"
+          value="28"
+          min="20"
+          max="48"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+
+      <h3>Menu Cards</h3>
+      <div class="settings-group">
+        <label for="cardFont">Font Family</label>
+        <select id="cardFont" onchange="updateStyle()">
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Lato', sans-serif">Lato</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+          <option value="'Poppins', sans-serif">Poppins</option>
+          <option value="'Raleway', sans-serif">Raleway</option>
+          <option value="'Nunito', sans-serif">Nunito</option>
+          <option value="'Oswald', sans-serif">Oswald</option>
+          <option value="'Merriweather', serif">Merriweather</option>
+          <option value="'Quicksand', sans-serif">Quicksand</option>
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Dancing Script', cursive">Dancing Script</option>
+          <option value="'Pacifico', cursive">Pacifico</option>
+          <option value="'Indie Flower', cursive">Indie Flower</option>
+          <option value="'Bangers', cursive">Bangers</option>
+          <option value="'Anton', sans-serif">Anton</option>
+          <option value="'Concert One', cursive">Concert One</option>
+          <option value="'Cinzel', serif">Cinzel</option>
+          <option value="'Fredoka', sans-serif">Fredoka</option>
+          <option value="'Caveat', cursive">Caveat</option>
+          <option value="'Carter One', cursive">Carter One</option>
+          <option value="'Courgette', cursive">Courgette</option>
+          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
+          <option value="'Matemasie', cursive">Matemasie</option>
+          <option value="'Kalam', cursive">Kalam</option>
+          <option value="'Lobster', cursive">Lobster</option>
+          <option value="'Lora', serif">Lora</option>
+          <option value="'Merriweather Sans', sans-serif">
+            Merriweather Sans
+          </option>
+          <option value="'Oxygen', sans-serif">Oxygen</option>
+          <option value="'PT Sans', sans-serif">PT Sans</option>
+          <option value="'Bungee Shade', cursive">Bungee Shade</option>
+          <option value="'Silkscreen', cursive">Silkscreen</option>
+          <option value="'Righteous', cursive">Righteous</option>
+          <option value="'Shadows Into Light', cursive">
+            Shadows Into Light
+          </option>
+          <option value="'Satisfy', cursive">Satisfy</option>
+          <option value="'Rock Salt', cursive">Rock Salt</option>
+          <option value="'Spicy Rice', cursive">Spicy Rice</option>
+          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+          <option value="'Cormorant', serif">Cormorant</option>
+          <option value="'Ga Maamli', cursive">Ga Maamli</option>
+          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+          <option value="'Protest Riot', sans-serif">Protest Riot</option>
+          <option value="'Big Shoulders Stencil', cursive">
+            Big Shoulders Stencil
+          </option>
+          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+          <option value="'Passion One', cursive">Passion One</option>
+          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
+          <option value="'Salsa', cursive">Salsa</option>
+          <option value="'Sixtyfour', monospace">Sixtyfour</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="cardBackgroundColor">Background Color</label>
+        <input
+          type="color"
+          id="cardBackgroundColor"
+          value="#ffffff"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="cardTextColor">Text Color</label>
+        <input
+          type="color"
+          id="cardTextColor"
+          value="#34495e"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="priceColor">Price Color</label>
+        <input
+          type="color"
+          id="priceColor"
+          value="#e74c3c"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="cardTextSize">Text Size (px)</label>
+        <input
+          type="number"
+          id="cardTextSize"
+          value="16"
+          min="12"
+          max="32"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="cardTitleSize">Title Size (px)</label>
+        <input
+          type="number"
+          id="cardTitleSize"
+          value="20"
+          min="16"
+          max="40"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="priceSize">Price Size (px)</label>
+        <input
+          type="number"
+          id="priceSize"
+          value="16"
+          min="12"
+          max="32"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+    </div>
+    <div id="menuContainer"></div>
+    <button class="print-button" onclick="window.print()">Print Menu</button>
+
+    <script type="module">
+      import { initDB, getMenu, saveMenu } from "./script/db.js";
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        try {
+          await initDB();
+
+          const params = new URLSearchParams(window.location.search);
+          const menuId = params.get("id");
+
+          if (!menuId) {
+            document.getElementById("menuContainer").innerHTML =
+              "<p>No menu ID specified in URL.</p>";
+            return;
+          }
+
+          const menu = await getMenu(menuId);
+          if (!menu) {
+            document.getElementById(
+              "menuContainer"
+            ).innerHTML = `<p>No menu found for ID "${menuId}".</p>`;
+            return;
+          }
+
+          renderMenu(menu);
+          // Initialize settings from menu data
+          initializeSettings(menu);
+        } catch (error) {
+          console.error("Error loading menu:", error);
+          document.getElementById("menuContainer").innerHTML =
+            "<p>Error loading menu. Please try again.</p>";
+        }
+      });
+
+      function initializeSettings(menu) {
+        if (menu.background?.startsWith("#")) {
+          document.getElementById("backgroundColor").value = menu.background;
+        } else if (menu.background) {
+          document.getElementById("backgroundImage").value = menu.background;
+        }
+        // Load saved style settings
+        if (menu.styleSettings) {
+          const settings = menu.styleSettings;
+          if (settings.fontFamily)
+            document.getElementById("fontFamily").value = settings.fontFamily;
+          if (settings.mainHeaderFont)
+            document.getElementById("mainHeaderFont").value =
+              settings.mainHeaderFont;
+          if (settings.sectionHeaderFont)
+            document.getElementById("sectionHeaderFont").value =
+              settings.sectionHeaderFont;
+          if (settings.cardFont)
+            document.getElementById("cardFont").value = settings.cardFont;
+          if (settings.mainHeaderColor)
+            document.getElementById("mainHeaderColor").value =
+              settings.mainHeaderColor;
+          if (settings.mainHeaderBackground)
+            document.getElementById("mainHeaderBackground").value =
+              settings.mainHeaderBackground;
+          if (settings.mainHeaderSize)
+            document.getElementById("mainHeaderSize").value =
+              settings.mainHeaderSize;
+          if (settings.dateSize)
+            document.getElementById("dateSize").value = settings.dateSize;
+          if (settings.headerColor)
+            document.getElementById("headerColor").value = settings.headerColor;
+          if (settings.headerSize)
+            document.getElementById("headerSize").value = settings.headerSize;
+          if (settings.cardBackgroundColor)
+            document.getElementById("cardBackgroundColor").value =
+              settings.cardBackgroundColor;
+          if (settings.cardTextColor)
+            document.getElementById("cardTextColor").value =
+              settings.cardTextColor;
+          if (settings.priceColor)
+            document.getElementById("priceColor").value = settings.priceColor;
+          if (settings.cardTextSize)
+            document.getElementById("cardTextSize").value =
+              settings.cardTextSize;
+          if (settings.cardTitleSize)
+            document.getElementById("cardTitleSize").value =
+              settings.cardTitleSize;
+          if (settings.priceSize)
+            document.getElementById("priceSize").value = settings.priceSize;
+        }
+        updateStyle();
+      }
+
+      window.toggleSettings = function () {
+        const panel = document.getElementById("settingsPanel");
+        panel.style.display = panel.style.display === "none" ? "block" : "none";
+      };
+
+      window.updateBackgroundOptions = function () {
+        const type = document.getElementById("backgroundType").value;
+        document.getElementById("colorOption").style.display =
+          type === "color" ? "block" : "none";
+        document.getElementById("patternOption").style.display =
+          type === "pattern" ? "block" : "none";
+        document.getElementById("imageOption").style.display =
+          type === "image" ? "block" : "none";
+        updateStyle();
+      };
+
+      window.updateStyle = async function () {
+        const fontFamily = document.getElementById("fontFamily").value;
+        const mainHeaderFont = document.getElementById("mainHeaderFont").value;
+        const sectionHeaderFont =
+          document.getElementById("sectionHeaderFont").value;
+        const cardFont = document.getElementById("cardFont").value;
+        const backgroundType = document.getElementById("backgroundType").value;
+        const mainHeaderColor =
+          document.getElementById("mainHeaderColor").value;
+        const mainHeaderBackground = document.getElementById(
+          "mainHeaderBackground"
+        ).value;
+        const mainHeaderSize = document.getElementById("mainHeaderSize").value;
+        const dateSize = document.getElementById("dateSize").value;
+        const headerColor = document.getElementById("headerColor").value;
+        const headerSize = document.getElementById("headerSize").value;
+        const cardBackgroundColor = document.getElementById(
+          "cardBackgroundColor"
+        ).value;
+        const cardTextColor = document.getElementById("cardTextColor").value;
+        const priceColor = document.getElementById("priceColor").value;
+        const cardTextSize = document.getElementById("cardTextSize").value;
+        const cardTitleSize = document.getElementById("cardTitleSize").value;
+        const priceSize = document.getElementById("priceSize").value;
+
+        // Save style settings to database
+        const params = new URLSearchParams(window.location.search);
+        const menuId = params.get("id");
+        if (menuId) {
+          try {
+            const menu = await getMenu(menuId);
+            if (menu) {
+              menu.styleSettings = {
+                fontFamily,
+                mainHeaderFont,
+                sectionHeaderFont,
+                cardFont,
+                mainHeaderColor,
+                mainHeaderBackground,
+                mainHeaderSize,
+                dateSize,
+                headerColor,
+                headerSize,
+                cardBackgroundColor,
+                cardTextColor,
+                priceColor,
+                cardTextSize,
+                cardTitleSize,
+                priceSize,
+              };
+              await saveMenu(menu);
+            }
+          } catch (error) {
+            console.error("Error saving style settings:", error);
+          }
+        }
+
+        // Update font family
+        document.body.style.fontFamily = fontFamily;
+        document.querySelector(".menu-header h1").style.fontFamily =
+          mainHeaderFont;
+        document.querySelectorAll("h2").forEach((header) => {
+          header.style.fontFamily = sectionHeaderFont;
+        });
+        document.querySelectorAll(".menu-card").forEach((card) => {
+          card.style.fontFamily = cardFont;
+        });
+
+        // Update background based on type
+        if (backgroundType === "color") {
+          const backgroundColor =
+            document.getElementById("backgroundColor").value;
+          document.body.style.backgroundImage = "none";
+          document.body.style.backgroundColor = backgroundColor;
+        } else if (backgroundType === "pattern") {
+          const pattern = document.getElementById("backgroundPattern").value;
+          document.body.style.backgroundImage = `url(assets/backgrounds/${pattern})`;
+          document.body.style.backgroundColor = "transparent";
+        } else if (backgroundType === "image") {
+          const image = document.getElementById("backgroundImage").value;
+          document.body.style.backgroundImage = `url(assets/backgrounds/${image})`;
+          document.body.style.backgroundColor = "transparent";
+        }
+
+        // Update main header
+        document.documentElement.style.setProperty(
+          "--main-header-color",
+          mainHeaderColor
+        );
+        document.documentElement.style.setProperty(
+          "--main-header-background",
+          mainHeaderBackground
+        );
+        document.documentElement.style.setProperty(
+          "--main-header-size",
+          mainHeaderSize + "px"
+        );
+        document.documentElement.style.setProperty(
+          "--date-size",
+          dateSize + "px"
+        );
+        document.querySelector(".menu-header").style.backgroundColor =
+          mainHeaderBackground;
+        document.querySelector(".menu-header h1").style.color = mainHeaderColor;
+        document.querySelector(".menu-header h1").style.fontSize =
+          mainHeaderSize + "px";
+        document.querySelector(".menu-header p").style.color = mainHeaderColor;
+        document.querySelector(".menu-header p").style.fontSize =
+          dateSize + "px";
+
+        // Update section headers
+        document.documentElement.style.setProperty(
+          "--header-color",
+          headerColor
+        );
+        document.documentElement.style.setProperty(
+          "--header-size",
+          headerSize + "px"
+        );
+        document.querySelectorAll("h2").forEach((header) => {
+          header.style.color = headerColor;
+          header.style.fontSize = headerSize + "px";
+        });
+
+        // Update card text
+        document.documentElement.style.setProperty(
+          "--card-background-color",
+          cardBackgroundColor
+        );
+        document.documentElement.style.setProperty(
+          "--card-text-color",
+          cardTextColor
+        );
+        document.documentElement.style.setProperty("--price-color", priceColor);
+        document.documentElement.style.setProperty(
+          "--card-text-size",
+          cardTextSize + "px"
+        );
+        document.documentElement.style.setProperty(
+          "--card-title-size",
+          cardTitleSize + "px"
+        );
+        document.documentElement.style.setProperty(
+          "--price-size",
+          priceSize + "px"
+        );
+      };
+
+      function renderMenu(menu) {
+        console.log("Loaded Menu:", menu);
+        const container = document.getElementById("menuContainer");
+
+        container.innerHTML = `
+        <div class="menu-header">
+          <h1>${menu.type} Menu</h1>
+          <p>${menu.date}</p>
+        </div>
+        <div class="menu-sections">
+          ${renderSection("Appetizers", menu.items.appetizers)}
+          ${renderDivider()}
+          ${renderSection("Entrées", menu.items.entrees)}
+          ${renderDivider()}
+          ${renderSection("Desserts", menu.items.desserts)}
+        </div>
+      `;
+
+        // Apply background
+        if (menu.background?.startsWith("#")) {
+          document.body.style.backgroundColor = menu.background;
+        } else {
+          document.body.style.backgroundImage = `url(assets/backgrounds/${menu.background})`;
+          document.body.style.backgroundSize = "cover";
+          document.body.style.backgroundPosition = "center";
+        }
+      }
+
+      function renderSection(title, items = []) {
+        if (!items || items.length === 0) return "";
+
+        return `
+        <h2>${title}</h2>
+        <div class="menu-grid">
+          ${items
+            .map(
+              (item) => `
+            <div class="menu-card">
+              <h3>${item.name} <span class="price">${item.price}</span></h3>
+              ${
+                item.ingredients
+                  ? `<p class="ingredients">${item.ingredients}</p>`
+                  : ""
+              }
+              ${
+                item.description
+                  ? `<p class="description">${item.description}</p>`
+                  : ""
+              }
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+      }
+
+      function renderDivider() {
+        return `<div class="divider"></div>`;
+      }
+    </script>
+  </body>
+</html>
