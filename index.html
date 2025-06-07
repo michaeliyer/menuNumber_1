@@ -406,6 +406,18 @@
           >
         </div>
 
+        <div class="file-input-wrapper">
+          <input
+            type="file"
+            id="importItemsFile"
+            accept=".json"
+            onchange="handleItemImport(event)"
+          />
+          <label for="importItemsFile" class="file-input-label"
+            >🍽️ Import Items to Menu</label
+          >
+        </div>
+
         <button onclick="exportAllMenus()" class="export-btn">
           📦 Export All Menus
         </button>
@@ -564,6 +576,82 @@
           </button>
           <button onclick="confirmExport()" class="primary-btn">
             📥 Download
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item Import Dialog -->
+    <div id="itemImportDialog" class="export-dialog">
+      <div class="export-dialog-content">
+        <h3>🍽️ Import Items to Menu</h3>
+
+        <div class="form-group">
+          <label for="targetMenu">Select Target Menu:</label>
+          <select id="targetMenu">
+            <option value="">Choose a menu...</option>
+          </select>
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #666">
+            <a
+              href="#"
+              onclick="closeItemImportDialog(); window.scrollTo(0, 0);"
+              style="color: #3498db; text-decoration: none"
+            >
+              ➕ Need to create a new menu? Click here
+            </a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="targetSection">Add to Section:</label>
+          <select id="targetSection">
+            <option value="appetizers">Appetizers</option>
+            <option value="entrees">Entrées</option>
+            <option value="desserts">Desserts</option>
+          </select>
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #666">
+            💡 Items will be added to the end of the selected section
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input
+              type="checkbox"
+              id="preventDuplicates"
+              checked
+              style="margin-right: 0.5rem"
+            />
+            Skip items that already exist in the menu
+          </label>
+          <div style="margin-top: 0.25rem; font-size: 0.85rem; color: #666">
+            Checks item names to avoid duplicates
+          </div>
+        </div>
+
+        <div id="itemImportPreview" class="export-info" style="display: none">
+          <h4>📋 Items to Import</h4>
+          <div id="itemImportList"></div>
+        </div>
+
+        <div class="export-info">
+          <h4>ℹ️ Import Process</h4>
+          <p>
+            Items will be added to the selected menu section. Existing items
+            will remain unchanged.
+          </p>
+          <p>
+            <strong>Compatible with:</strong> Files exported using "Export
+            Selected Items"
+          </p>
+        </div>
+
+        <div class="button-group">
+          <button onclick="closeItemImportDialog()" class="secondary-btn">
+            Cancel
+          </button>
+          <button onclick="confirmItemImport()" class="primary-btn">
+            📥 Import Items
           </button>
         </div>
       </div>

@@ -908,3 +908,219 @@ window.toggleItemBrowser = function () {
     browser.style.display = "none";
   }
 };
+
+// ==================== ITEM IMPORT FUNCTIONALITY ====================
+
+// Global variables for item import
+let currentItemImportData = null;
+
+// Handle item import file selection
+window.handleItemImport = async function (event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+
+  const file = files[0];
+  try {
+    const text = await readFileAsText(file);
+    const data = JSON.parse(text);
+
+    // Validate that it's an item export file
+    if (
+      !data.items ||
+      !Array.isArray(data.items) ||
+      data.exportType !== "selected_items"
+    ) {
+      throw new Error(
+        'Invalid item file format. Please select a file exported from "Export Selected Items".'
+      );
+    }
+
+    currentItemImportData = data;
+    await showItemImportDialog();
+  } catch (error) {
+    console.error("Error loading item file:", error);
+    alert(`Error loading item file: ${error.message}`);
+  }
+
+  // Clear the file input
+  event.target.value = "";
+};
+
+// Show item import dialog
+async function showItemImportDialog() {
+  try {
+    // Load available menus for selection
+    const menus = await getAllMenus();
+    const targetMenuSelect = document.getElementById("targetMenu");
+
+    // Clear existing options
+    targetMenuSelect.innerHTML = '<option value="">Choose a menu...</option>';
+
+    if (!menus || menus.length === 0) {
+      alert("No menus available! Please create a menu first.");
+      return;
+    }
+
+    // Populate menu options
+    // Sort menus by date (newest first)
+    const sortedMenus = menus.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    sortedMenus.forEach((menu) => {
+      const option = document.createElement("option");
+      option.value = menu.id;
+
+      // Calculate total item count
+      const itemCount =
+        (menu.items.appetizers?.length || 0) +
+        (menu.items.entrees?.length || 0) +
+        (menu.items.desserts?.length || 0);
+
+      option.textContent = `${menu.date} - ${menu.type} (${itemCount} items)`;
+      targetMenuSelect.appendChild(option);
+    });
+
+    // Show preview of items to import
+    const previewDiv = document.getElementById("itemImportPreview");
+    const listDiv = document.getElementById("itemImportList");
+
+    if (currentItemImportData && currentItemImportData.items) {
+      const items = currentItemImportData.items;
+      let listHTML = `<p><strong>${items.length} items found:</strong></p><ul style="margin: 0.5rem 0; padding-left: 1.5rem;">`;
+
+      items.slice(0, 10).forEach((item) => {
+        listHTML += `<li><strong>${item.name}</strong> (${item.price})${
+          item.section ? ` - from ${item.section}` : ""
+        }</li>`;
+      });
+
+      if (items.length > 10) {
+        listHTML += `<li><em>... and ${items.length - 10} more items</em></li>`;
+      }
+
+      listHTML += "</ul>";
+      listDiv.innerHTML = listHTML;
+      previewDiv.style.display = "block";
+    }
+
+    // Show the dialog
+    document.getElementById("itemImportDialog").style.display = "flex";
+  } catch (error) {
+    console.error("Error showing item import dialog:", error);
+    alert("Error loading menus for import. Please try again.");
+  }
+}
+
+// Close item import dialog
+window.closeItemImportDialog = function () {
+  document.getElementById("itemImportDialog").style.display = "none";
+  currentItemImportData = null;
+};
+
+// Confirm item import
+window.confirmItemImport = async function () {
+  const targetMenuId = document.getElementById("targetMenu").value;
+  const targetSection = document.getElementById("targetSection").value;
+  const preventDuplicates =
+    document.getElementById("preventDuplicates").checked;
+
+  if (!targetMenuId) {
+    alert("Please select a target menu!");
+    return;
+  }
+
+  if (!currentItemImportData || !currentItemImportData.items) {
+    alert("No items to import!");
+    return;
+  }
+
+  try {
+    // Load the target menu
+    const menu = await getMenu(targetMenuId);
+    if (!menu) {
+      alert("Target menu not found!");
+      return;
+    }
+
+    // Ensure the target section exists
+    if (!menu.items[targetSection]) {
+      menu.items[targetSection] = [];
+    }
+
+    // Prepare items to add
+    let itemsToAdd = currentItemImportData.items.map((item) => ({
+      name: item.name,
+      price: item.price,
+      ingredients: item.ingredients || "",
+      description: item.description || "",
+    }));
+
+    let skippedCount = 0;
+
+    // Handle duplicate prevention
+    if (preventDuplicates) {
+      const existingNames = new Set();
+
+      // Collect existing item names from all sections
+      ["appetizers", "entrees", "desserts"].forEach((section) => {
+        if (menu.items[section]) {
+          menu.items[section].forEach((item) => {
+            existingNames.add(item.name.toLowerCase().trim());
+          });
+        }
+      });
+
+      // Filter out duplicates
+      const originalCount = itemsToAdd.length;
+      itemsToAdd = itemsToAdd.filter((item) => {
+        const itemName = item.name.toLowerCase().trim();
+        if (existingNames.has(itemName)) {
+          skippedCount++;
+          return false;
+        }
+        existingNames.add(itemName); // Add to set to prevent duplicates within import batch
+        return true;
+      });
+    }
+
+    // Add items to the target section
+    menu.items[targetSection].push(...itemsToAdd);
+
+    // Save the updated menu
+    await saveMenu(menu);
+
+    // Show success message
+    const sectionName =
+      targetSection === "entrees"
+        ? "Entrées"
+        : targetSection.charAt(0).toUpperCase() + targetSection.slice(1);
+
+    let message = `✅ Successfully imported ${itemsToAdd.length} items to ${sectionName} in "${menu.date} - ${menu.type}"!`;
+
+    if (skippedCount > 0) {
+      message += `\n\n⚠️ Skipped ${skippedCount} duplicate items.`;
+    }
+
+    if (itemsToAdd.length === 0 && skippedCount > 0) {
+      message = `ℹ️ No new items imported - all ${skippedCount} items already exist in the menu.`;
+    }
+
+    alert(message);
+
+    // Close dialog and refresh menu list
+    closeItemImportDialog();
+    listMenus();
+  } catch (error) {
+    console.error("Error importing items:", error);
+    alert("Error importing items. Please try again.");
+  }
+};
+
+// Close dialog when clicking outside
+document.addEventListener("click", function (event) {
+  const dialog = document.getElementById("itemImportDialog");
+  if (event.target === dialog) {
+    closeItemImportDialog();
+  }
+});
