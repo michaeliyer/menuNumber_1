@@ -14,6 +14,21 @@
   --card-text-size: 16px;
   --card-title-size: 20px;
   --price-size: 16px;
+
+  /* New border styling variables */
+  --card-border-color: rgba(224, 224, 224, 1);
+  --card-border-width: 1px;
+  --card-border-style: solid;
+  --card-border-opacity: 1;
+  --header-border-color: rgba(231, 76, 60, 1);
+  --header-border-width: 2px;
+  --header-border-opacity: 1;
+  --main-header-border-color: rgba(221, 221, 221, 1);
+  --main-header-border-width: 1px;
+  --main-header-border-opacity: 1;
+  --section-border-color: rgba(224, 224, 224, 1);
+  --section-border-width: 1px;
+  --section-border-opacity: 1;
 }
 
 body {
@@ -31,6 +46,8 @@ body {
   background-color: var(--main-header-background);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Independent border styling */
+  border: var(--main-header-border-width) solid var(--main-header-border-color);
 }
 
 .menu-header h1 {
@@ -50,14 +67,17 @@ body {
 .menu-sections {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem;
+  /* Section container border */
+  border: var(--section-border-width) solid var(--section-border-color);
+  border-radius: 8px;
 }
 
 h2 {
   font-size: var(--header-size);
   margin: 2rem 0 1rem;
   color: var(--header-color);
-  border-bottom: 2px solid var(--accent-color);
+  border-bottom: var(--header-border-width) solid var(--header-border-color);
   padding-bottom: 0.5rem;
   text-align: center;
 }
@@ -96,6 +116,10 @@ h2 {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  /* Independent border styling that works with transparency */
+  border: var(--card-border-width) var(--card-border-style)
+    var(--card-border-color);
+  position: relative;
 }
 
 .menu-card:hover {
@@ -155,12 +179,37 @@ h2 {
   .menu-header {
     box-shadow: none;
     padding: 1rem 0;
+    /* Ensure border prints properly */
+    border: var(--main-header-border-width) solid
+      var(--main-header-border-color) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .menu-sections {
+    /* Ensure section border prints properly */
+    border: var(--section-border-width) solid var(--section-border-color) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  h2 {
+    /* Ensure header border prints properly */
+    border-bottom: var(--header-border-width) solid var(--header-border-color) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .menu-card {
     box-shadow: none;
     break-inside: avoid;
     page-break-inside: avoid;
+    /* Ensure card border prints properly with exact colors */
+    border: var(--card-border-width) var(--card-border-style)
+      var(--card-border-color) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .menu-card:hover {

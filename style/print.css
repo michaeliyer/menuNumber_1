@@ -83,6 +83,11 @@ select {
     margin-bottom: 0.5rem !important;
     background-color: var(--main-header-background, #000000) !important;
     box-shadow: none !important;
+    border: var(--main-header-border-width, 1px) solid
+      var(--main-header-border-color, rgba(221, 221, 221, 1)) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   .menu-header h1 {
@@ -105,15 +110,22 @@ select {
 
   /* Optimize sections - remove background override */
   .menu-sections {
-    padding: 0 !important;
+    padding: 1rem !important;
     max-width: none !important;
+    border: var(--section-border-width, 1px) solid
+      var(--section-border-color, rgba(224, 224, 224, 1)) !important;
+    border-radius: 8px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   h2 {
     font-size: var(--header-size, 28px) !important;
     margin: 0.5rem 0 0.25rem !important;
     color: var(--header-color, #ffffff) !important;
-    border-bottom: 2px solid var(--accent-color, #ff0000) !important;
+    border-bottom: var(--header-border-width, 2px) solid
+      var(--header-border-color, rgba(231, 76, 60, 1)) !important;
     padding-bottom: 0.25rem !important;
     text-align: center !important;
     page-break-after: avoid !important;
@@ -123,6 +135,9 @@ select {
       Arial,
       sans-serif
     ) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   /* Optimize menu grid - remove background override */
@@ -141,7 +156,8 @@ select {
     color: var(--card-text-color, #ffffff) !important;
     padding: 0.25rem !important;
     margin: 0 auto !important;
-    border: 1px solid var(--accent-color, #ddd) !important;
+    border: var(--card-border-width, 1px) var(--card-border-style, solid)
+      var(--card-border-color, rgba(224, 224, 224, 1)) !important;
     box-shadow: none !important;
     page-break-inside: avoid !important;
     width: 95% !important;
@@ -152,6 +168,9 @@ select {
       Arial,
       sans-serif
     ) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   /* Center the last odd card in a section */

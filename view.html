@@ -922,6 +922,213 @@
           </div>
         </div>
       </div>
+
+      <!-- Borders & Outlines Section -->
+      <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection('borders')">
+          <span>Borders & Outlines</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div id="borders" class="section-content">
+          <div class="settings-group">
+            <label for="cardBorderColor">Card Border Color</label>
+            <input
+              type="color"
+              id="cardBorderColor"
+              value="#e0e0e0"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardBorderWidth">Card Border Width (px)</label>
+            <input
+              type="number"
+              id="cardBorderWidth"
+              value="1"
+              min="0"
+              max="10"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardBorderStyle">Card Border Style</label>
+            <select id="cardBorderStyle" onchange="updateStyle()">
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+              <option value="double">Double</option>
+              <option value="groove">Groove</option>
+              <option value="ridge">Ridge</option>
+              <option value="inset">Inset</option>
+              <option value="outset">Outset</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="cardBorderOpacity"
+              >Card Border Opacity:
+              <span id="cardBorderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="cardBorderOpacity"
+              min="0"
+              max="100"
+              step="1"
+              value="100"
+              onchange="updateBorderOpacityDisplay('cardBorder'); updateStyle()"
+              oninput="updateBorderOpacityDisplay('cardBorder')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls card border transparency independently
+            </div>
+          </div>
+
+          <hr
+            style="margin: 1rem 0; border: none; border-top: 1px solid #eee"
+          />
+
+          <div class="settings-group">
+            <label for="headerBorderColor">Section Header Border Color</label>
+            <input
+              type="color"
+              id="headerBorderColor"
+              value="#e74c3c"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="headerBorderWidth"
+              >Section Header Border Width (px)</label
+            >
+            <input
+              type="number"
+              id="headerBorderWidth"
+              value="2"
+              min="0"
+              max="10"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="headerBorderOpacity"
+              >Section Header Border Opacity:
+              <span id="headerBorderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="headerBorderOpacity"
+              min="0"
+              max="100"
+              step="1"
+              value="100"
+              onchange="updateBorderOpacityDisplay('headerBorder'); updateStyle()"
+              oninput="updateBorderOpacityDisplay('headerBorder')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls section title underline transparency
+            </div>
+          </div>
+
+          <hr
+            style="margin: 1rem 0; border: none; border-top: 1px solid #eee"
+          />
+
+          <div class="settings-group">
+            <label for="mainHeaderBorderColor">Main Header Border Color</label>
+            <input
+              type="color"
+              id="mainHeaderBorderColor"
+              value="#dddddd"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderBorderWidth"
+              >Main Header Border Width (px)</label
+            >
+            <input
+              type="number"
+              id="mainHeaderBorderWidth"
+              value="1"
+              min="0"
+              max="10"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderBorderOpacity"
+              >Main Header Border Opacity:
+              <span id="mainHeaderBorderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="mainHeaderBorderOpacity"
+              min="0"
+              max="100"
+              step="1"
+              value="100"
+              onchange="updateBorderOpacityDisplay('mainHeaderBorder'); updateStyle()"
+              oninput="updateBorderOpacityDisplay('mainHeaderBorder')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls main title area border transparency
+            </div>
+          </div>
+
+          <hr
+            style="margin: 1rem 0; border: none; border-top: 1px solid #eee"
+          />
+
+          <div class="settings-group">
+            <label for="sectionBorderColor"
+              >Menu Section Container Border Color</label
+            >
+            <input
+              type="color"
+              id="sectionBorderColor"
+              value="#e0e0e0"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="sectionBorderWidth"
+              >Menu Section Container Border Width (px)</label
+            >
+            <input
+              type="number"
+              id="sectionBorderWidth"
+              value="1"
+              min="0"
+              max="10"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="sectionBorderOpacity"
+              >Menu Section Container Border Opacity:
+              <span id="sectionBorderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="sectionBorderOpacity"
+              min="0"
+              max="100"
+              step="1"
+              value="100"
+              onchange="updateBorderOpacityDisplay('sectionBorder'); updateStyle()"
+              oninput="updateBorderOpacityDisplay('sectionBorder')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls outer container border transparency
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="menuContainer"></div>
     <button class="print-button" onclick="window.print()">Print Menu</button>
@@ -1068,6 +1275,46 @@
           if (settings.customImageBrightness)
             document.getElementById("customImageBrightness").value =
               settings.customImageBrightness;
+          // Add border settings
+          if (settings.cardBorderColor)
+            document.getElementById("cardBorderColor").value =
+              settings.cardBorderColor;
+          if (settings.cardBorderWidth)
+            document.getElementById("cardBorderWidth").value =
+              settings.cardBorderWidth;
+          if (settings.cardBorderStyle)
+            document.getElementById("cardBorderStyle").value =
+              settings.cardBorderStyle;
+          if (settings.cardBorderOpacity)
+            document.getElementById("cardBorderOpacity").value =
+              settings.cardBorderOpacity;
+          if (settings.headerBorderColor)
+            document.getElementById("headerBorderColor").value =
+              settings.headerBorderColor;
+          if (settings.headerBorderWidth)
+            document.getElementById("headerBorderWidth").value =
+              settings.headerBorderWidth;
+          if (settings.headerBorderOpacity)
+            document.getElementById("headerBorderOpacity").value =
+              settings.headerBorderOpacity;
+          if (settings.mainHeaderBorderColor)
+            document.getElementById("mainHeaderBorderColor").value =
+              settings.mainHeaderBorderColor;
+          if (settings.mainHeaderBorderWidth)
+            document.getElementById("mainHeaderBorderWidth").value =
+              settings.mainHeaderBorderWidth;
+          if (settings.mainHeaderBorderOpacity)
+            document.getElementById("mainHeaderBorderOpacity").value =
+              settings.mainHeaderBorderOpacity;
+          if (settings.sectionBorderColor)
+            document.getElementById("sectionBorderColor").value =
+              settings.sectionBorderColor;
+          if (settings.sectionBorderWidth)
+            document.getElementById("sectionBorderWidth").value =
+              settings.sectionBorderWidth;
+          if (settings.sectionBorderOpacity)
+            document.getElementById("sectionBorderOpacity").value =
+              settings.sectionBorderOpacity;
         }
 
         // Update opacity displays
@@ -1081,6 +1328,12 @@
         updateBrightnessDisplay("pattern");
         updateBrightnessDisplay("image");
         updateBrightnessDisplay("customImage");
+
+        // Update border opacity displays
+        updateBorderOpacityDisplay("cardBorder");
+        updateBorderOpacityDisplay("headerBorder");
+        updateBorderOpacityDisplay("mainHeaderBorder");
+        updateBorderOpacityDisplay("sectionBorder");
 
         updateStyle();
       }
@@ -1216,6 +1469,30 @@
           displayText;
       };
 
+      // Update border opacity display values
+      window.updateBorderOpacityDisplay = function (type) {
+        const value = document.getElementById(type + "Opacity").value;
+        const percentage = Math.round(value);
+        let displayText = percentage + "%";
+
+        if (percentage === 0) {
+          displayText += " (Invisible)";
+        } else if (percentage < 25) {
+          displayText += " (Very Faint)";
+        } else if (percentage < 50) {
+          displayText += " (Faint)";
+        } else if (percentage < 75) {
+          displayText += " (Translucent)";
+        } else if (percentage < 100) {
+          displayText += " (Semi-Transparent)";
+        } else {
+          displayText += " (Solid)";
+        }
+
+        document.getElementById(type + "OpacityValue").textContent =
+          displayText;
+      };
+
       // Get brightness filter CSS
       function getBrightnessFilter(brightnessValue) {
         const brightness = brightnessValue / 100; // Convert to 0-3 scale
@@ -1307,6 +1584,39 @@
           "customImageBrightness"
         ).value;
 
+        // Get border settings
+        const cardBorderColor =
+          document.getElementById("cardBorderColor").value;
+        const cardBorderWidth =
+          document.getElementById("cardBorderWidth").value;
+        const cardBorderStyle =
+          document.getElementById("cardBorderStyle").value;
+        const cardBorderOpacity =
+          document.getElementById("cardBorderOpacity").value;
+        const headerBorderColor =
+          document.getElementById("headerBorderColor").value;
+        const headerBorderWidth =
+          document.getElementById("headerBorderWidth").value;
+        const headerBorderOpacity = document.getElementById(
+          "headerBorderOpacity"
+        ).value;
+        const mainHeaderBorderColor = document.getElementById(
+          "mainHeaderBorderColor"
+        ).value;
+        const mainHeaderBorderWidth = document.getElementById(
+          "mainHeaderBorderWidth"
+        ).value;
+        const mainHeaderBorderOpacity = document.getElementById(
+          "mainHeaderBorderOpacity"
+        ).value;
+        const sectionBorderColor =
+          document.getElementById("sectionBorderColor").value;
+        const sectionBorderWidth =
+          document.getElementById("sectionBorderWidth").value;
+        const sectionBorderOpacity = document.getElementById(
+          "sectionBorderOpacity"
+        ).value;
+
         // Save style settings to database
         const params = new URLSearchParams(window.location.search);
         const menuId = params.get("id");
@@ -1349,6 +1659,20 @@
                 patternBrightness,
                 imageBrightness,
                 customImageBrightness,
+                // Add border settings
+                cardBorderColor,
+                cardBorderWidth,
+                cardBorderStyle,
+                cardBorderOpacity,
+                headerBorderColor,
+                headerBorderWidth,
+                headerBorderOpacity,
+                mainHeaderBorderColor,
+                mainHeaderBorderWidth,
+                mainHeaderBorderOpacity,
+                sectionBorderColor,
+                sectionBorderWidth,
+                sectionBorderOpacity,
               };
               await saveMenu(menu);
             }
@@ -1482,6 +1806,58 @@
         document.documentElement.style.setProperty(
           "--price-size",
           priceSize + "px"
+        );
+
+        // Update border CSS custom properties with opacity
+        function hexToRgba(hex, opacity) {
+          const r = parseInt(hex.slice(1, 3), 16);
+          const g = parseInt(hex.slice(3, 5), 16);
+          const b = parseInt(hex.slice(5, 7), 16);
+          return `rgba(${r}, ${g}, ${b}, ${opacity / 100})`;
+        }
+
+        // Card borders
+        document.documentElement.style.setProperty(
+          "--card-border-color",
+          hexToRgba(cardBorderColor, cardBorderOpacity)
+        );
+        document.documentElement.style.setProperty(
+          "--card-border-width",
+          cardBorderWidth + "px"
+        );
+        document.documentElement.style.setProperty(
+          "--card-border-style",
+          cardBorderStyle
+        );
+
+        // Section header borders
+        document.documentElement.style.setProperty(
+          "--header-border-color",
+          hexToRgba(headerBorderColor, headerBorderOpacity)
+        );
+        document.documentElement.style.setProperty(
+          "--header-border-width",
+          headerBorderWidth + "px"
+        );
+
+        // Main header borders
+        document.documentElement.style.setProperty(
+          "--main-header-border-color",
+          hexToRgba(mainHeaderBorderColor, mainHeaderBorderOpacity)
+        );
+        document.documentElement.style.setProperty(
+          "--main-header-border-width",
+          mainHeaderBorderWidth + "px"
+        );
+
+        // Menu section container borders
+        document.documentElement.style.setProperty(
+          "--section-border-color",
+          hexToRgba(sectionBorderColor, sectionBorderOpacity)
+        );
+        document.documentElement.style.setProperty(
+          "--section-border-width",
+          sectionBorderWidth + "px"
         );
 
         // Apply card background opacity via CSS custom properties (affects ::before pseudo-element)
