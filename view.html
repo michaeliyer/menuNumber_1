@@ -53,6 +53,51 @@
         font-size: 1.2rem;
       }
 
+      .collapsible-section {
+        margin-bottom: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .section-header {
+        background: #f8f9fa;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s ease;
+      }
+
+      .section-header:hover {
+        background: #e9ecef;
+      }
+
+      .section-header .toggle-icon {
+        font-size: 0.8rem;
+        transition: transform 0.2s ease;
+      }
+
+      .section-header.active .toggle-icon {
+        transform: rotate(180deg);
+      }
+
+      .section-content {
+        padding: 1rem;
+        display: none;
+        border-top: 1px solid #e0e0e0;
+        background: white;
+      }
+
+      .section-content.active {
+        display: block;
+      }
+
       .settings-group {
         margin-bottom: 1rem;
       }
@@ -126,455 +171,511 @@
     <button class="toggle-settings" onclick="toggleSettings()">
       ⚙️ Settings
     </button>
+
     <div id="settingsPanel" class="settings-panel">
       <h3>Menu Settings</h3>
-      <div class="settings-group">
-        <label for="fontFamily">Font Family</label>
-        <select id="fontFamily" onchange="updateStyle()">
-          <option value="'Roboto', sans-serif">Roboto</option>
-          <option value="'Open Sans', sans-serif">Open Sans</option>
-          <option value="'Lato', sans-serif">Lato</option>
-          <option value="'Montserrat', sans-serif">Montserrat</option>
-          <option value="'Poppins', sans-serif">Poppins</option>
-          <option value="'Raleway', sans-serif">Raleway</option>
-          <option value="'Nunito', sans-serif">Nunito</option>
-          <option value="'Oswald', sans-serif">Oswald</option>
-          <option value="'Merriweather', serif">Merriweather</option>
-          <option value="'Quicksand', sans-serif">Quicksand</option>
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Dancing Script', cursive">Dancing Script</option>
-          <option value="'Pacifico', cursive">Pacifico</option>
-          <option value="'Indie Flower', cursive">Indie Flower</option>
-          <option value="'Bangers', cursive">Bangers</option>
-          <option value="'Anton', sans-serif">Anton</option>
-          <option value="'Concert One', cursive">Concert One</option>
-          <option value="'Cinzel', serif">Cinzel</option>
-          <option value="'Fredoka', sans-serif">Fredoka</option>
-          <option value="'Caveat', cursive">Caveat</option>
-          <option value="'Carter One', cursive">Carter One</option>
-          <option value="'Courgette', cursive">Courgette</option>
-          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
-          <option value="'Matemasie', cursive">Matemasie</option>
-          <option value="'Kalam', cursive">Kalam</option>
-          <option value="'Lobster', cursive">Lobster</option>
-          <option value="'Lora', serif">Lora</option>
-          <option value="'Merriweather Sans', sans-serif">
-            Merriweather Sans
-          </option>
-          <option value="'Oxygen', sans-serif">Oxygen</option>
-          <option value="'PT Sans', sans-serif">PT Sans</option>
-          <option value="'Bungee Shade', cursive">Bungee Shade</option>
-          <option value="'Silkscreen', cursive">Silkscreen</option>
-          <option value="'Righteous', cursive">Righteous</option>
-          <option value="'Shadows Into Light', cursive">
-            Shadows Into Light
-          </option>
-          <option value="'Satisfy', cursive">Satisfy</option>
-          <option value="'Rock Salt', cursive">Rock Salt</option>
-          <option value="'Spicy Rice', cursive">Spicy Rice</option>
-          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
-          <option value="'Cormorant', serif">Cormorant</option>
-          <option value="'Ga Maamli', cursive">Ga Maamli</option>
-          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
-          <option value="'Protest Riot', sans-serif">Protest Riot</option>
-          <option value="'Big Shoulders Stencil', cursive">
-            Big Shoulders Stencil
-          </option>
-          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
-          <option value="'Passion One', cursive">Passion One</option>
-          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
-          <option value="'Salsa', cursive">Salsa</option>
-          <option value="'Sixtyfour', monospace">Sixtyfour</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="backgroundType">Background Type</label>
-        <select id="backgroundType" onchange="updateBackgroundOptions()">
-          <option value="color">Solid Color</option>
-          <option value="pattern">Pattern</option>
-          <option value="image">Image</option>
-        </select>
+
+      <!-- General Settings Section -->
+      <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection('general')">
+          <span>General Settings</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div id="general" class="section-content active">
+          <div class="settings-group">
+            <label for="fontFamily">Font Family</label>
+            <select id="fontFamily" onchange="updateStyle()">
+              <option value="'Roboto', sans-serif">Roboto</option>
+              <option value="'Open Sans', sans-serif">Open Sans</option>
+              <option value="'Lato', sans-serif">Lato</option>
+              <option value="'Montserrat', sans-serif">Montserrat</option>
+              <option value="'Poppins', sans-serif">Poppins</option>
+              <option value="'Raleway', sans-serif">Raleway</option>
+              <option value="'Nunito', sans-serif">Nunito</option>
+              <option value="'Oswald', sans-serif">Oswald</option>
+              <option value="'Merriweather', serif">Merriweather</option>
+              <option value="'Quicksand', sans-serif">Quicksand</option>
+              <option value="'Playfair Display', serif">
+                Playfair Display
+              </option>
+              <option value="'Dancing Script', cursive">Dancing Script</option>
+              <option value="'Pacifico', cursive">Pacifico</option>
+              <option value="'Indie Flower', cursive">Indie Flower</option>
+              <option value="'Bangers', cursive">Bangers</option>
+              <option value="'Anton', sans-serif">Anton</option>
+              <option value="'Concert One', cursive">Concert One</option>
+              <option value="'Cinzel', serif">Cinzel</option>
+              <option value="'Fredoka', sans-serif">Fredoka</option>
+              <option value="'Caveat', cursive">Caveat</option>
+              <option value="'Carter One', cursive">Carter One</option>
+              <option value="'Courgette', cursive">Courgette</option>
+              <option value="'Julius Sans One', sans-serif">
+                Julius Sans One
+              </option>
+              <option value="'Matemasie', cursive">Matemasie</option>
+              <option value="'Kalam', cursive">Kalam</option>
+              <option value="'Lobster', cursive">Lobster</option>
+              <option value="'Lora', serif">Lora</option>
+              <option value="'Merriweather Sans', sans-serif">
+                Merriweather Sans
+              </option>
+              <option value="'Oxygen', sans-serif">Oxygen</option>
+              <option value="'PT Sans', sans-serif">PT Sans</option>
+              <option value="'Bungee Shade', cursive">Bungee Shade</option>
+              <option value="'Silkscreen', cursive">Silkscreen</option>
+              <option value="'Righteous', cursive">Righteous</option>
+              <option value="'Shadows Into Light', cursive">
+                Shadows Into Light
+              </option>
+              <option value="'Satisfy', cursive">Satisfy</option>
+              <option value="'Rock Salt', cursive">Rock Salt</option>
+              <option value="'Spicy Rice', cursive">Spicy Rice</option>
+              <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+              <option value="'Cormorant', serif">Cormorant</option>
+              <option value="'Ga Maamli', cursive">Ga Maamli</option>
+              <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+              <option value="'Protest Riot', sans-serif">Protest Riot</option>
+              <option value="'Big Shoulders Stencil', cursive">
+                Big Shoulders Stencil
+              </option>
+              <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+              <option value="'Passion One', cursive">Passion One</option>
+              <option value="'Rubik Mono One', sans-serif">
+                Rubik Mono One
+              </option>
+              <option value="'Salsa', cursive">Salsa</option>
+              <option value="'Sixtyfour', monospace">Sixtyfour</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="backgroundType">Background Type</label>
+            <select id="backgroundType" onchange="updateBackgroundOptions()">
+              <option value="color">Solid Color</option>
+              <option value="pattern">Pattern</option>
+              <option value="image">Image</option>
+            </select>
+          </div>
+          <div id="colorOption" class="settings-group">
+            <label for="backgroundColor">Background Color</label>
+            <input type="color" id="backgroundColor" onchange="updateStyle()" />
+          </div>
+          <div id="patternOption" class="settings-group" style="display: none">
+            <label for="backgroundPattern">Pattern</label>
+            <select id="backgroundPattern" onchange="updateStyle()">
+              <option value="wood-pattern.svg">Wood Pattern</option>
+              <option value="marble-pattern.svg">Marble Pattern</option>
+              <option value="subtle-pattern.svg">Subtle Pattern</option>
+            </select>
+          </div>
+          <div id="imageOption" class="settings-group" style="display: none">
+            <label for="backgroundImage">Image</label>
+            <select id="backgroundImage" onchange="updateStyle()">
+              <option value="flickImageOne.jpg">Flick Image One</option>
+              <option value="flickImageTwo.jpg">Flick Image Two</option>
+              <option value="flickImageThree.jpg">Flick Image Three</option>
+              <option value="flickImageFour.jpg">Flick Image Four</option>
+              <option value="flickImageFive.jpg">Flick Image Five</option>
+              <option value="flickImageSix.jpg">Flick Image Six</option>
+              <option value="flickImageSeven.jpg">Flick Image Seven</option>
+              <option value="flick1111.jpg">Flick Image 1111</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div id="colorOption" class="settings-group">
-        <label for="backgroundColor">Background Color</label>
-        <input type="color" id="backgroundColor" onchange="updateStyle()" />
+      <!-- Main Header Section -->
+      <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection('mainHeader')">
+          <span>Main Menu Header</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div id="mainHeader" class="section-content">
+          <div class="settings-group">
+            <label for="mainHeaderFont">Font Family</label>
+            <select id="mainHeaderFont" onchange="updateStyle()">
+              <option value="'Playfair Display', serif">
+                Playfair Display
+              </option>
+              <option value="'Dancing Script', cursive">Dancing Script</option>
+              <option value="'Pacifico', cursive">Pacifico</option>
+              <option value="'Bangers', cursive">Bangers</option>
+              <option value="'Anton', sans-serif">Anton</option>
+              <option value="'Concert One', cursive">Concert One</option>
+              <option value="'Cinzel', serif">Cinzel</option>
+              <option value="'Fredoka', sans-serif">Fredoka</option>
+              <option value="'Caveat', cursive">Caveat</option>
+              <option value="'Carter One', cursive">Carter One</option>
+              <option value="'Courgette', cursive">Courgette</option>
+              <option value="'Julius Sans One', sans-serif">
+                Julius Sans One
+              </option>
+              <option value="'Matemasie', cursive">Matemasie</option>
+              <option value="'Kalam', cursive">Kalam</option>
+              <option value="'Lobster', cursive">Lobster</option>
+              <option value="'Lora', serif">Lora</option>
+              <option value="'Merriweather Sans', sans-serif">
+                Merriweather Sans
+              </option>
+              <option value="'Oxygen', sans-serif">Oxygen</option>
+              <option value="'PT Sans', sans-serif">PT Sans</option>
+              <option value="'Bungee Shade', cursive">Bungee Shade</option>
+              <option value="'Silkscreen', cursive">Silkscreen</option>
+              <option value="'Righteous', cursive">Righteous</option>
+              <option value="'Shadows Into Light', cursive">
+                Shadows Into Light
+              </option>
+              <option value="'Satisfy', cursive">Satisfy</option>
+              <option value="'Rock Salt', cursive">Rock Salt</option>
+              <option value="'Spicy Rice', cursive">Spicy Rice</option>
+              <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+              <option value="'Cormorant', serif">Cormorant</option>
+              <option value="'Ga Maamli', cursive">Ga Maamli</option>
+              <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+              <option value="'Protest Riot', sans-serif">Protest Riot</option>
+              <option value="'Big Shoulders Stencil', cursive">
+                Big Shoulders Stencil
+              </option>
+              <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+              <option value="'Passion One', cursive">Passion One</option>
+              <option value="'Rubik Mono One', sans-serif">
+                Rubik Mono One
+              </option>
+              <option value="'Salsa', cursive">Salsa</option>
+              <option value="'Sixtyfour', monospace">Sixtyfour</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderColor">Header Color</label>
+            <input
+              type="color"
+              id="mainHeaderColor"
+              value="#2c3e50"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderBackground">Background Color</label>
+            <input
+              type="color"
+              id="mainHeaderBackground"
+              value="#ffffff"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderSize">Header Size (px)</label>
+            <input
+              type="number"
+              id="mainHeaderSize"
+              value="36"
+              min="16"
+              max="96"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="mainHeaderWeight">Header Font Weight</label>
+            <select id="mainHeaderWeight" onchange="updateStyle()">
+              <option value="400">Normal (400)</option>
+              <option value="500">Medium (500)</option>
+              <option value="600">Semi-Bold (600)</option>
+              <option value="700" selected>Bold (700)</option>
+              <option value="800">Extra Bold (800)</option>
+              <option value="900">Black (900)</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="dateSize">Date Size (px)</label>
+            <input
+              type="number"
+              id="dateSize"
+              value="16"
+              min="10"
+              max="48"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+        </div>
       </div>
 
-      <div id="patternOption" class="settings-group" style="display: none">
-        <label for="backgroundPattern">Pattern</label>
-        <select id="backgroundPattern" onchange="updateStyle()">
-          <option value="wood-pattern.svg">Wood Pattern</option>
-          <option value="marble-pattern.svg">Marble Pattern</option>
-          <option value="subtle-pattern.svg">Subtle Pattern</option>
-        </select>
+      <!-- Section Headers Section -->
+      <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection('sectionHeaders')">
+          <span>Section Headers</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div id="sectionHeaders" class="section-content">
+          <div class="settings-group">
+            <label for="sectionHeaderFont">Font Family</label>
+            <select id="sectionHeaderFont" onchange="updateStyle()">
+              <option value="'Playfair Display', serif">
+                Playfair Display
+              </option>
+              <option value="'Dancing Script', cursive">Dancing Script</option>
+              <option value="'Pacifico', cursive">Pacifico</option>
+              <option value="'Bangers', cursive">Bangers</option>
+              <option value="'Anton', sans-serif">Anton</option>
+              <option value="'Concert One', cursive">Concert One</option>
+              <option value="'Cinzel', serif">Cinzel</option>
+              <option value="'Fredoka', sans-serif">Fredoka</option>
+              <option value="'Caveat', cursive">Caveat</option>
+              <option value="'Carter One', cursive">Carter One</option>
+              <option value="'Courgette', cursive">Courgette</option>
+              <option value="'Julius Sans One', sans-serif">
+                Julius Sans One
+              </option>
+              <option value="'Matemasie', cursive">Matemasie</option>
+              <option value="'Kalam', cursive">Kalam</option>
+              <option value="'Lobster', cursive">Lobster</option>
+              <option value="'Lora', serif">Lora</option>
+              <option value="'Merriweather Sans', sans-serif">
+                Merriweather Sans
+              </option>
+              <option value="'Oxygen', sans-serif">Oxygen</option>
+              <option value="'PT Sans', sans-serif">PT Sans</option>
+              <option value="'Bungee Shade', cursive">Bungee Shade</option>
+              <option value="'Silkscreen', cursive">Silkscreen</option>
+              <option value="'Righteous', cursive">Righteous</option>
+              <option value="'Shadows Into Light', cursive">
+                Shadows Into Light
+              </option>
+              <option value="'Satisfy', cursive">Satisfy</option>
+              <option value="'Rock Salt', cursive">Rock Salt</option>
+              <option value="'Spicy Rice', cursive">Spicy Rice</option>
+              <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+              <option value="'Cormorant', serif">Cormorant</option>
+              <option value="'Ga Maamli', cursive">Ga Maamli</option>
+              <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+              <option value="'Protest Riot', sans-serif">Protest Riot</option>
+              <option value="'Big Shoulders Stencil', cursive">
+                Big Shoulders Stencil
+              </option>
+              <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+              <option value="'Passion One', cursive">Passion One</option>
+              <option value="'Rubik Mono One', sans-serif">
+                Rubik Mono One
+              </option>
+              <option value="'Salsa', cursive">Salsa</option>
+              <option value="'Sixtyfour', monospace">Sixtyfour</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="headerColor">Header Color</label>
+            <input
+              type="color"
+              id="headerColor"
+              value="#2c3e50"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="headerSize">Header Size (px)</label>
+            <input
+              type="number"
+              id="headerSize"
+              value="28"
+              min="14"
+              max="72"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="sectionHeaderWeight">Section Header Font Weight</label>
+            <select id="sectionHeaderWeight" onchange="updateStyle()">
+              <option value="400">Normal (400)</option>
+              <option value="500">Medium (500)</option>
+              <option value="600" selected>Semi-Bold (600)</option>
+              <option value="700">Bold (700)</option>
+              <option value="800">Extra Bold (800)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div id="imageOption" class="settings-group" style="display: none">
-        <label for="backgroundImage">Image</label>
-        <select id="backgroundImage" onchange="updateStyle()">
-          <option value="flickImageOne.jpg">Flick Image One</option>
-          <option value="flickImageTwo.jpg">Flick Image Two</option>
-          <option value="flickImageThree.jpg">Flick Image Three</option>
-          <option value="flickImageFour.jpg">Flick Image Four</option>
-          <option value="flickImageFive.jpg">Flick Image Five</option>
-          <option value="flickImageSix.jpg">Flick Image Six</option>
-          <option value="flickImageSeven.jpg">Flick Image Seven</option>
-          <option value="flick1111.jpg">Flick Image 1111</option>
-        </select>
-      </div>
-
-      <h3>Main Menu Header</h3>
-      <div class="settings-group">
-        <label for="mainHeaderFont">Font Family</label>
-        <select id="mainHeaderFont" onchange="updateStyle()">
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Dancing Script', cursive">Dancing Script</option>
-          <option value="'Pacifico', cursive">Pacifico</option>
-          <option value="'Bangers', cursive">Bangers</option>
-          <option value="'Anton', sans-serif">Anton</option>
-          <option value="'Concert One', cursive">Concert One</option>
-          <option value="'Cinzel', serif">Cinzel</option>
-          <option value="'Fredoka', sans-serif">Fredoka</option>
-          <option value="'Caveat', cursive">Caveat</option>
-          <option value="'Carter One', cursive">Carter One</option>
-          <option value="'Courgette', cursive">Courgette</option>
-          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
-          <option value="'Matemasie', cursive">Matemasie</option>
-          <option value="'Kalam', cursive">Kalam</option>
-          <option value="'Lobster', cursive">Lobster</option>
-          <option value="'Lora', serif">Lora</option>
-          <option value="'Merriweather Sans', sans-serif">
-            Merriweather Sans
-          </option>
-          <option value="'Oxygen', sans-serif">Oxygen</option>
-          <option value="'PT Sans', sans-serif">PT Sans</option>
-          <option value="'Bungee Shade', cursive">Bungee Shade</option>
-          <option value="'Silkscreen', cursive">Silkscreen</option>
-          <option value="'Righteous', cursive">Righteous</option>
-          <option value="'Shadows Into Light', cursive">
-            Shadows Into Light
-          </option>
-          <option value="'Satisfy', cursive">Satisfy</option>
-          <option value="'Rock Salt', cursive">Rock Salt</option>
-          <option value="'Spicy Rice', cursive">Spicy Rice</option>
-          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
-          <option value="'Cormorant', serif">Cormorant</option>
-          <option value="'Ga Maamli', cursive">Ga Maamli</option>
-          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
-          <option value="'Protest Riot', sans-serif">Protest Riot</option>
-          <option value="'Big Shoulders Stencil', cursive">
-            Big Shoulders Stencil
-          </option>
-          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
-          <option value="'Passion One', cursive">Passion One</option>
-          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
-          <option value="'Salsa', cursive">Salsa</option>
-          <option value="'Sixtyfour', monospace">Sixtyfour</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="mainHeaderColor">Header Color</label>
-        <input
-          type="color"
-          id="mainHeaderColor"
-          value="#2c3e50"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="mainHeaderBackground">Background Color</label>
-        <input
-          type="color"
-          id="mainHeaderBackground"
-          value="#ffffff"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="mainHeaderSize">Header Size (px)</label>
-        <input
-          type="number"
-          id="mainHeaderSize"
-          value="36"
-          min="16"
-          max="96"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="mainHeaderWeight">Header Font Weight</label>
-        <select id="mainHeaderWeight" onchange="updateStyle()">
-          <option value="400">Normal (400)</option>
-          <option value="500">Medium (500)</option>
-          <option value="600">Semi-Bold (600)</option>
-          <option value="700" selected>Bold (700)</option>
-          <option value="800">Extra Bold (800)</option>
-          <option value="900">Black (900)</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="dateSize">Date Size (px)</label>
-        <input
-          type="number"
-          id="dateSize"
-          value="16"
-          min="10"
-          max="48"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-
-      <h3>Section Headers</h3>
-      <div class="settings-group">
-        <label for="sectionHeaderFont">Font Family</label>
-        <select id="sectionHeaderFont" onchange="updateStyle()">
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Dancing Script', cursive">Dancing Script</option>
-          <option value="'Pacifico', cursive">Pacifico</option>
-          <option value="'Bangers', cursive">Bangers</option>
-          <option value="'Anton', sans-serif">Anton</option>
-          <option value="'Concert One', cursive">Concert One</option>
-          <option value="'Cinzel', serif">Cinzel</option>
-          <option value="'Fredoka', sans-serif">Fredoka</option>
-          <option value="'Caveat', cursive">Caveat</option>
-          <option value="'Carter One', cursive">Carter One</option>
-          <option value="'Courgette', cursive">Courgette</option>
-          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
-          <option value="'Matemasie', cursive">Matemasie</option>
-          <option value="'Kalam', cursive">Kalam</option>
-          <option value="'Lobster', cursive">Lobster</option>
-          <option value="'Lora', serif">Lora</option>
-          <option value="'Merriweather Sans', sans-serif">
-            Merriweather Sans
-          </option>
-          <option value="'Oxygen', sans-serif">Oxygen</option>
-          <option value="'PT Sans', sans-serif">PT Sans</option>
-          <option value="'Bungee Shade', cursive">Bungee Shade</option>
-          <option value="'Silkscreen', cursive">Silkscreen</option>
-          <option value="'Righteous', cursive">Righteous</option>
-          <option value="'Shadows Into Light', cursive">
-            Shadows Into Light
-          </option>
-          <option value="'Satisfy', cursive">Satisfy</option>
-          <option value="'Rock Salt', cursive">Rock Salt</option>
-          <option value="'Spicy Rice', cursive">Spicy Rice</option>
-          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
-          <option value="'Cormorant', serif">Cormorant</option>
-          <option value="'Ga Maamli', cursive">Ga Maamli</option>
-          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
-          <option value="'Protest Riot', sans-serif">Protest Riot</option>
-          <option value="'Big Shoulders Stencil', cursive">
-            Big Shoulders Stencil
-          </option>
-          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
-          <option value="'Passion One', cursive">Passion One</option>
-          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
-          <option value="'Salsa', cursive">Salsa</option>
-          <option value="'Sixtyfour', monospace">Sixtyfour</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="headerColor">Header Color</label>
-        <input
-          type="color"
-          id="headerColor"
-          value="#2c3e50"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="headerSize">Header Size (px)</label>
-        <input
-          type="number"
-          id="headerSize"
-          value="28"
-          min="14"
-          max="72"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="sectionHeaderWeight">Section Header Font Weight</label>
-        <select id="sectionHeaderWeight" onchange="updateStyle()">
-          <option value="400">Normal (400)</option>
-          <option value="500">Medium (500)</option>
-          <option value="600" selected>Semi-Bold (600)</option>
-          <option value="700">Bold (700)</option>
-          <option value="800">Extra Bold (800)</option>
-        </select>
-      </div>
-
-      <h3>Menu Cards</h3>
-      <div class="settings-group">
-        <label for="cardFont">Font Family</label>
-        <select id="cardFont" onchange="updateStyle()">
-          <option value="'Roboto', sans-serif">Roboto</option>
-          <option value="'Open Sans', sans-serif">Open Sans</option>
-          <option value="'Lato', sans-serif">Lato</option>
-          <option value="'Montserrat', sans-serif">Montserrat</option>
-          <option value="'Poppins', sans-serif">Poppins</option>
-          <option value="'Raleway', sans-serif">Raleway</option>
-          <option value="'Nunito', sans-serif">Nunito</option>
-          <option value="'Oswald', sans-serif">Oswald</option>
-          <option value="'Merriweather', serif">Merriweather</option>
-          <option value="'Quicksand', sans-serif">Quicksand</option>
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Dancing Script', cursive">Dancing Script</option>
-          <option value="'Pacifico', cursive">Pacifico</option>
-          <option value="'Indie Flower', cursive">Indie Flower</option>
-          <option value="'Bangers', cursive">Bangers</option>
-          <option value="'Anton', sans-serif">Anton</option>
-          <option value="'Concert One', cursive">Concert One</option>
-          <option value="'Cinzel', serif">Cinzel</option>
-          <option value="'Fredoka', sans-serif">Fredoka</option>
-          <option value="'Caveat', cursive">Caveat</option>
-          <option value="'Carter One', cursive">Carter One</option>
-          <option value="'Courgette', cursive">Courgette</option>
-          <option value="'Julius Sans One', sans-serif">Julius Sans One</option>
-          <option value="'Matemasie', cursive">Matemasie</option>
-          <option value="'Kalam', cursive">Kalam</option>
-          <option value="'Lobster', cursive">Lobster</option>
-          <option value="'Lora', serif">Lora</option>
-          <option value="'Merriweather Sans', sans-serif">
-            Merriweather Sans
-          </option>
-          <option value="'Oxygen', sans-serif">Oxygen</option>
-          <option value="'PT Sans', sans-serif">PT Sans</option>
-          <option value="'Bungee Shade', cursive">Bungee Shade</option>
-          <option value="'Silkscreen', cursive">Silkscreen</option>
-          <option value="'Righteous', cursive">Righteous</option>
-          <option value="'Shadows Into Light', cursive">
-            Shadows Into Light
-          </option>
-          <option value="'Satisfy', cursive">Satisfy</option>
-          <option value="'Rock Salt', cursive">Rock Salt</option>
-          <option value="'Spicy Rice', cursive">Spicy Rice</option>
-          <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
-          <option value="'Cormorant', serif">Cormorant</option>
-          <option value="'Ga Maamli', cursive">Ga Maamli</option>
-          <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
-          <option value="'Protest Riot', sans-serif">Protest Riot</option>
-          <option value="'Big Shoulders Stencil', cursive">
-            Big Shoulders Stencil
-          </option>
-          <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
-          <option value="'Passion One', cursive">Passion One</option>
-          <option value="'Rubik Mono One', sans-serif">Rubik Mono One</option>
-          <option value="'Salsa', cursive">Salsa</option>
-          <option value="'Sixtyfour', monospace">Sixtyfour</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="cardBackgroundColor">Background Color</label>
-        <input
-          type="color"
-          id="cardBackgroundColor"
-          value="#ffffff"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="cardOpacity">Card Opacity</label>
-        <select id="cardOpacity" onchange="updateStyle()">
-          <option value="1">100% (Solid)</option>
-          <option value="0.95">95%</option>
-          <option value="0.9">90%</option>
-          <option value="0.85">85%</option>
-          <option value="0.8">80%</option>
-          <option value="0.75">75%</option>
-          <option value="0.7">70%</option>
-          <option value="0.65">65%</option>
-          <option value="0.6">60%</option>
-          <option value="0.5">50%</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="cardTextColor">Text Color</label>
-        <input
-          type="color"
-          id="cardTextColor"
-          value="#34495e"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="cardFontWeight">Card Font Weight</label>
-        <select id="cardFontWeight" onchange="updateStyle()">
-          <option value="300">Light (300)</option>
-          <option value="400" selected>Normal (400)</option>
-          <option value="500">Medium (500)</option>
-          <option value="600">Semi-Bold (600)</option>
-          <option value="700">Bold (700)</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="cardTextSize">Text Size (px)</label>
-        <input
-          type="number"
-          id="cardTextSize"
-          value="16"
-          min="8"
-          max="48"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="cardTitleSize">Title Size (px)</label>
-        <input
-          type="number"
-          id="cardTitleSize"
-          value="20"
-          min="10"
-          max="64"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="cardTitleWeight">Title Font Weight</label>
-        <select id="cardTitleWeight" onchange="updateStyle()">
-          <option value="400">Normal (400)</option>
-          <option value="500">Medium (500)</option>
-          <option value="600" selected>Semi-Bold (600)</option>
-          <option value="700">Bold (700)</option>
-          <option value="800">Extra Bold (800)</option>
-        </select>
-      </div>
-      <div class="settings-group">
-        <label for="priceColor">Price Color</label>
-        <input
-          type="color"
-          id="priceColor"
-          value="#e74c3c"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="priceSize">Price Size (px)</label>
-        <input
-          type="number"
-          id="priceSize"
-          value="16"
-          min="8"
-          max="48"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="priceFontWeight">Price Font Weight</label>
-        <select id="priceFontWeight" onchange="updateStyle()">
-          <option value="400">Normal (400)</option>
-          <option value="500">Medium (500)</option>
-          <option value="600" selected>Semi-Bold (600)</option>
-          <option value="700">Bold (700)</option>
-          <option value="800">Extra Bold (800)</option>
-        </select>
+      <!-- Menu Cards Section -->
+      <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection('menuCards')">
+          <span>Menu Cards</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div id="menuCards" class="section-content">
+          <div class="settings-group">
+            <label for="cardFont">Font Family</label>
+            <select id="cardFont" onchange="updateStyle()">
+              <option value="'Roboto', sans-serif">Roboto</option>
+              <option value="'Open Sans', sans-serif">Open Sans</option>
+              <option value="'Lato', sans-serif">Lato</option>
+              <option value="'Montserrat', sans-serif">Montserrat</option>
+              <option value="'Poppins', sans-serif">Poppins</option>
+              <option value="'Raleway', sans-serif">Raleway</option>
+              <option value="'Nunito', sans-serif">Nunito</option>
+              <option value="'Oswald', sans-serif">Oswald</option>
+              <option value="'Merriweather', serif">Merriweather</option>
+              <option value="'Quicksand', sans-serif">Quicksand</option>
+              <option value="'Playfair Display', serif">
+                Playfair Display
+              </option>
+              <option value="'Dancing Script', cursive">Dancing Script</option>
+              <option value="'Pacifico', cursive">Pacifico</option>
+              <option value="'Indie Flower', cursive">Indie Flower</option>
+              <option value="'Bangers', cursive">Bangers</option>
+              <option value="'Anton', sans-serif">Anton</option>
+              <option value="'Concert One', cursive">Concert One</option>
+              <option value="'Cinzel', serif">Cinzel</option>
+              <option value="'Fredoka', sans-serif">Fredoka</option>
+              <option value="'Caveat', cursive">Caveat</option>
+              <option value="'Carter One', cursive">Carter One</option>
+              <option value="'Courgette', cursive">Courgette</option>
+              <option value="'Julius Sans One', sans-serif">
+                Julius Sans One
+              </option>
+              <option value="'Matemasie', cursive">Matemasie</option>
+              <option value="'Kalam', cursive">Kalam</option>
+              <option value="'Lobster', cursive">Lobster</option>
+              <option value="'Lora', serif">Lora</option>
+              <option value="'Merriweather Sans', sans-serif">
+                Merriweather Sans
+              </option>
+              <option value="'Oxygen', sans-serif">Oxygen</option>
+              <option value="'PT Sans', sans-serif">PT Sans</option>
+              <option value="'Bungee Shade', cursive">Bungee Shade</option>
+              <option value="'Silkscreen', cursive">Silkscreen</option>
+              <option value="'Righteous', cursive">Righteous</option>
+              <option value="'Shadows Into Light', cursive">
+                Shadows Into Light
+              </option>
+              <option value="'Satisfy', cursive">Satisfy</option>
+              <option value="'Rock Salt', cursive">Rock Salt</option>
+              <option value="'Spicy Rice', cursive">Spicy Rice</option>
+              <option value="'Alfa Slab One', cursive">Alfa Slab One</option>
+              <option value="'Cormorant', serif">Cormorant</option>
+              <option value="'Ga Maamli', cursive">Ga Maamli</option>
+              <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+              <option value="'Protest Riot', sans-serif">Protest Riot</option>
+              <option value="'Big Shoulders Stencil', cursive">
+                Big Shoulders Stencil
+              </option>
+              <option value="'Akaya Kanadaka', cursive">Akaya Kanadaka</option>
+              <option value="'Passion One', cursive">Passion One</option>
+              <option value="'Rubik Mono One', sans-serif">
+                Rubik Mono One
+              </option>
+              <option value="'Salsa', cursive">Salsa</option>
+              <option value="'Sixtyfour', monospace">Sixtyfour</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="cardBackgroundColor">Background Color</label>
+            <input
+              type="color"
+              id="cardBackgroundColor"
+              value="#ffffff"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardOpacity">Card Opacity</label>
+            <select id="cardOpacity" onchange="updateStyle()">
+              <option value="1">100% (Solid)</option>
+              <option value="0.95">95%</option>
+              <option value="0.9">90%</option>
+              <option value="0.85">85%</option>
+              <option value="0.8">80%</option>
+              <option value="0.75">75%</option>
+              <option value="0.7">70%</option>
+              <option value="0.65">65%</option>
+              <option value="0.6">60%</option>
+              <option value="0.5">50%</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="cardTextColor">Text Color</label>
+            <input
+              type="color"
+              id="cardTextColor"
+              value="#34495e"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardFontWeight">Card Font Weight</label>
+            <select id="cardFontWeight" onchange="updateStyle()">
+              <option value="300">Light (300)</option>
+              <option value="400" selected>Normal (400)</option>
+              <option value="500">Medium (500)</option>
+              <option value="600">Semi-Bold (600)</option>
+              <option value="700">Bold (700)</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="cardTextSize">Text Size (px)</label>
+            <input
+              type="number"
+              id="cardTextSize"
+              value="16"
+              min="8"
+              max="48"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardTitleSize">Title Size (px)</label>
+            <input
+              type="number"
+              id="cardTitleSize"
+              value="20"
+              min="10"
+              max="64"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="cardTitleWeight">Title Font Weight</label>
+            <select id="cardTitleWeight" onchange="updateStyle()">
+              <option value="400">Normal (400)</option>
+              <option value="500">Medium (500)</option>
+              <option value="600" selected>Semi-Bold (600)</option>
+              <option value="700">Bold (700)</option>
+              <option value="800">Extra Bold (800)</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="priceColor">Price Color</label>
+            <input
+              type="color"
+              id="priceColor"
+              value="#e74c3c"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="priceSize">Price Size (px)</label>
+            <input
+              type="number"
+              id="priceSize"
+              value="16"
+              min="8"
+              max="48"
+              step="1"
+              onchange="updateStyle()"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="priceFontWeight">Price Font Weight</label>
+            <select id="priceFontWeight" onchange="updateStyle()">
+              <option value="400">Normal (400)</option>
+              <option value="500">Medium (500)</option>
+              <option value="600" selected>Semi-Bold (600)</option>
+              <option value="700">Bold (700)</option>
+              <option value="800">Extra Bold (800)</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
     <div id="menuContainer"></div>
@@ -705,6 +806,20 @@
       window.toggleSettings = function () {
         const panel = document.getElementById("settingsPanel");
         panel.style.display = panel.style.display === "none" ? "block" : "none";
+      };
+
+      window.toggleSection = function (sectionId) {
+        const content = document.getElementById(sectionId);
+        const header = content.previousElementSibling;
+        const icon = header.querySelector(".toggle-icon");
+
+        if (content.classList.contains("active")) {
+          content.classList.remove("active");
+          header.classList.remove("active");
+        } else {
+          content.classList.add("active");
+          header.classList.add("active");
+        }
       };
 
       window.updateBackgroundOptions = function () {
@@ -1049,6 +1164,13 @@
         console.log("Loaded Menu:", menu);
         const container = document.getElementById("menuContainer");
 
+        // Store current menu info for item export
+        window.currentMenuInfo = {
+          id: menu.id,
+          type: menu.type,
+          date: menu.date,
+        };
+
         container.innerHTML = `
         <div class="menu-header">
           <h1>${menu.type} Menu</h1>
@@ -1081,7 +1203,7 @@
         <div class="menu-grid">
           ${items
             .map(
-              (item) => `
+              (item, index) => `
             <div class="menu-card">
               <h3>${item.name} <span class="price">${item.price}</span></h3>
               ${

@@ -21,6 +21,325 @@
       .delete-btn:hover {
         background-color: #c0392b;
       }
+
+      .export-btn,
+      .import-btn {
+        margin-left: 0.5em;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .export-btn {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .export-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .import-btn {
+        background-color: #27ae60;
+        color: white;
+      }
+
+      .import-btn:hover {
+        background-color: #219a52;
+      }
+
+      .import-export-section {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+      }
+
+      .import-export-section h3 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
+
+      .bulk-actions {
+        margin: 1rem 0;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .file-input-wrapper input[type="file"] {
+        position: absolute;
+        left: -9999px;
+      }
+
+      .file-input-label {
+        padding: 8px 16px;
+        background-color: #27ae60;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        display: inline-block;
+      }
+
+      .file-input-label:hover {
+        background-color: #219a52;
+      }
+
+      .menu-item {
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+      }
+
+      .select-all-controls {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: #e9ecef;
+        border-radius: 4px;
+      }
+
+      /* Item browsing styles */
+      .item-browser {
+        margin-top: 2rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .item-browser-header {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .item-browser-content {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 1rem;
+      }
+
+      .menu-group {
+        margin-bottom: 1.5rem;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .menu-group-header {
+        background: #f1f3f4;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        border-bottom: 1px solid #e9ecef;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .menu-group-header:hover {
+        background: #e9ecef;
+      }
+
+      .menu-group-items {
+        padding: 0.5rem;
+        display: none;
+      }
+
+      .menu-group-items.expanded {
+        display: block;
+      }
+
+      .item-card {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background: white;
+        transition: all 0.2s ease;
+      }
+
+      .item-card:hover {
+        border-color: #3498db;
+        background: #f8f9fa;
+      }
+
+      .item-card.selected {
+        border-color: #3498db;
+        background: #ebf3fd;
+      }
+
+      .item-card input[type="checkbox"] {
+        margin-right: 0.75rem;
+        transform: scale(1.2);
+      }
+
+      .item-info {
+        flex: 1;
+      }
+
+      .item-name {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+      }
+
+      .item-details {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .item-price {
+        font-weight: 600;
+        color: #e74c3c;
+        margin-left: 1rem;
+      }
+
+      .item-section {
+        font-size: 0.8rem;
+        background: #6c757d;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-left: 0.5rem;
+      }
+
+      .selected-items-summary {
+        background: #e3f2fd;
+        border: 1px solid #90caf9;
+        border-radius: 6px;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+
+      .browse-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .collapse-icon {
+        transition: transform 0.2s ease;
+      }
+
+      .collapsed .collapse-icon {
+        transform: rotate(-90deg);
+      }
+
+      /* Export Dialog Styles */
+      .export-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+
+      .export-dialog-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+      }
+
+      .export-dialog h3 {
+        margin: 0 0 1rem;
+        color: #2c3e50;
+      }
+
+      .export-dialog .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .export-dialog label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #34495e;
+      }
+
+      .export-dialog input[type="text"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .export-dialog .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+      }
+
+      .export-dialog button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+      }
+
+      .export-dialog .primary-btn {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .export-dialog .primary-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .export-dialog .secondary-btn {
+        background-color: #95a5a6;
+        color: white;
+      }
+
+      .export-dialog .secondary-btn:hover {
+        background-color: #7f8c8d;
+      }
+
+      .export-info {
+        background: #e8f4f8;
+        border: 1px solid #b8daff;
+        border-radius: 4px;
+        padding: 1rem;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+      }
+
+      .export-info h4 {
+        margin: 0 0 0.5rem;
+        color: #2c3e50;
+      }
     </style>
   </head>
   <body>
@@ -69,10 +388,187 @@
 
     <hr />
 
+    <!-- Import/Export Section -->
+    <div class="import-export-section">
+      <h3>📋 Import & Export Menus</h3>
+
+      <div class="bulk-actions">
+        <div class="file-input-wrapper">
+          <input
+            type="file"
+            id="importFile"
+            accept=".json"
+            multiple
+            onchange="handleImport(event)"
+          />
+          <label for="importFile" class="file-input-label"
+            >📥 Import Menu(s)</label
+          >
+        </div>
+
+        <button onclick="exportAllMenus()" class="export-btn">
+          📦 Export All Menus
+        </button>
+
+        <button onclick="showBulkExportDialog()" class="export-btn">
+          📋 Bulk Export Selected
+        </button>
+      </div>
+
+      <div
+        id="bulkExportDialog"
+        style="display: none"
+        class="select-all-controls"
+      >
+        <h4>Select Menus to Export:</h4>
+        <div style="margin-bottom: 1rem">
+          <button onclick="selectAllMenus(true)" class="import-btn">
+            Select All
+          </button>
+          <button onclick="selectAllMenus(false)" class="import-btn">
+            Deselect All
+          </button>
+          <button onclick="exportSelectedMenus()" class="export-btn">
+            Export Selected
+          </button>
+          <button onclick="hideBulkExportDialog()" class="delete-btn">
+            Cancel
+          </button>
+        </div>
+        <div id="menuSelectionList"></div>
+      </div>
+    </div>
+
+    <!-- Item Browser Section -->
+    <div class="import-export-section">
+      <h3>🍽️ Browse & Select Menu Items</h3>
+
+      <div class="browse-controls">
+        <button onclick="loadItemBrowser()" class="import-btn">
+          📖 Browse All Items
+        </button>
+        <button onclick="selectAllItems(true)" class="toggle-selection-btn">
+          Select All Items
+        </button>
+        <button onclick="selectAllItems(false)" class="clear-selection-btn">
+          Clear All
+        </button>
+        <button onclick="exportSelectedItems()" class="export-btn">
+          📦 Export Selected Items
+        </button>
+      </div>
+
+      <div
+        id="selectedItemsSummary"
+        class="selected-items-summary"
+        style="display: none"
+      >
+        <strong>Selected Items: <span id="selectedItemCount">0</span></strong>
+        <div
+          id="selectedItemsList"
+          style="margin-top: 0.5rem; font-size: 0.9rem"
+        ></div>
+      </div>
+
+      <div id="itemBrowser" class="item-browser" style="display: none">
+        <div class="item-browser-header">
+          <h4 style="margin: 0">📋 All Menu Items</h4>
+          <button onclick="toggleItemBrowser()" class="clear-selection-btn">
+            Hide Browser
+          </button>
+        </div>
+        <div id="itemBrowserContent" class="item-browser-content">
+          <!-- Items will be loaded here -->
+        </div>
+      </div>
+    </div>
+
     <button onclick="listMenus()">View Saved Menus</button>
     <ul id="savedMenusList"></ul>
 
+    <!-- Export Dialog -->
+    <div id="exportDialog" class="export-dialog">
+      <div class="export-dialog-content">
+        <h3 id="exportDialogTitle">📦 Export Menu</h3>
+
+        <div class="form-group">
+          <label for="exportFilename">Filename:</label>
+          <input type="text" id="exportFilename" placeholder="my_menu_export" />
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #666">
+            <strong>💡 Tips:</strong> Use letters, numbers, hyphens, and
+            underscores. Avoid special characters.
+            <br />
+            <button
+              type="button"
+              onclick="generateTimestampFilename()"
+              style="
+                background: none;
+                border: none;
+                color: #3498db;
+                text-decoration: underline;
+                cursor: pointer;
+                font-size: 0.85rem;
+                padding: 0;
+                margin-top: 0.25rem;
+              "
+            >
+              🕒 Add timestamp
+            </button>
+          </div>
+        </div>
+
+        <div class="export-info">
+          <h4>📁 Export Location</h4>
+          <p><strong>Default:</strong> Your browser's Downloads folder</p>
+          <p>
+            <strong>Advanced:</strong> Some modern browsers allow choosing
+            custom locations. Look for a "Save As" option in your browser's
+            download settings.
+          </p>
+
+          <details style="margin-top: 0.5rem">
+            <summary style="cursor: pointer; font-weight: 600">
+              🔧 Browser-Specific Options
+            </summary>
+            <div
+              style="
+                margin-top: 0.5rem;
+                padding-left: 1rem;
+                border-left: 3px solid #3498db;
+              "
+            >
+              <p>
+                <strong>Chrome/Edge:</strong> Ctrl+Shift+J → Settings →
+                Downloads → "Ask where to save each file"
+              </p>
+              <p>
+                <strong>Firefox:</strong> about:preferences → Downloads →
+                "Always ask where to save files"
+              </p>
+              <p>
+                <strong>Safari:</strong> Preferences → General → File download
+                location
+              </p>
+            </div>
+          </details>
+        </div>
+
+        <div id="exportPreview" class="export-info" style="display: none">
+          <h4>📋 Export Preview</h4>
+          <p id="exportPreviewText"></p>
+        </div>
+
+        <div class="button-group">
+          <button onclick="closeExportDialog()" class="secondary-btn">
+            Cancel
+          </button>
+          <button onclick="confirmExport()" class="primary-btn">
+            📥 Download
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="script/main.js"></script>
-    Please proceed
   </body>
 </html>
