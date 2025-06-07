@@ -64,9 +64,30 @@ h2 {
 
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin: 1rem 0;
+  justify-items: center;
+}
+
+/* Center the last item if it's alone in a row */
+.menu-grid .menu-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  max-width: 450px;
+  width: 100%;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .menu-grid .menu-card:last-child:nth-child(odd) {
+    grid-column: 1;
+    max-width: none;
+  }
 }
 
 .menu-card {
@@ -89,12 +110,15 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 1rem;
 }
 
 .menu-card .price {
   color: var(--price-color, var(--accent-color));
   font-weight: 600;
   font-size: var(--price-size);
+  margin-left: 1rem;
+  flex-shrink: 0;
 }
 
 .menu-card .ingredients {
