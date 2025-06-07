@@ -1773,7 +1773,7 @@
             .map(
               (item, index) => `
             <div class="menu-card">
-              <h3>${item.name} <span class="price">${item.price}</span></h3>
+              <h3>${item.name} - <span class="price">${item.price}</span></h3>
               ${
                 item.ingredients
                   ? `<p class="ingredients">${item.ingredients}</p>`
@@ -1977,13 +1977,6 @@
           card.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
-        document.querySelectorAll(".menu-card .price").forEach((price) => {
-          price.style.setProperty("color", priceColor, "important");
-          price.style.setProperty("font-size", priceSize + "px", "important");
-          price.style.setProperty("font-family", cardFont, "important");
-          price.style.setProperty("font-weight", priceFontWeight, "important");
-        });
-
         document.querySelectorAll(".menu-card h3").forEach((title) => {
           title.style.setProperty(
             "font-size",
@@ -1993,6 +1986,13 @@
           title.style.setProperty("color", cardTextColor, "important");
           title.style.setProperty("font-family", cardFont, "important");
           title.style.setProperty("font-weight", cardTitleWeight, "important");
+        });
+
+        document.querySelectorAll(".menu-card .price").forEach((price) => {
+          price.style.setProperty("color", priceColor, "important");
+          price.style.setProperty("font-size", priceSize + "px", "important");
+          price.style.setProperty("font-family", cardFont, "important");
+          price.style.setProperty("font-weight", priceFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .ingredients").forEach((text) => {

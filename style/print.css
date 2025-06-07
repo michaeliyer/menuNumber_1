@@ -170,14 +170,13 @@ select {
       Arial,
       sans-serif
     ) !important;
+    text-align: center !important;
   }
 
   .menu-card .price {
     font-size: var(--price-size, 16px) !important;
     color: var(--price-color, #ffffff) !important;
-    padding: 0 1rem !important;
-    margin: 0 !important;
-    white-space: nowrap !important;
+    font-weight: 600 !important;
   }
 
   .menu-card .ingredients,
@@ -185,6 +184,7 @@ select {
     font-size: var(--card-text-size, 16px) !important;
     margin: 0.25rem 0 !important;
     color: var(--card-text-color, #ffffff) !important;
+    text-align: center !important;
   }
 
   /* Optimize dividers */
