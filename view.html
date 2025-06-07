@@ -165,6 +165,74 @@
           display: none;
         }
       }
+
+      .export-info h4 {
+        margin: 0 0 0.5rem;
+        color: #2c3e50;
+      }
+
+      /* Separate card background and content opacity */
+      .menu-card {
+        position: relative;
+        background: transparent !important; /* Remove default background */
+      }
+
+      .menu-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--card-background-color, #ffffff);
+        border-radius: inherit;
+        z-index: -1;
+        /* Background opacity will be applied here */
+        opacity: var(--card-bg-opacity, 1);
+        filter: var(--card-bg-filter, none);
+      }
+
+      .menu-card-content {
+        position: relative;
+        z-index: 1;
+        /* Font opacity will be applied to content elements */
+      }
+
+      /* Background overlay system for independent brightness control */
+      .background-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1000;
+        pointer-events: none;
+        background-size: inherit;
+        background-repeat: inherit;
+        background-position: inherit;
+        background-attachment: fixed;
+      }
+
+      /* Ensure body background is transparent when using overlay */
+      body.has-background-overlay {
+        background: none !important;
+      }
+
+      @media print {
+        .background-overlay {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          z-index: -1000 !important;
+          pointer-events: none !important;
+          background-attachment: scroll !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -252,12 +320,36 @@
             <select id="backgroundType" onchange="updateBackgroundOptions()">
               <option value="color">Solid Color</option>
               <option value="pattern">Pattern</option>
-              <option value="image">Image</option>
+              <option value="image">Preset Image</option>
+              <option value="custom">Custom Image Upload</option>
             </select>
           </div>
           <div id="colorOption" class="settings-group">
             <label for="backgroundColor">Background Color</label>
             <input type="color" id="backgroundColor" onchange="updateStyle()" />
+          </div>
+          <div
+            id="colorBrightnessOption"
+            class="settings-group"
+            style="display: none"
+          >
+            <label for="colorBrightness"
+              >Color Brightness:
+              <span id="colorBrightnessValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="colorBrightness"
+              min="0"
+              max="300"
+              step="5"
+              value="100"
+              onchange="updateBrightnessDisplay('color'); updateStyle()"
+              oninput="updateBrightnessDisplay('color')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              0% (Black) → 100% (Normal) → 300% (Super Bright)
+            </div>
           </div>
           <div id="patternOption" class="settings-group" style="display: none">
             <label for="backgroundPattern">Pattern</label>
@@ -266,6 +358,29 @@
               <option value="marble-pattern.svg">Marble Pattern</option>
               <option value="subtle-pattern.svg">Subtle Pattern</option>
             </select>
+          </div>
+          <div
+            id="patternBrightnessOption"
+            class="settings-group"
+            style="display: none"
+          >
+            <label for="patternBrightness"
+              >Pattern Brightness:
+              <span id="patternBrightnessValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="patternBrightness"
+              min="0"
+              max="300"
+              step="5"
+              value="100"
+              onchange="updateBrightnessDisplay('pattern'); updateStyle()"
+              oninput="updateBrightnessDisplay('pattern')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Adjust pattern brightness and contrast
+            </div>
           </div>
           <div id="imageOption" class="settings-group" style="display: none">
             <label for="backgroundImage">Image</label>
@@ -279,6 +394,75 @@
               <option value="flickImageSeven.jpg">Flick Image Seven</option>
               <option value="flick1111.jpg">Flick Image 1111</option>
             </select>
+          </div>
+          <div
+            id="imageBrightnessOption"
+            class="settings-group"
+            style="display: none"
+          >
+            <label for="imageBrightness"
+              >Image Brightness:
+              <span id="imageBrightnessValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="imageBrightness"
+              min="0"
+              max="300"
+              step="5"
+              value="100"
+              onchange="updateBrightnessDisplay('image'); updateStyle()"
+              oninput="updateBrightnessDisplay('image')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Perfect for mood lighting and contrast adjustment
+            </div>
+          </div>
+          <div
+            id="customImageOption"
+            class="settings-group"
+            style="display: none"
+          >
+            <label for="customBackgroundUpload">Upload Custom Background</label>
+            <input
+              type="file"
+              id="customBackgroundUpload"
+              accept="image/*"
+              onchange="handleCustomBackground(event)"
+              style="
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+              "
+            />
+            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #666">
+              📱 iOS: Tap to select from Photos, Camera, or Files<br />
+              💻 Desktop: Choose any JPG, PNG, GIF, or WebP image
+            </div>
+          </div>
+          <div
+            id="customImageBrightnessOption"
+            class="settings-group"
+            style="display: none"
+          >
+            <label for="customImageBrightness"
+              >Custom Image Brightness:
+              <span id="customImageBrightnessValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="customImageBrightness"
+              min="0"
+              max="300"
+              step="5"
+              value="100"
+              onchange="updateBrightnessDisplay('customImage'); updateStyle()"
+              oninput="updateBrightnessDisplay('customImage')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Fine-tune your uploaded image's brightness
+            </div>
           </div>
         </div>
       </div>
@@ -397,6 +581,25 @@
               onchange="updateStyle()"
             />
           </div>
+          <div class="settings-group">
+            <label for="mainHeaderOpacity"
+              >Header Opacity:
+              <span id="mainHeaderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="mainHeaderOpacity"
+              min="0"
+              max="1000"
+              step="5"
+              value="100"
+              onchange="updateOpacityDisplay('mainHeader'); updateStyle()"
+              oninput="updateOpacityDisplay('mainHeader')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls entire header section transparency
+            </div>
+          </div>
         </div>
       </div>
 
@@ -492,6 +695,25 @@
               <option value="800">Extra Bold (800)</option>
             </select>
           </div>
+          <div class="settings-group">
+            <label for="sectionHeaderOpacity"
+              >Section Header Opacity:
+              <span id="sectionHeaderOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="sectionHeaderOpacity"
+              min="0"
+              max="1000"
+              step="5"
+              value="100"
+              onchange="updateOpacityDisplay('sectionHeader'); updateStyle()"
+              oninput="updateOpacityDisplay('sectionHeader')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Controls section title transparency
+            </div>
+          </div>
         </div>
       </div>
 
@@ -577,19 +799,42 @@
             />
           </div>
           <div class="settings-group">
-            <label for="cardOpacity">Card Opacity</label>
-            <select id="cardOpacity" onchange="updateStyle()">
-              <option value="1">100% (Solid)</option>
-              <option value="0.95">95%</option>
-              <option value="0.9">90%</option>
-              <option value="0.85">85%</option>
-              <option value="0.8">80%</option>
-              <option value="0.75">75%</option>
-              <option value="0.7">70%</option>
-              <option value="0.65">65%</option>
-              <option value="0.6">60%</option>
-              <option value="0.5">50%</option>
-            </select>
+            <label for="cardOpacity"
+              >Card Background Opacity:
+              <span id="cardOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="cardOpacity"
+              min="0"
+              max="1000"
+              step="5"
+              value="100"
+              onchange="updateOpacityDisplay('card'); updateStyle()"
+              oninput="updateOpacityDisplay('card')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              0% (Invisible) → 100% (Normal) → 1000% (Super Bright)
+            </div>
+          </div>
+          <div class="settings-group">
+            <label for="cardFontOpacity"
+              >Card Font Opacity:
+              <span id="cardFontOpacityValue">100%</span></label
+            >
+            <input
+              type="range"
+              id="cardFontOpacity"
+              min="0"
+              max="1000"
+              step="5"
+              value="100"
+              onchange="updateOpacityDisplay('cardFont'); updateStyle()"
+              oninput="updateOpacityDisplay('cardFont')"
+            />
+            <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem">
+              Separate opacity control for text inside cards
+            </div>
           </div>
           <div class="settings-group">
             <label for="cardTextColor">Text Color</label>
@@ -799,7 +1044,44 @@
               settings.cardTitleSize;
           if (settings.priceSize)
             document.getElementById("priceSize").value = settings.priceSize;
+          if (settings.cardFontOpacity)
+            document.getElementById("cardFontOpacity").value =
+              settings.cardFontOpacity;
+          if (settings.mainHeaderOpacity)
+            document.getElementById("mainHeaderOpacity").value =
+              settings.mainHeaderOpacity;
+          if (settings.sectionHeaderOpacity)
+            document.getElementById("sectionHeaderOpacity").value =
+              settings.sectionHeaderOpacity;
+          if (settings.customBackgroundDataURL)
+            customBackgroundDataURL = settings.customBackgroundDataURL;
+          // Load brightness settings
+          if (settings.colorBrightness)
+            document.getElementById("colorBrightness").value =
+              settings.colorBrightness;
+          if (settings.patternBrightness)
+            document.getElementById("patternBrightness").value =
+              settings.patternBrightness;
+          if (settings.imageBrightness)
+            document.getElementById("imageBrightness").value =
+              settings.imageBrightness;
+          if (settings.customImageBrightness)
+            document.getElementById("customImageBrightness").value =
+              settings.customImageBrightness;
         }
+
+        // Update opacity displays
+        updateOpacityDisplay("mainHeader");
+        updateOpacityDisplay("sectionHeader");
+        updateOpacityDisplay("card");
+        updateOpacityDisplay("cardFont");
+
+        // Update brightness displays
+        updateBrightnessDisplay("color");
+        updateBrightnessDisplay("pattern");
+        updateBrightnessDisplay("image");
+        updateBrightnessDisplay("customImage");
+
         updateStyle();
       }
 
@@ -824,14 +1106,144 @@
 
       window.updateBackgroundOptions = function () {
         const type = document.getElementById("backgroundType").value;
+
+        // Show/hide main options
         document.getElementById("colorOption").style.display =
           type === "color" ? "block" : "none";
         document.getElementById("patternOption").style.display =
           type === "pattern" ? "block" : "none";
         document.getElementById("imageOption").style.display =
           type === "image" ? "block" : "none";
+        document.getElementById("customImageOption").style.display =
+          type === "custom" ? "block" : "none";
+
+        // Show/hide brightness options
+        document.getElementById("colorBrightnessOption").style.display =
+          type === "color" ? "block" : "none";
+        document.getElementById("patternBrightnessOption").style.display =
+          type === "pattern" ? "block" : "none";
+        document.getElementById("imageBrightnessOption").style.display =
+          type === "image" ? "block" : "none";
+        document.getElementById("customImageBrightnessOption").style.display =
+          type === "custom" ? "block" : "none";
+
         updateStyle();
       };
+
+      // Global variable to store custom background
+      let customBackgroundDataURL = null;
+
+      // Handle custom background upload
+      window.handleCustomBackground = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          alert("Please select a valid image file (JPG, PNG, GIF, WebP)");
+          return;
+        }
+
+        // Check file size (limit to 5MB for performance)
+        if (file.size > 5 * 1024 * 1024) {
+          alert(
+            "Image file is too large. Please choose a file smaller than 5MB."
+          );
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          customBackgroundDataURL = e.target.result;
+          updateStyle();
+          console.log("Custom background loaded successfully");
+        };
+        reader.onerror = function () {
+          alert("Error reading image file. Please try again.");
+        };
+        reader.readAsDataURL(file);
+      };
+
+      // Update opacity display values
+      window.updateOpacityDisplay = function (type) {
+        const value = document.getElementById(type + "Opacity").value;
+        const percentage = Math.round(value / 10);
+        let displayText = percentage + "%";
+
+        if (percentage === 0) {
+          displayText += " (Invisible)";
+        } else if (percentage < 50) {
+          displayText += " (Very Faint)";
+        } else if (percentage < 100) {
+          displayText += " (Translucent)";
+        } else if (percentage === 100) {
+          displayText += " (Normal)";
+        } else if (percentage <= 200) {
+          displayText += " (Bright)";
+        } else if (percentage <= 500) {
+          displayText += " (Very Bright)";
+        } else {
+          displayText += " (Super Bright)";
+        }
+
+        document.getElementById(type + "OpacityValue").textContent =
+          displayText;
+      };
+
+      // Update brightness display values
+      window.updateBrightnessDisplay = function (type) {
+        const value = document.getElementById(type + "Brightness").value;
+        const percentage = Math.round(value);
+        let displayText = percentage + "%";
+
+        if (percentage === 0) {
+          displayText += " (Black)";
+        } else if (percentage < 50) {
+          displayText += " (Very Dark)";
+        } else if (percentage < 100) {
+          displayText += " (Dimmed)";
+        } else if (percentage === 100) {
+          displayText += " (Normal)";
+        } else if (percentage <= 150) {
+          displayText += " (Bright)";
+        } else if (percentage <= 200) {
+          displayText += " (Very Bright)";
+        } else {
+          displayText += " (Super Bright)";
+        }
+
+        document.getElementById(type + "BrightnessValue").textContent =
+          displayText;
+      };
+
+      // Get brightness filter CSS
+      function getBrightnessFilter(brightnessValue) {
+        const brightness = brightnessValue / 100; // Convert to 0-3 scale
+        return `brightness(${brightness})`;
+      }
+
+      // Convert slider value (0-1000) to CSS opacity and filter values
+      function getOpacityAndFilter(sliderValue) {
+        const percentage = sliderValue / 10; // Convert to 0-100 scale
+
+        if (percentage <= 100) {
+          // Normal range: 0-100% maps to opacity 0-1
+          return {
+            opacity: percentage / 100,
+            filter: "none",
+          };
+        } else {
+          // Extended range: 100-1000% uses full opacity + brightness filter
+          const brightness = percentage / 100; // 1.0 to 10.0
+          return {
+            opacity: 1,
+            filter: `brightness(${brightness}) contrast(${Math.min(
+              brightness * 0.8,
+              3
+            )})`,
+          };
+        }
+      }
 
       window.updateStyle = async function () {
         const fontFamily = document.getElementById("fontFamily").value;
@@ -875,6 +1287,26 @@
         const cardTitleSize = document.getElementById("cardTitleSize").value;
         const priceSize = document.getElementById("priceSize").value;
 
+        // Get new opacity values
+        const cardFontOpacity =
+          document.getElementById("cardFontOpacity").value;
+        const mainHeaderOpacity =
+          document.getElementById("mainHeaderOpacity").value;
+        const sectionHeaderOpacity = document.getElementById(
+          "sectionHeaderOpacity"
+        ).value;
+
+        // Get background brightness values
+        const colorBrightness =
+          document.getElementById("colorBrightness").value;
+        const patternBrightness =
+          document.getElementById("patternBrightness").value;
+        const imageBrightness =
+          document.getElementById("imageBrightness").value;
+        const customImageBrightness = document.getElementById(
+          "customImageBrightness"
+        ).value;
+
         // Save style settings to database
         const params = new URLSearchParams(window.location.search);
         const menuId = params.get("id");
@@ -909,6 +1341,14 @@
                 cardTitleWeight,
                 priceSize,
                 priceFontWeight,
+                cardFontOpacity,
+                mainHeaderOpacity,
+                sectionHeaderOpacity,
+                customBackgroundDataURL,
+                colorBrightness,
+                patternBrightness,
+                imageBrightness,
+                customImageBrightness,
               };
               await saveMenu(menu);
             }
@@ -932,18 +1372,26 @@
         if (backgroundType === "color") {
           document.body.style.backgroundImage = "none";
           document.body.style.backgroundColor = backgroundColor;
-        } else if (backgroundType === "pattern") {
-          document.body.style.backgroundImage = `url(assets/backgrounds/${backgroundPattern})`;
+          // Apply color brightness filter
+          const colorBrightnessFilter = getBrightnessFilter(colorBrightness);
+          document.body.style.filter = colorBrightnessFilter;
+          // Remove any overlay for solid colors
+          updateBackgroundOverlay("color", {});
+        } else {
+          // For patterns and images, use overlay system
+          document.body.style.backgroundImage = "none";
           document.body.style.backgroundColor = "transparent";
-          document.body.style.backgroundSize = "200px 200px";
-          document.body.style.backgroundRepeat = "repeat";
-          document.body.style.backgroundPosition = "0 0";
-        } else if (backgroundType === "image") {
-          document.body.style.backgroundImage = `url(assets/backgrounds/${backgroundImage})`;
-          document.body.style.backgroundColor = "transparent";
-          document.body.style.backgroundSize = "cover";
-          document.body.style.backgroundRepeat = "no-repeat";
-          document.body.style.backgroundPosition = "center";
+          document.body.style.filter = "none";
+
+          // Create/update background overlay with brightness
+          updateBackgroundOverlay(backgroundType, {
+            backgroundPattern,
+            backgroundImage,
+            customBackgroundDataURL,
+            patternBrightness,
+            imageBrightness,
+            customImageBrightness,
+          });
         }
 
         // Update main header
@@ -974,6 +1422,16 @@
         document.querySelector(".menu-header p").style.fontSize =
           dateSize + "px";
 
+        // Apply main header opacity
+        const {
+          opacity: mainHeaderOpacityOpacity,
+          filter: mainHeaderOpacityFilter,
+        } = getOpacityAndFilter(mainHeaderOpacity);
+        document.querySelector(".menu-header").style.opacity =
+          mainHeaderOpacityOpacity;
+        document.querySelector(".menu-header").style.filter =
+          mainHeaderOpacityFilter;
+
         // Update section headers
         document.documentElement.style.setProperty(
           "--header-color",
@@ -987,6 +1445,16 @@
           header.style.color = headerColor;
           header.style.fontSize = headerSize + "px";
           header.style.fontWeight = sectionHeaderWeight;
+        });
+
+        // Apply section header opacity
+        const {
+          opacity: sectionHeaderOpacityOpacity,
+          filter: sectionHeaderOpacityFilter,
+        } = getOpacityAndFilter(sectionHeaderOpacity);
+        document.querySelectorAll("h2").forEach((header) => {
+          header.style.opacity = sectionHeaderOpacityOpacity;
+          header.style.filter = sectionHeaderOpacityFilter;
         });
 
         // Update card text
@@ -1016,18 +1484,48 @@
           priceSize + "px"
         );
 
-        // Apply card opacity and font weights
+        // Apply card background opacity via CSS custom properties (affects ::before pseudo-element)
+        const { opacity: cardBackgroundOpacity, filter: cardBackgroundFilter } =
+          getOpacityAndFilter(cardOpacity);
+        document.documentElement.style.setProperty(
+          "--card-bg-opacity",
+          cardBackgroundOpacity
+        );
+        document.documentElement.style.setProperty(
+          "--card-bg-filter",
+          cardBackgroundFilter
+        );
+
+        // Reset card opacity to 1 (so content isn't affected by background opacity)
         document.querySelectorAll(".menu-card").forEach((card) => {
-          card.style.opacity = cardOpacity;
+          card.style.opacity = 1;
+          card.style.filter = "none";
           card.style.fontWeight = cardFontWeight;
         });
 
+        // Apply separate font opacity to card text elements (independent of background)
+        const { opacity: cardFontOpacityValue, filter: cardFontFilter } =
+          getOpacityAndFilter(cardFontOpacity);
         document.querySelectorAll(".menu-card h3").forEach((title) => {
           title.style.fontWeight = cardTitleWeight;
+          title.style.opacity = cardFontOpacityValue;
+          title.style.filter = cardFontFilter;
         });
 
         document.querySelectorAll(".menu-card .price").forEach((price) => {
           price.style.fontWeight = priceFontWeight;
+          price.style.opacity = cardFontOpacityValue;
+          price.style.filter = cardFontFilter;
+        });
+
+        document.querySelectorAll(".menu-card .ingredients").forEach((text) => {
+          text.style.opacity = cardFontOpacityValue;
+          text.style.filter = cardFontFilter;
+        });
+
+        document.querySelectorAll(".menu-card .description").forEach((text) => {
+          text.style.opacity = cardFontOpacityValue;
+          text.style.filter = cardFontFilter;
         });
 
         // Force background on body with all browser prefixes
@@ -1048,31 +1546,105 @@
             "important"
           );
           body.style.setProperty("background-image", "none", "important");
+          // Apply color brightness filter for print
+          const colorBrightnessFilter = getBrightnessFilter(colorBrightness);
+          body.style.setProperty("filter", colorBrightnessFilter, "important");
           console.log("Set solid color:", backgroundColor);
-        } else if (backgroundType === "pattern") {
-          const patternUrl = `url(assets/backgrounds/${backgroundPattern})`;
-          body.style.setProperty("background-image", patternUrl, "important");
-          body.style.setProperty("background-size", "200px 200px", "important");
-          body.style.setProperty("background-repeat", "repeat", "important");
-          body.style.setProperty("background-position", "0 0", "important");
+        } else {
+          // For print, apply background directly to body with brightness
           body.style.setProperty(
             "background-color",
-            backgroundColor || cardBackgroundColor,
+            "transparent",
             "important"
           );
-          console.log("Set pattern:", patternUrl);
-        } else if (backgroundType === "image") {
-          const imageUrl = `url(assets/backgrounds/${backgroundImage})`;
-          body.style.setProperty("background-image", imageUrl, "important");
-          body.style.setProperty("background-size", "cover", "important");
-          body.style.setProperty("background-repeat", "no-repeat", "important");
-          body.style.setProperty("background-position", "center", "important");
-          body.style.setProperty(
-            "background-color",
-            backgroundColor || cardBackgroundColor,
-            "important"
-          );
-          console.log("Set image:", imageUrl);
+          body.style.setProperty("filter", "none", "important");
+
+          if (backgroundType === "pattern") {
+            const patternUrl = `url(assets/backgrounds/${backgroundPattern})`;
+            body.style.setProperty("background-image", patternUrl, "important");
+            body.style.setProperty(
+              "background-size",
+              "200px 200px",
+              "important"
+            );
+            body.style.setProperty("background-repeat", "repeat", "important");
+            body.style.setProperty("background-position", "0 0", "important");
+            // Create overlay for print with brightness
+            const printOverlay =
+              document.querySelector(".background-overlay") ||
+              document.createElement("div");
+            printOverlay.className = "background-overlay";
+            printOverlay.style.backgroundImage = patternUrl;
+            printOverlay.style.backgroundSize = "200px 200px";
+            printOverlay.style.backgroundRepeat = "repeat";
+            printOverlay.style.backgroundPosition = "0 0";
+            printOverlay.style.filter = getBrightnessFilter(patternBrightness);
+            if (!document.querySelector(".background-overlay")) {
+              document.body.appendChild(printOverlay);
+            }
+            console.log("Set pattern:", patternUrl);
+          } else if (backgroundType === "image") {
+            const imageUrl = `url(assets/backgrounds/${backgroundImage})`;
+            body.style.setProperty("background-image", imageUrl, "important");
+            body.style.setProperty("background-size", "cover", "important");
+            body.style.setProperty(
+              "background-repeat",
+              "no-repeat",
+              "important"
+            );
+            body.style.setProperty(
+              "background-position",
+              "center",
+              "important"
+            );
+            // Create overlay for print with brightness
+            const printOverlay =
+              document.querySelector(".background-overlay") ||
+              document.createElement("div");
+            printOverlay.className = "background-overlay";
+            printOverlay.style.backgroundImage = imageUrl;
+            printOverlay.style.backgroundSize = "cover";
+            printOverlay.style.backgroundRepeat = "no-repeat";
+            printOverlay.style.backgroundPosition = "center";
+            printOverlay.style.filter = getBrightnessFilter(imageBrightness);
+            if (!document.querySelector(".background-overlay")) {
+              document.body.appendChild(printOverlay);
+            }
+            console.log("Set image:", imageUrl);
+          } else if (backgroundType === "custom" && customBackgroundDataURL) {
+            body.style.setProperty(
+              "background-image",
+              `url(${customBackgroundDataURL})`,
+              "important"
+            );
+            body.style.setProperty("background-size", "cover", "important");
+            body.style.setProperty(
+              "background-repeat",
+              "no-repeat",
+              "important"
+            );
+            body.style.setProperty(
+              "background-position",
+              "center",
+              "important"
+            );
+            // Create overlay for print with brightness
+            const printOverlay =
+              document.querySelector(".background-overlay") ||
+              document.createElement("div");
+            printOverlay.className = "background-overlay";
+            printOverlay.style.backgroundImage = `url(${customBackgroundDataURL})`;
+            printOverlay.style.backgroundSize = "cover";
+            printOverlay.style.backgroundRepeat = "no-repeat";
+            printOverlay.style.backgroundPosition = "center";
+            printOverlay.style.filter = getBrightnessFilter(
+              customImageBrightness
+            );
+            if (!document.querySelector(".background-overlay")) {
+              document.body.appendChild(printOverlay);
+            }
+            console.log("Set custom background");
+          }
         }
 
         // Force print color adjustment on body
@@ -1087,15 +1659,11 @@
         // Set body font
         body.style.setProperty("font-family", fontFamily, "important");
 
-        // Also force colors and fonts on all menu elements directly
+        // Also force colors and fonts on all menu elements directly (for print)
         document.querySelectorAll(".menu-card").forEach((card) => {
-          card.style.setProperty(
-            "background-color",
-            cardBackgroundColor,
-            "important"
-          );
+          // Don't override background - it's handled by pseudo-element
           card.style.setProperty("color", cardTextColor, "important");
-          card.style.setProperty("opacity", cardOpacity, "important");
+          // Don't override opacity - it's handled separately for background vs content
           card.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
@@ -1274,6 +1842,17 @@
         const cardTitleSize = document.getElementById("cardTitleSize").value;
         const priceSize = document.getElementById("priceSize").value;
 
+        // Get brightness settings
+        const colorBrightness =
+          document.getElementById("colorBrightness").value;
+        const patternBrightness =
+          document.getElementById("patternBrightness").value;
+        const imageBrightness =
+          document.getElementById("imageBrightness").value;
+        const customImageBrightness = document.getElementById(
+          "customImageBrightness"
+        ).value;
+
         console.log("Background type:", backgroundType); // Debug log
         console.log("Background color:", backgroundColor); // Debug log
 
@@ -1361,6 +1940,21 @@
             "important"
           );
           console.log("Set image:", imageUrl);
+        } else if (backgroundType === "custom" && customBackgroundDataURL) {
+          body.style.setProperty(
+            "background-image",
+            `url(${customBackgroundDataURL})`,
+            "important"
+          );
+          body.style.setProperty("background-size", "cover", "important");
+          body.style.setProperty("background-repeat", "no-repeat", "important");
+          body.style.setProperty("background-position", "center", "important");
+          body.style.setProperty(
+            "background-color",
+            backgroundColor || cardBackgroundColor,
+            "important"
+          );
+          console.log("Set custom background");
         }
 
         // Force print color adjustment on body
@@ -1375,15 +1969,11 @@
         // Set body font
         body.style.setProperty("font-family", fontFamily, "important");
 
-        // Also force colors and fonts on all menu elements directly
+        // Also force colors and fonts on all menu elements directly (for print)
         document.querySelectorAll(".menu-card").forEach((card) => {
-          card.style.setProperty(
-            "background-color",
-            cardBackgroundColor,
-            "important"
-          );
+          // Don't override background - it's handled by pseudo-element
           card.style.setProperty("color", cardTextColor, "important");
-          card.style.setProperty("opacity", cardOpacity, "important");
+          // Don't override opacity - it's handled separately for background vs content
           card.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
@@ -1450,6 +2040,57 @@
       window.addEventListener("afterprint", function () {
         window.updateStyle();
       });
+
+      // Create or update background overlay
+      function updateBackgroundOverlay(backgroundType, settings) {
+        // Remove existing overlay
+        const existingOverlay = document.querySelector(".background-overlay");
+        if (existingOverlay) {
+          existingOverlay.remove();
+        }
+
+        // Don't create overlay for solid colors (they work fine with body filter)
+        if (backgroundType === "color") {
+          document.body.classList.remove("has-background-overlay");
+          return;
+        }
+
+        // Create new overlay for patterns and images
+        const overlay = document.createElement("div");
+        overlay.className = "background-overlay";
+
+        // Apply background settings to overlay
+        if (backgroundType === "pattern") {
+          overlay.style.backgroundImage = `url(assets/backgrounds/${settings.backgroundPattern})`;
+          overlay.style.backgroundSize = "200px 200px";
+          overlay.style.backgroundRepeat = "repeat";
+          overlay.style.backgroundPosition = "0 0";
+          overlay.style.filter = getBrightnessFilter(
+            settings.patternBrightness
+          );
+        } else if (backgroundType === "image") {
+          overlay.style.backgroundImage = `url(assets/backgrounds/${settings.backgroundImage})`;
+          overlay.style.backgroundSize = "cover";
+          overlay.style.backgroundRepeat = "no-repeat";
+          overlay.style.backgroundPosition = "center";
+          overlay.style.filter = getBrightnessFilter(settings.imageBrightness);
+        } else if (
+          backgroundType === "custom" &&
+          settings.customBackgroundDataURL
+        ) {
+          overlay.style.backgroundImage = `url(${settings.customBackgroundDataURL})`;
+          overlay.style.backgroundSize = "cover";
+          overlay.style.backgroundRepeat = "no-repeat";
+          overlay.style.backgroundPosition = "center";
+          overlay.style.filter = getBrightnessFilter(
+            settings.customImageBrightness
+          );
+        }
+
+        // Add overlay to document
+        document.body.appendChild(overlay);
+        document.body.classList.add("has-background-overlay");
+      }
     </script>
   </body>
 </html>
