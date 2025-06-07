@@ -793,6 +793,128 @@
           "--price-size",
           priceSize + "px"
         );
+
+        // Force background on body with all browser prefixes
+        const body = document.body;
+
+        // Clear any existing background first
+        body.style.removeProperty("background");
+        body.style.removeProperty("background-color");
+        body.style.removeProperty("background-image");
+        body.style.removeProperty("background-size");
+        body.style.removeProperty("background-repeat");
+        body.style.removeProperty("background-position");
+
+        if (backgroundType === "color") {
+          body.style.setProperty(
+            "background-color",
+            backgroundColor,
+            "important"
+          );
+          body.style.setProperty("background-image", "none", "important");
+          console.log("Set solid color:", backgroundColor);
+        } else if (backgroundType === "pattern") {
+          const patternUrl = `url(assets/backgrounds/${backgroundPattern})`;
+          body.style.setProperty("background-image", patternUrl, "important");
+          body.style.setProperty("background-size", "200px 200px", "important");
+          body.style.setProperty("background-repeat", "repeat", "important");
+          body.style.setProperty("background-position", "0 0", "important");
+          body.style.setProperty(
+            "background-color",
+            backgroundColor || cardBackgroundColor,
+            "important"
+          );
+          console.log("Set pattern:", patternUrl);
+        } else if (backgroundType === "image") {
+          const imageUrl = `url(assets/backgrounds/${backgroundImage})`;
+          body.style.setProperty("background-image", imageUrl, "important");
+          body.style.setProperty("background-size", "cover", "important");
+          body.style.setProperty("background-repeat", "no-repeat", "important");
+          body.style.setProperty("background-position", "center", "important");
+          body.style.setProperty(
+            "background-color",
+            backgroundColor || cardBackgroundColor,
+            "important"
+          );
+          console.log("Set image:", imageUrl);
+        }
+
+        // Force print color adjustment on body
+        body.style.setProperty(
+          "-webkit-print-color-adjust",
+          "exact",
+          "important"
+        );
+        body.style.setProperty("print-color-adjust", "exact", "important");
+        body.style.setProperty("color-adjust", "exact", "important");
+
+        // Set body font
+        body.style.setProperty("font-family", fontFamily, "important");
+
+        // Also force colors and fonts on all menu elements directly
+        document.querySelectorAll(".menu-card").forEach((card) => {
+          card.style.setProperty(
+            "background-color",
+            cardBackgroundColor,
+            "important"
+          );
+          card.style.setProperty("color", cardTextColor, "important");
+          // Don't override card font here - let individual elements handle it
+        });
+
+        document.querySelectorAll(".menu-card .price").forEach((price) => {
+          price.style.setProperty("color", priceColor, "important");
+          price.style.setProperty("font-size", priceSize + "px", "important");
+          price.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card h3").forEach((title) => {
+          title.style.setProperty(
+            "font-size",
+            cardTitleSize + "px",
+            "important"
+          );
+          title.style.setProperty("color", cardTextColor, "important");
+          title.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card .ingredients").forEach((text) => {
+          text.style.setProperty("font-size", cardTextSize + "px", "important");
+          text.style.setProperty("color", cardTextColor, "important");
+          text.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card .description").forEach((text) => {
+          text.style.setProperty("font-size", cardTextSize + "px", "important");
+          text.style.setProperty("color", cardTextColor, "important");
+          text.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-header").forEach((header) => {
+          header.style.setProperty(
+            "background-color",
+            mainHeaderBackground,
+            "important"
+          );
+          header.style.setProperty("color", mainHeaderColor, "important");
+        });
+
+        document.querySelectorAll(".menu-header h1").forEach((h1) => {
+          h1.style.setProperty("color", mainHeaderColor, "important");
+          h1.style.setProperty("font-family", mainHeaderFont, "important");
+          h1.style.setProperty("font-size", mainHeaderSize + "px", "important");
+        });
+
+        document.querySelectorAll(".menu-header p").forEach((p) => {
+          p.style.setProperty("color", mainHeaderColor, "important");
+          p.style.setProperty("font-size", dateSize + "px", "important");
+        });
+
+        document.querySelectorAll("h2").forEach((h2) => {
+          h2.style.setProperty("color", headerColor, "important");
+          h2.style.setProperty("font-family", sectionHeaderFont, "important");
+          h2.style.setProperty("font-size", headerSize + "px", "important");
+        });
       };
 
       function renderMenu(menu) {
@@ -878,6 +1000,19 @@
         const headerColor = document.getElementById("headerColor").value;
         const cardTextColor = document.getElementById("cardTextColor").value;
 
+        // Get all font settings
+        const fontFamily = document.getElementById("fontFamily").value;
+        const mainHeaderFont = document.getElementById("mainHeaderFont").value;
+        const sectionHeaderFont =
+          document.getElementById("sectionHeaderFont").value;
+        const cardFont = document.getElementById("cardFont").value;
+        const mainHeaderSize = document.getElementById("mainHeaderSize").value;
+        const dateSize = document.getElementById("dateSize").value;
+        const headerSize = document.getElementById("headerSize").value;
+        const cardTextSize = document.getElementById("cardTextSize").value;
+        const cardTitleSize = document.getElementById("cardTitleSize").value;
+        const priceSize = document.getElementById("priceSize").value;
+
         console.log("Background type:", backgroundType); // Debug log
         console.log("Background color:", backgroundColor); // Debug log
 
@@ -901,6 +1036,26 @@
         );
         root.style.setProperty("--header-color", headerColor, "important");
         root.style.setProperty("--card-text-color", cardTextColor, "important");
+
+        // Set all font CSS variables
+        root.style.setProperty(
+          "--main-header-size",
+          mainHeaderSize + "px",
+          "important"
+        );
+        root.style.setProperty("--date-size", dateSize + "px", "important");
+        root.style.setProperty("--header-size", headerSize + "px", "important");
+        root.style.setProperty(
+          "--card-text-size",
+          cardTextSize + "px",
+          "important"
+        );
+        root.style.setProperty(
+          "--card-title-size",
+          cardTitleSize + "px",
+          "important"
+        );
+        root.style.setProperty("--price-size", priceSize + "px", "important");
 
         // Force background on body with all browser prefixes
         const body = document.body;
@@ -956,7 +1111,10 @@
         body.style.setProperty("print-color-adjust", "exact", "important");
         body.style.setProperty("color-adjust", "exact", "important");
 
-        // Also force colors on all menu elements directly
+        // Set body font
+        body.style.setProperty("font-family", fontFamily, "important");
+
+        // Also force colors and fonts on all menu elements directly
         document.querySelectorAll(".menu-card").forEach((card) => {
           card.style.setProperty(
             "background-color",
@@ -964,10 +1122,35 @@
             "important"
           );
           card.style.setProperty("color", cardTextColor, "important");
+          // Don't override card font here - let individual elements handle it
         });
 
         document.querySelectorAll(".menu-card .price").forEach((price) => {
           price.style.setProperty("color", priceColor, "important");
+          price.style.setProperty("font-size", priceSize + "px", "important");
+          price.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card h3").forEach((title) => {
+          title.style.setProperty(
+            "font-size",
+            cardTitleSize + "px",
+            "important"
+          );
+          title.style.setProperty("color", cardTextColor, "important");
+          title.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card .ingredients").forEach((text) => {
+          text.style.setProperty("font-size", cardTextSize + "px", "important");
+          text.style.setProperty("color", cardTextColor, "important");
+          text.style.setProperty("font-family", cardFont, "important");
+        });
+
+        document.querySelectorAll(".menu-card .description").forEach((text) => {
+          text.style.setProperty("font-size", cardTextSize + "px", "important");
+          text.style.setProperty("color", cardTextColor, "important");
+          text.style.setProperty("font-family", cardFont, "important");
         });
 
         document.querySelectorAll(".menu-header").forEach((header) => {
@@ -979,8 +1162,21 @@
           header.style.setProperty("color", mainHeaderColor, "important");
         });
 
+        document.querySelectorAll(".menu-header h1").forEach((h1) => {
+          h1.style.setProperty("color", mainHeaderColor, "important");
+          h1.style.setProperty("font-family", mainHeaderFont, "important");
+          h1.style.setProperty("font-size", mainHeaderSize + "px", "important");
+        });
+
+        document.querySelectorAll(".menu-header p").forEach((p) => {
+          p.style.setProperty("color", mainHeaderColor, "important");
+          p.style.setProperty("font-size", dateSize + "px", "important");
+        });
+
         document.querySelectorAll("h2").forEach((h2) => {
           h2.style.setProperty("color", headerColor, "important");
+          h2.style.setProperty("font-family", sectionHeaderFont, "important");
+          h2.style.setProperty("font-size", headerSize + "px", "important");
         });
       });
       window.addEventListener("afterprint", function () {
