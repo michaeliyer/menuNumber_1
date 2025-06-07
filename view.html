@@ -297,11 +297,22 @@
           type="number"
           id="mainHeaderSize"
           value="36"
-          min="24"
-          max="72"
+          min="16"
+          max="96"
           step="1"
           onchange="updateStyle()"
         />
+      </div>
+      <div class="settings-group">
+        <label for="mainHeaderWeight">Header Font Weight</label>
+        <select id="mainHeaderWeight" onchange="updateStyle()">
+          <option value="400">Normal (400)</option>
+          <option value="500">Medium (500)</option>
+          <option value="600">Semi-Bold (600)</option>
+          <option value="700" selected>Bold (700)</option>
+          <option value="800">Extra Bold (800)</option>
+          <option value="900">Black (900)</option>
+        </select>
       </div>
       <div class="settings-group">
         <label for="dateSize">Date Size (px)</label>
@@ -309,8 +320,8 @@
           type="number"
           id="dateSize"
           value="16"
-          min="12"
-          max="32"
+          min="10"
+          max="48"
           step="1"
           onchange="updateStyle()"
         />
@@ -380,11 +391,21 @@
           type="number"
           id="headerSize"
           value="28"
-          min="20"
-          max="48"
+          min="14"
+          max="72"
           step="1"
           onchange="updateStyle()"
         />
+      </div>
+      <div class="settings-group">
+        <label for="sectionHeaderWeight">Section Header Font Weight</label>
+        <select id="sectionHeaderWeight" onchange="updateStyle()">
+          <option value="400">Normal (400)</option>
+          <option value="500">Medium (500)</option>
+          <option value="600" selected>Semi-Bold (600)</option>
+          <option value="700">Bold (700)</option>
+          <option value="800">Extra Bold (800)</option>
+        </select>
       </div>
 
       <h3>Menu Cards</h3>
@@ -457,6 +478,21 @@
         />
       </div>
       <div class="settings-group">
+        <label for="cardOpacity">Card Opacity</label>
+        <select id="cardOpacity" onchange="updateStyle()">
+          <option value="1">100% (Solid)</option>
+          <option value="0.95">95%</option>
+          <option value="0.9">90%</option>
+          <option value="0.85">85%</option>
+          <option value="0.8">80%</option>
+          <option value="0.75">75%</option>
+          <option value="0.7">70%</option>
+          <option value="0.65">65%</option>
+          <option value="0.6">60%</option>
+          <option value="0.5">50%</option>
+        </select>
+      </div>
+      <div class="settings-group">
         <label for="cardTextColor">Text Color</label>
         <input
           type="color"
@@ -464,6 +500,50 @@
           value="#34495e"
           onchange="updateStyle()"
         />
+      </div>
+      <div class="settings-group">
+        <label for="cardFontWeight">Card Font Weight</label>
+        <select id="cardFontWeight" onchange="updateStyle()">
+          <option value="300">Light (300)</option>
+          <option value="400" selected>Normal (400)</option>
+          <option value="500">Medium (500)</option>
+          <option value="600">Semi-Bold (600)</option>
+          <option value="700">Bold (700)</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="cardTextSize">Text Size (px)</label>
+        <input
+          type="number"
+          id="cardTextSize"
+          value="16"
+          min="8"
+          max="48"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="cardTitleSize">Title Size (px)</label>
+        <input
+          type="number"
+          id="cardTitleSize"
+          value="20"
+          min="10"
+          max="64"
+          step="1"
+          onchange="updateStyle()"
+        />
+      </div>
+      <div class="settings-group">
+        <label for="cardTitleWeight">Title Font Weight</label>
+        <select id="cardTitleWeight" onchange="updateStyle()">
+          <option value="400">Normal (400)</option>
+          <option value="500">Medium (500)</option>
+          <option value="600" selected>Semi-Bold (600)</option>
+          <option value="700">Bold (700)</option>
+          <option value="800">Extra Bold (800)</option>
+        </select>
       </div>
       <div class="settings-group">
         <label for="priceColor">Price Color</label>
@@ -475,40 +555,26 @@
         />
       </div>
       <div class="settings-group">
-        <label for="cardTextSize">Text Size (px)</label>
-        <input
-          type="number"
-          id="cardTextSize"
-          value="16"
-          min="12"
-          max="32"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
-        <label for="cardTitleSize">Title Size (px)</label>
-        <input
-          type="number"
-          id="cardTitleSize"
-          value="20"
-          min="16"
-          max="40"
-          step="1"
-          onchange="updateStyle()"
-        />
-      </div>
-      <div class="settings-group">
         <label for="priceSize">Price Size (px)</label>
         <input
           type="number"
           id="priceSize"
           value="16"
-          min="12"
-          max="32"
+          min="8"
+          max="48"
           step="1"
           onchange="updateStyle()"
         />
+      </div>
+      <div class="settings-group">
+        <label for="priceFontWeight">Price Font Weight</label>
+        <select id="priceFontWeight" onchange="updateStyle()">
+          <option value="400">Normal (400)</option>
+          <option value="500">Medium (500)</option>
+          <option value="600" selected>Semi-Bold (600)</option>
+          <option value="700">Bold (700)</option>
+          <option value="800">Extra Bold (800)</option>
+        </select>
       </div>
     </div>
     <div id="menuContainer"></div>
@@ -602,11 +668,28 @@
           if (settings.cardBackgroundColor)
             document.getElementById("cardBackgroundColor").value =
               settings.cardBackgroundColor;
+          if (settings.cardOpacity)
+            document.getElementById("cardOpacity").value = settings.cardOpacity;
           if (settings.cardTextColor)
             document.getElementById("cardTextColor").value =
               settings.cardTextColor;
           if (settings.priceColor)
             document.getElementById("priceColor").value = settings.priceColor;
+          if (settings.cardFontWeight)
+            document.getElementById("cardFontWeight").value =
+              settings.cardFontWeight;
+          if (settings.cardTitleWeight)
+            document.getElementById("cardTitleWeight").value =
+              settings.cardTitleWeight;
+          if (settings.priceFontWeight)
+            document.getElementById("priceFontWeight").value =
+              settings.priceFontWeight;
+          if (settings.mainHeaderWeight)
+            document.getElementById("mainHeaderWeight").value =
+              settings.mainHeaderWeight;
+          if (settings.sectionHeaderWeight)
+            document.getElementById("sectionHeaderWeight").value =
+              settings.sectionHeaderWeight;
           if (settings.cardTextSize)
             document.getElementById("cardTextSize").value =
               settings.cardTextSize;
@@ -660,8 +743,19 @@
         const cardBackgroundColor = document.getElementById(
           "cardBackgroundColor"
         ).value;
+        const cardOpacity = document.getElementById("cardOpacity").value;
         const cardTextColor = document.getElementById("cardTextColor").value;
         const priceColor = document.getElementById("priceColor").value;
+        const cardFontWeight = document.getElementById("cardFontWeight").value;
+        const cardTitleWeight =
+          document.getElementById("cardTitleWeight").value;
+        const priceFontWeight =
+          document.getElementById("priceFontWeight").value;
+        const mainHeaderWeight =
+          document.getElementById("mainHeaderWeight").value;
+        const sectionHeaderWeight = document.getElementById(
+          "sectionHeaderWeight"
+        ).value;
         const cardTextSize = document.getElementById("cardTextSize").value;
         const cardTitleSize = document.getElementById("cardTitleSize").value;
         const priceSize = document.getElementById("priceSize").value;
@@ -685,15 +779,21 @@
                 mainHeaderColor,
                 mainHeaderBackground,
                 mainHeaderSize,
+                mainHeaderWeight,
                 dateSize,
                 headerColor,
                 headerSize,
+                sectionHeaderWeight,
                 cardBackgroundColor,
+                cardOpacity,
                 cardTextColor,
                 priceColor,
+                cardFontWeight,
                 cardTextSize,
                 cardTitleSize,
+                cardTitleWeight,
                 priceSize,
+                priceFontWeight,
               };
               await saveMenu(menu);
             }
@@ -753,6 +853,8 @@
         document.querySelector(".menu-header h1").style.color = mainHeaderColor;
         document.querySelector(".menu-header h1").style.fontSize =
           mainHeaderSize + "px";
+        document.querySelector(".menu-header h1").style.fontWeight =
+          mainHeaderWeight;
         document.querySelector(".menu-header p").style.color = mainHeaderColor;
         document.querySelector(".menu-header p").style.fontSize =
           dateSize + "px";
@@ -769,12 +871,17 @@
         document.querySelectorAll("h2").forEach((header) => {
           header.style.color = headerColor;
           header.style.fontSize = headerSize + "px";
+          header.style.fontWeight = sectionHeaderWeight;
         });
 
         // Update card text
         document.documentElement.style.setProperty(
           "--card-background-color",
           cardBackgroundColor
+        );
+        document.documentElement.style.setProperty(
+          "--card-opacity",
+          cardOpacity
         );
         document.documentElement.style.setProperty(
           "--card-text-color",
@@ -793,6 +900,20 @@
           "--price-size",
           priceSize + "px"
         );
+
+        // Apply card opacity and font weights
+        document.querySelectorAll(".menu-card").forEach((card) => {
+          card.style.opacity = cardOpacity;
+          card.style.fontWeight = cardFontWeight;
+        });
+
+        document.querySelectorAll(".menu-card h3").forEach((title) => {
+          title.style.fontWeight = cardTitleWeight;
+        });
+
+        document.querySelectorAll(".menu-card .price").forEach((price) => {
+          price.style.fontWeight = priceFontWeight;
+        });
 
         // Force background on body with all browser prefixes
         const body = document.body;
@@ -859,13 +980,15 @@
             "important"
           );
           card.style.setProperty("color", cardTextColor, "important");
-          // Don't override card font here - let individual elements handle it
+          card.style.setProperty("opacity", cardOpacity, "important");
+          card.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .price").forEach((price) => {
           price.style.setProperty("color", priceColor, "important");
           price.style.setProperty("font-size", priceSize + "px", "important");
           price.style.setProperty("font-family", cardFont, "important");
+          price.style.setProperty("font-weight", priceFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card h3").forEach((title) => {
@@ -876,18 +999,21 @@
           );
           title.style.setProperty("color", cardTextColor, "important");
           title.style.setProperty("font-family", cardFont, "important");
+          title.style.setProperty("font-weight", cardTitleWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .ingredients").forEach((text) => {
           text.style.setProperty("font-size", cardTextSize + "px", "important");
           text.style.setProperty("color", cardTextColor, "important");
           text.style.setProperty("font-family", cardFont, "important");
+          text.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .description").forEach((text) => {
           text.style.setProperty("font-size", cardTextSize + "px", "important");
           text.style.setProperty("color", cardTextColor, "important");
           text.style.setProperty("font-family", cardFont, "important");
+          text.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-header").forEach((header) => {
@@ -903,6 +1029,7 @@
           h1.style.setProperty("color", mainHeaderColor, "important");
           h1.style.setProperty("font-family", mainHeaderFont, "important");
           h1.style.setProperty("font-size", mainHeaderSize + "px", "important");
+          h1.style.setProperty("font-weight", mainHeaderWeight, "important");
         });
 
         document.querySelectorAll(".menu-header p").forEach((p) => {
@@ -914,6 +1041,7 @@
           h2.style.setProperty("color", headerColor, "important");
           h2.style.setProperty("font-family", sectionHeaderFont, "important");
           h2.style.setProperty("font-size", headerSize + "px", "important");
+          h2.style.setProperty("font-weight", sectionHeaderWeight, "important");
         });
       };
 
@@ -1007,8 +1135,19 @@
           document.getElementById("sectionHeaderFont").value;
         const cardFont = document.getElementById("cardFont").value;
         const mainHeaderSize = document.getElementById("mainHeaderSize").value;
+        const mainHeaderWeight =
+          document.getElementById("mainHeaderWeight").value;
         const dateSize = document.getElementById("dateSize").value;
         const headerSize = document.getElementById("headerSize").value;
+        const sectionHeaderWeight = document.getElementById(
+          "sectionHeaderWeight"
+        ).value;
+        const cardOpacity = document.getElementById("cardOpacity").value;
+        const cardFontWeight = document.getElementById("cardFontWeight").value;
+        const cardTitleWeight =
+          document.getElementById("cardTitleWeight").value;
+        const priceFontWeight =
+          document.getElementById("priceFontWeight").value;
         const cardTextSize = document.getElementById("cardTextSize").value;
         const cardTitleSize = document.getElementById("cardTitleSize").value;
         const priceSize = document.getElementById("priceSize").value;
@@ -1122,13 +1261,15 @@
             "important"
           );
           card.style.setProperty("color", cardTextColor, "important");
-          // Don't override card font here - let individual elements handle it
+          card.style.setProperty("opacity", cardOpacity, "important");
+          card.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .price").forEach((price) => {
           price.style.setProperty("color", priceColor, "important");
           price.style.setProperty("font-size", priceSize + "px", "important");
           price.style.setProperty("font-family", cardFont, "important");
+          price.style.setProperty("font-weight", priceFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card h3").forEach((title) => {
@@ -1139,18 +1280,21 @@
           );
           title.style.setProperty("color", cardTextColor, "important");
           title.style.setProperty("font-family", cardFont, "important");
+          title.style.setProperty("font-weight", cardTitleWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .ingredients").forEach((text) => {
           text.style.setProperty("font-size", cardTextSize + "px", "important");
           text.style.setProperty("color", cardTextColor, "important");
           text.style.setProperty("font-family", cardFont, "important");
+          text.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-card .description").forEach((text) => {
           text.style.setProperty("font-size", cardTextSize + "px", "important");
           text.style.setProperty("color", cardTextColor, "important");
           text.style.setProperty("font-family", cardFont, "important");
+          text.style.setProperty("font-weight", cardFontWeight, "important");
         });
 
         document.querySelectorAll(".menu-header").forEach((header) => {
@@ -1166,6 +1310,7 @@
           h1.style.setProperty("color", mainHeaderColor, "important");
           h1.style.setProperty("font-family", mainHeaderFont, "important");
           h1.style.setProperty("font-size", mainHeaderSize + "px", "important");
+          h1.style.setProperty("font-weight", mainHeaderWeight, "important");
         });
 
         document.querySelectorAll(".menu-header p").forEach((p) => {
@@ -1177,6 +1322,7 @@
           h2.style.setProperty("color", headerColor, "important");
           h2.style.setProperty("font-family", sectionHeaderFont, "important");
           h2.style.setProperty("font-size", headerSize + "px", "important");
+          h2.style.setProperty("font-weight", sectionHeaderWeight, "important");
         });
       });
       window.addEventListener("afterprint", function () {
