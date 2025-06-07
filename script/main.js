@@ -14,6 +14,8 @@ initDB()
     alert("Failed to initialize database. Please refresh the page.");
   });
 
+let currentStyleSettings = null;
+
 function addItem(section) {
   const container = document.getElementById(section);
   const index = container.children.length;
@@ -60,6 +62,7 @@ function handleSubmit(e) {
       entrees: getItems("entrees"),
       desserts: getItems("desserts"),
     },
+    styleSettings: currentStyleSettings || undefined,
   };
 
   saveMenu(menu)
@@ -69,7 +72,7 @@ function handleSubmit(e) {
       ["appetizers", "entrees", "desserts"].forEach((id) => {
         document.getElementById(id).innerHTML = "";
       });
-      // Refresh the menu list after saving
+      currentStyleSettings = null;
       listMenus();
     })
     .catch((error) => {
@@ -106,7 +109,6 @@ window.listMenus = function () {
         editBtn.onclick = async function () {
           const loadedMenu = await getMenu(menu.id);
           if (!loadedMenu) return alert("Menu not found");
-          // Populate form fields
           document.querySelector('[name="type"]').value = loadedMenu.type;
           document.querySelector('[name="date"]').value = loadedMenu.date;
           document.querySelector('[name="background"]').value =
@@ -134,6 +136,8 @@ window.listMenus = function () {
               container.appendChild(div);
             });
           });
+          // Store styleSettings for persistence
+          currentStyleSettings = loadedMenu.styleSettings || null;
         };
         li.appendChild(editBtn);
 

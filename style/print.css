@@ -1,6 +1,5 @@
 /* Base print styles */
 body {
-  background-color: var(--card-background-color, #000000) !important;
   color: var(--text-color, #ffffff) !important;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
@@ -11,6 +10,14 @@ body {
     Arial,
     sans-serif
   ) !important;
+}
+
+/* Force background images to show in print */
+body,
+* {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
 }
 
 .menu-card {
@@ -24,6 +31,15 @@ select {
 }
 
 @media print {
+  /* Force all elements to preserve colors and backgrounds */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   /* Hide UI elements */
   .settings-panel,
   .print-button,
@@ -31,9 +47,8 @@ select {
     display: none !important;
   }
 
-  /* Reset body styles */
+  /* Reset body styles - let JavaScript control background */
   body {
-    background-color: var(--card-background-color, #000000) !important;
     margin: 0 !important;
     padding: 0 !important;
     color: var(--text-color, #ffffff) !important;
@@ -46,15 +61,17 @@ select {
       Arial,
       sans-serif
     ) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
-  /* Optimize menu container */
+  /* Optimize menu container - remove background override */
   #menuContainer {
     width: auto !important;
     max-width: 1000px !important;
     margin: 0 auto !important;
     padding: 1rem !important;
-    background-color: var(--card-background-color, #000000) !important;
     min-height: 100vh !important;
     max-height: 100vh !important;
     overflow: hidden !important;
@@ -86,11 +103,10 @@ select {
     color: var(--main-header-color, #ffffff) !important;
   }
 
-  /* Optimize sections */
+  /* Optimize sections - remove background override */
   .menu-sections {
     padding: 0 !important;
     max-width: none !important;
-    background-color: var(--card-background-color, #000000) !important;
   }
 
   h2 {
@@ -109,13 +125,12 @@ select {
     ) !important;
   }
 
-  /* Optimize menu grid */
+  /* Optimize menu grid - remove background override */
   .menu-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.25rem !important;
     margin: 0.5rem auto !important;
-    background-color: var(--card-background-color, #000000) !important;
     justify-content: center !important;
     max-width: 900px !important;
   }
@@ -179,17 +194,9 @@ select {
     height: 1px !important;
   }
 
-  /* Force background colors and images to print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-
-  /* Ensure background colors are visible in print */
+  /* Let JavaScript control page background */
   @page {
     size: auto !important;
     margin: 0 !important;
-    background-color: var(--card-background-color, #000000) !important;
   }
 }

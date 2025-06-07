@@ -551,14 +551,31 @@
       function initializeSettings(menu) {
         if (menu.background?.startsWith("#")) {
           document.getElementById("backgroundColor").value = menu.background;
+          document.getElementById("backgroundType").value = "color";
         } else if (menu.background) {
           document.getElementById("backgroundImage").value = menu.background;
+          document.getElementById("backgroundType").value = "image";
         }
+
         // Load saved style settings
         if (menu.styleSettings) {
           const settings = menu.styleSettings;
           if (settings.fontFamily)
             document.getElementById("fontFamily").value = settings.fontFamily;
+          if (settings.backgroundType) {
+            document.getElementById("backgroundType").value =
+              settings.backgroundType;
+            updateBackgroundOptions();
+          }
+          if (settings.backgroundColor)
+            document.getElementById("backgroundColor").value =
+              settings.backgroundColor;
+          if (settings.backgroundPattern)
+            document.getElementById("backgroundPattern").value =
+              settings.backgroundPattern;
+          if (settings.backgroundImage)
+            document.getElementById("backgroundImage").value =
+              settings.backgroundImage;
           if (settings.mainHeaderFont)
             document.getElementById("mainHeaderFont").value =
               settings.mainHeaderFont;
@@ -625,6 +642,12 @@
           document.getElementById("sectionHeaderFont").value;
         const cardFont = document.getElementById("cardFont").value;
         const backgroundType = document.getElementById("backgroundType").value;
+        const backgroundColor =
+          document.getElementById("backgroundColor").value;
+        const backgroundPattern =
+          document.getElementById("backgroundPattern").value;
+        const backgroundImage =
+          document.getElementById("backgroundImage").value;
         const mainHeaderColor =
           document.getElementById("mainHeaderColor").value;
         const mainHeaderBackground = document.getElementById(
@@ -652,6 +675,10 @@
             if (menu) {
               menu.styleSettings = {
                 fontFamily,
+                backgroundType,
+                backgroundColor,
+                backgroundPattern,
+                backgroundImage,
                 mainHeaderFont,
                 sectionHeaderFont,
                 cardFont,
@@ -688,18 +715,20 @@
 
         // Update background based on type
         if (backgroundType === "color") {
-          const backgroundColor =
-            document.getElementById("backgroundColor").value;
           document.body.style.backgroundImage = "none";
           document.body.style.backgroundColor = backgroundColor;
         } else if (backgroundType === "pattern") {
-          const pattern = document.getElementById("backgroundPattern").value;
-          document.body.style.backgroundImage = `url(assets/backgrounds/${pattern})`;
+          document.body.style.backgroundImage = `url(assets/backgrounds/${backgroundPattern})`;
           document.body.style.backgroundColor = "transparent";
+          document.body.style.backgroundSize = "200px 200px";
+          document.body.style.backgroundRepeat = "repeat";
+          document.body.style.backgroundPosition = "0 0";
         } else if (backgroundType === "image") {
-          const image = document.getElementById("backgroundImage").value;
-          document.body.style.backgroundImage = `url(assets/backgrounds/${image})`;
+          document.body.style.backgroundImage = `url(assets/backgrounds/${backgroundImage})`;
           document.body.style.backgroundColor = "transparent";
+          document.body.style.backgroundSize = "cover";
+          document.body.style.backgroundRepeat = "no-repeat";
+          document.body.style.backgroundPosition = "center";
         }
 
         // Update main header
@@ -828,6 +857,15 @@
       }
 
       window.addEventListener("beforeprint", function () {
+        console.log("Before print triggered"); // Debug log
+
+        const backgroundType = document.getElementById("backgroundType").value;
+        const backgroundColor =
+          document.getElementById("backgroundColor").value;
+        const backgroundPattern =
+          document.getElementById("backgroundPattern").value;
+        const backgroundImage =
+          document.getElementById("backgroundImage").value;
         const cardBackgroundColor = document.getElementById(
           "cardBackgroundColor"
         ).value;
@@ -835,15 +873,115 @@
         const mainHeaderBackground = document.getElementById(
           "mainHeaderBackground"
         ).value;
-        document.documentElement.style.setProperty(
+        const mainHeaderColor =
+          document.getElementById("mainHeaderColor").value;
+        const headerColor = document.getElementById("headerColor").value;
+        const cardTextColor = document.getElementById("cardTextColor").value;
+
+        console.log("Background type:", backgroundType); // Debug log
+        console.log("Background color:", backgroundColor); // Debug log
+
+        // Force all CSS variables on :root
+        const root = document.documentElement;
+        root.style.setProperty(
           "--card-background-color",
-          cardBackgroundColor
+          cardBackgroundColor,
+          "important"
         );
-        document.documentElement.style.setProperty("--price-color", priceColor);
-        document.documentElement.style.setProperty(
+        root.style.setProperty("--price-color", priceColor, "important");
+        root.style.setProperty(
           "--main-header-background",
-          mainHeaderBackground
+          mainHeaderBackground,
+          "important"
         );
+        root.style.setProperty(
+          "--main-header-color",
+          mainHeaderColor,
+          "important"
+        );
+        root.style.setProperty("--header-color", headerColor, "important");
+        root.style.setProperty("--card-text-color", cardTextColor, "important");
+
+        // Force background on body with all browser prefixes
+        const body = document.body;
+
+        // Clear any existing background first
+        body.style.removeProperty("background");
+        body.style.removeProperty("background-color");
+        body.style.removeProperty("background-image");
+        body.style.removeProperty("background-size");
+        body.style.removeProperty("background-repeat");
+        body.style.removeProperty("background-position");
+
+        if (backgroundType === "color") {
+          body.style.setProperty(
+            "background-color",
+            backgroundColor,
+            "important"
+          );
+          body.style.setProperty("background-image", "none", "important");
+          console.log("Set solid color:", backgroundColor);
+        } else if (backgroundType === "pattern") {
+          const patternUrl = `url(assets/backgrounds/${backgroundPattern})`;
+          body.style.setProperty("background-image", patternUrl, "important");
+          body.style.setProperty("background-size", "200px 200px", "important");
+          body.style.setProperty("background-repeat", "repeat", "important");
+          body.style.setProperty("background-position", "0 0", "important");
+          body.style.setProperty(
+            "background-color",
+            backgroundColor || cardBackgroundColor,
+            "important"
+          );
+          console.log("Set pattern:", patternUrl);
+        } else if (backgroundType === "image") {
+          const imageUrl = `url(assets/backgrounds/${backgroundImage})`;
+          body.style.setProperty("background-image", imageUrl, "important");
+          body.style.setProperty("background-size", "cover", "important");
+          body.style.setProperty("background-repeat", "no-repeat", "important");
+          body.style.setProperty("background-position", "center", "important");
+          body.style.setProperty(
+            "background-color",
+            backgroundColor || cardBackgroundColor,
+            "important"
+          );
+          console.log("Set image:", imageUrl);
+        }
+
+        // Force print color adjustment on body
+        body.style.setProperty(
+          "-webkit-print-color-adjust",
+          "exact",
+          "important"
+        );
+        body.style.setProperty("print-color-adjust", "exact", "important");
+        body.style.setProperty("color-adjust", "exact", "important");
+
+        // Also force colors on all menu elements directly
+        document.querySelectorAll(".menu-card").forEach((card) => {
+          card.style.setProperty(
+            "background-color",
+            cardBackgroundColor,
+            "important"
+          );
+          card.style.setProperty("color", cardTextColor, "important");
+        });
+
+        document.querySelectorAll(".menu-card .price").forEach((price) => {
+          price.style.setProperty("color", priceColor, "important");
+        });
+
+        document.querySelectorAll(".menu-header").forEach((header) => {
+          header.style.setProperty(
+            "background-color",
+            mainHeaderBackground,
+            "important"
+          );
+          header.style.setProperty("color", mainHeaderColor, "important");
+        });
+
+        document.querySelectorAll("h2").forEach((h2) => {
+          h2.style.setProperty("color", headerColor, "important");
+        });
       });
       window.addEventListener("afterprint", function () {
         window.updateStyle();
