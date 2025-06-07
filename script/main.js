@@ -24,8 +24,9 @@ function addItem(section) {
   div.innerHTML = `
     <input type="text" placeholder="Name" name="${section}-name-${index}" required>
     <input type="text" placeholder="Price" name="${section}-price-${index}" required>
-    <input type="text" placeholder="Ingredients" name="${section}-ingredients-${index}">
-    <input type="text" placeholder="Description" name="${section}-description-${index}">
+    <input type="text" placeholder="Ingredients (optional)" name="${section}-ingredients-${index}">
+    <input type="text" placeholder="Description (optional)" name="${section}-description-${index}">
+    <button type="button" onclick="deleteItem('${section}', this)" class="delete-btn">Delete</button>
     <br><br>
   `;
   container.appendChild(div);
@@ -83,6 +84,23 @@ function handleSubmit(e) {
 
 window.addItem = addItem;
 
+window.deleteItem = function (section, button) {
+  if (confirm("Are you sure you want to delete this menu item?")) {
+    const itemDiv = button.parentElement;
+    itemDiv.remove();
+
+    // Re-index the remaining items in the section
+    const container = document.getElementById(section);
+    Array.from(container.children).forEach((div, newIndex) => {
+      const inputs = div.querySelectorAll("input");
+      inputs[0].name = `${section}-name-${newIndex}`;
+      inputs[1].name = `${section}-price-${newIndex}`;
+      inputs[2].name = `${section}-ingredients-${newIndex}`;
+      inputs[3].name = `${section}-description-${newIndex}`;
+    });
+  }
+};
+
 window.listMenus = function () {
   getAllMenus()
     .then((menus) => {
@@ -125,12 +143,13 @@ window.listMenus = function () {
                 <input type="text" placeholder="Price" name="${section}-price-${idx}" required value="${
                 item.price || ""
               }">
-                <input type="text" placeholder="Ingredients" name="${section}-ingredients-${idx}" value="${
+                <input type="text" placeholder="Ingredients (optional)" name="${section}-ingredients-${idx}" value="${
                 item.ingredients || ""
               }">
-                <input type="text" placeholder="Description" name="${section}-description-${idx}" value="${
+                <input type="text" placeholder="Description (optional)" name="${section}-description-${idx}" value="${
                 item.description || ""
               }">
+                <button type="button" onclick="deleteItem('${section}', this)" class="delete-btn">Delete</button>
                 <br><br>
               `;
               container.appendChild(div);
