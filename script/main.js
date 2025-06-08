@@ -16,6 +16,22 @@ initDB()
 
 let currentStyleSettings = null;
 
+// Toggle custom menu type input visibility
+window.toggleCustomMenuType = function () {
+  const menuTypeSelect = document.getElementById("menuType");
+  const customContainer = document.getElementById("customMenuTypeContainer");
+  const customInput = document.getElementById("customMenuType");
+
+  if (menuTypeSelect.value === "custom") {
+    customContainer.style.display = "block";
+    customInput.required = true;
+  } else {
+    customContainer.style.display = "none";
+    customInput.required = false;
+    customInput.value = "";
+  }
+};
+
 function addItem(section) {
   const container = document.getElementById(section);
   const index = container.children.length;
@@ -35,9 +51,20 @@ function addItem(section) {
 function handleSubmit(e) {
   e.preventDefault();
   const form = new FormData(e.target);
-  const type = form.get("type");
+  let type = form.get("type");
   const date = form.get("date");
   const background = form.get("background");
+
+  // Handle custom menu type
+  if (type === "custom") {
+    const customType = document.getElementById("customMenuType").value.trim();
+    if (!customType) {
+      alert("Please enter a custom menu type name.");
+      return;
+    }
+    type = customType;
+  }
+
   const id = `${date}_${type}`;
 
   const getItems = (section) => {
@@ -70,6 +97,8 @@ function handleSubmit(e) {
     .then(() => {
       alert(`Menu "${id}" saved!`);
       e.target.reset();
+      // Reset custom menu type visibility
+      toggleCustomMenuType();
       ["appetizers", "entrees", "desserts"].forEach((id) => {
         document.getElementById(id).innerHTML = "";
       });
@@ -136,7 +165,23 @@ window.listMenus = function () {
         editBtn.onclick = async function () {
           const loadedMenu = await getMenu(menu.id);
           if (!loadedMenu) return alert("Menu not found");
-          document.querySelector('[name="type"]').value = loadedMenu.type;
+
+          const menuTypeSelect = document.querySelector('[name="type"]');
+          const customMenuTypeInput = document.getElementById("customMenuType");
+
+          // Check if the menu type is one of the predefined options
+          const predefinedTypes = ["Lunch", "Dinner"];
+          if (predefinedTypes.includes(loadedMenu.type)) {
+            menuTypeSelect.value = loadedMenu.type;
+          } else {
+            // It's a custom menu type
+            menuTypeSelect.value = "custom";
+            customMenuTypeInput.value = loadedMenu.type;
+          }
+
+          // Trigger the toggle function to show/hide custom input
+          toggleCustomMenuType();
+
           document.querySelector('[name="date"]').value = loadedMenu.date;
           document.querySelector('[name="background"]').value =
             loadedMenu.background;

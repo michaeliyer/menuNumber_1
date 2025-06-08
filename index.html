@@ -340,6 +340,23 @@
         margin: 0 0 0.5rem;
         color: #2c3e50;
       }
+
+      #customMenuTypeContainer {
+        padding: 0.5rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+      }
+
+      #customMenuTypeContainer label {
+        font-weight: 600;
+        color: #495057;
+      }
+
+      #customMenuType {
+        width: 100%;
+        margin-top: 0.25rem;
+      }
     </style>
   </head>
   <body>
@@ -348,11 +365,30 @@
     <form id="menuForm">
       <label>
         Menu Type:
-        <select name="type">
+        <select name="type" id="menuType" onchange="toggleCustomMenuType()">
           <option value="Lunch">Lunch</option>
           <option value="Dinner">Dinner</option>
+          <option value="custom">Custom</option>
         </select>
       </label>
+
+      <div
+        id="customMenuTypeContainer"
+        style="display: none; margin-top: 0.5rem"
+      >
+        <label>
+          Custom Menu Type:
+          <input
+            type="text"
+            id="customMenuType"
+            placeholder="e.g., Breakfast, Brunch, Cocktail Menu"
+          />
+        </label>
+        <div style="margin-top: 0.25rem; font-size: 0.85rem; color: #666">
+          💡 Perfect for special occasions: Breakfast, Brunch, Happy Hour,
+          Holiday Specials, Wine Tasting, etc.
+        </div>
+      </div>
 
       <label>
         Date:
