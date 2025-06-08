@@ -2105,7 +2105,7 @@
 
         // Enhanced prompt for iOS with clearer instructions
         const promptText = /iPad|iPhone|iPod/.test(navigator.userAgent)
-          ? "iOS Access Code\n\nTry: admin123, menu2024, settings, 12345, or francina"
+          ? "iOS Access Code\n\n💡 Hint: Word before Gordita"
           : "Enter access code to unlock menu settings:";
 
         const code = prompt(promptText);
@@ -2132,10 +2132,9 @@
             console.log("❌ Access denied for code:", codeToCheck);
             console.log("📋 Available codes:", validCodes);
 
-            // iOS-specific help message
-            const helpMessage = /iPad|iPhone|iPod/.test(navigator.userAgent)
-              ? "❌ Incorrect access code.\n\n💡 Hint: Word before gordita\n\n🔧 iOS Troubleshooting:\n• Try: admin123\n• Try: francina\n• Try: 12345"
-              : "❌ Incorrect access code.\n\n💡 Hint: Word before gordita";
+            // Show only the hint, never the actual passwords
+            const helpMessage =
+              "❌ Incorrect access code.\n\n💡 Hint: Word before Gordita\n\nTry again or contact administrator.";
 
             alert(helpMessage);
             showAuthenticationFeedback(false);
