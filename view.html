@@ -384,7 +384,7 @@
       }
 
       .hamburger-button.locked {
-        opacity: 0.6;
+        opacity: 0.9;
       }
 
       .hamburger-button.success-feedback {
@@ -515,7 +515,7 @@
         <div class="hamburger-line"></div>
       </button>
       <div id="hamburgerDropdown" class="hamburger-dropdown">
-        <!-- Menu items will be populated dynamically after authentication -->
+        <!-- Voice controls available to all users, admin features require authentication -->
       </div>
     </div>
 
@@ -1419,7 +1419,22 @@
 
     <!-- Voice Controls Panel -->
     <div id="voiceControls" class="voice-controls">
-      <h4>🔊 Voice Controls</h4>
+      <h4>🔊 Voice Controls - For All Users</h4>
+
+      <div
+        style="
+          margin-bottom: 12px;
+          padding: 8px;
+          background: #e8f5e8;
+          border-radius: 4px;
+          font-size: 11px;
+          color: #2d5a2d;
+        "
+      >
+        ♿ <strong>Accessibility Feature:</strong> Available to everyone!
+        Perfect for visually impaired users, hands-free browsing, or anyone who
+        prefers audio.
+      </div>
 
       <div class="voice-control-group">
         <label>Voice:</label>
@@ -1485,7 +1500,8 @@
           color: #666;
         "
       >
-        💡 Click any menu item or header to hear it read aloud
+        💡 <strong>How to use:</strong> Click any menu item or header to hear it
+        read aloud
       </div>
     </div>
 
@@ -1875,14 +1891,9 @@
         const button = document.querySelector(".hamburger-button");
         const dropdown = document.getElementById("hamburgerDropdown");
 
-        // Check if user is already authenticated
-        if (isAuthenticated()) {
-          button.classList.toggle("active");
-          dropdown.classList.toggle("open");
-        } else {
-          // Prompt for access code
-          promptForAccessCode();
-        }
+        // Always allow the hamburger menu to open - no authentication required
+        button.classList.toggle("active");
+        dropdown.classList.toggle("open");
       };
 
       // Authentication system
@@ -1949,7 +1960,7 @@
         return authenticated;
       }
 
-      function promptForAccessCode() {
+      window.promptForAccessCode = function () {
         // iOS-specific debugging
         console.log("🍎 iOS Authentication Debug:");
         console.log("📱 Available codes at prompt time:", ACCESS_CODES);
@@ -2004,7 +2015,10 @@
         } else {
           console.log("⏹️ User cancelled code entry");
         }
-      }
+
+        // Close hamburger menu after authentication attempt
+        closeHamburgerMenu();
+      };
 
       // Enhanced validation function with multiple check methods
       function validateAccessCode(enteredCode, validCodes) {
@@ -2071,17 +2085,22 @@
         }
       }
 
-      window.updateHamburgerDisplay = function () {
+      function updateHamburgerDisplay() {
         const dropdown = document.getElementById("hamburgerDropdown");
         const button = document.querySelector(".hamburger-button");
 
+        // Always show voice controls + appropriate additional options
         if (authenticated) {
           // Add authenticated visual state
           button.classList.add("authenticated");
           button.classList.remove("locked");
 
-          // Show full menu options
+          // Show full menu options for authenticated users
           dropdown.innerHTML = `
+            <button class="hamburger-item" onclick="toggleVoiceControls()">
+              <span class="hamburger-icon">🔊</span>
+              Voice Controls
+            </button>
             <button class="hamburger-item" onclick="openSettings()">
               <span class="hamburger-icon">⚙️</span>
               Settings
@@ -2090,26 +2109,31 @@
               <span class="hamburger-icon">🖨️</span>
               Print Menu
             </button>
-            <button class="hamburger-item" onclick="toggleVoiceControls()">
-              <span class="hamburger-icon">🔊</span>
-              Voice Controls
-            </button>
             <button class="hamburger-item" onclick="lockMenu()" style="border-top: 1px solid #e9ecef; margin-top: 4px;">
               <span class="hamburger-icon">🔒</span>
               Lock Menu
             </button>
           `;
         } else {
-          // Add locked visual state
+          // Remove authenticated visual state but still show menu
           button.classList.remove("authenticated");
           button.classList.add("locked");
 
-          // Hide dropdown content for unauthenticated users
-          dropdown.innerHTML = "";
+          // Show public menu options (voice controls available to everyone!)
+          dropdown.innerHTML = `
+            <button class="hamburger-item" onclick="toggleVoiceControls()">
+              <span class="hamburger-icon">🔊</span>
+              Voice Controls
+            </button>
+            <button class="hamburger-item" onclick="console.log('Admin Access clicked'); promptForAccessCode()" style="border-top: 1px solid #e9ecef; margin-top: 4px;">
+              <span class="hamburger-icon">🔐</span>
+              Admin Access
+            </button>
+          `;
         }
-      };
+      }
 
-      function lockMenu() {
+      window.lockMenu = function () {
         authenticated = false;
         sessionStorage.removeItem("menuAuthenticated");
 
@@ -2128,7 +2152,7 @@
         setTimeout(() => {
           button.style.background = "";
         }, 800);
-      }
+      };
 
       // Check authentication on page load
       window.addEventListener("DOMContentLoaded", function () {
@@ -2160,8 +2184,6 @@
         // Close hamburger menu
         closeHamburgerMenu();
       };
-
-      window.lockMenu = lockMenu;
 
       function closeHamburgerMenu() {
         const button = document.querySelector(".hamburger-button");
@@ -3377,11 +3399,6 @@
       }
 
       window.toggleVoiceMode = function () {
-        if (!authenticated) {
-          promptForAccessCode();
-          return;
-        }
-
         voiceEnabled = !voiceEnabled;
         const toggleButton = document.getElementById("voiceToggle");
         const voiceControls = document.getElementById("voiceControls");
@@ -3403,14 +3420,21 @@
       };
 
       window.toggleVoiceControls = function () {
-        if (!authenticated) {
-          promptForAccessCode();
-          return;
-        }
-
         const voiceControls = document.getElementById("voiceControls");
         voiceControls.classList.toggle("show");
         closeHamburgerMenu();
+      };
+
+      window.testVoice = function () {
+        if (!voiceEnabled) {
+          alert("Please enable voice mode first");
+          return;
+        }
+
+        const testText =
+          "Hello! This is a test of the voice system. The menu reading feature is working correctly.";
+        const dummyElement = document.createElement("div");
+        speakText(testText, dummyElement);
       };
 
       function enableAudioInteractions() {
@@ -3567,18 +3591,6 @@
           el.classList.remove("speaking");
         });
       }
-
-      window.testVoice = function () {
-        if (!voiceEnabled) {
-          alert("Please enable voice mode first");
-          return;
-        }
-
-        const testText =
-          "Hello! This is a test of the voice system. The menu reading feature is working correctly.";
-        const dummyElement = document.createElement("div");
-        speakText(testText, dummyElement);
-      };
 
       // Custom Audio System (for user's recorded audio files)
       function getCustomAudio(text) {
