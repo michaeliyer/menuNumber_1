@@ -324,17 +324,50 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         z-index: 1000;
         display: none;
-        min-width: 250px;
+        min-width: 280px;
+        max-width: 350px;
+        transition: all 0.3s ease;
       }
 
       .voice-controls.show {
         display: block;
       }
 
+      .voice-controls.minimized {
+        padding: 10px 15px;
+        min-width: 200px;
+      }
+
+      .voice-controls.minimized .voice-control-content {
+        display: none;
+      }
+
       .voice-controls h4 {
         margin: 0 0 10px 0;
         color: #2c3e50;
         font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .voice-controls h4:hover {
+        color: #3498db;
+      }
+
+      .minimize-icon {
+        font-size: 12px;
+        color: #666;
+        transition: transform 0.2s ease;
+      }
+
+      .voice-controls.minimized .minimize-icon {
+        transform: rotate(180deg);
+      }
+
+      .voice-control-content {
+        transition: opacity 0.2s ease;
       }
 
       .voice-control-group {
@@ -376,6 +409,37 @@
 
       .voice-toggle.disabled {
         background: #95a5a6;
+      }
+
+      /* Voice status indicator */
+      .voice-status-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(52, 152, 219, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        z-index: 1001;
+        display: none;
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+
+      .voice-status-indicator.active {
+        display: block;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          background: rgba(52, 152, 219, 0.9);
+          transform: scale(1);
+        }
+        50% {
+          background: rgba(52, 152, 219, 1);
+          transform: scale(1.05);
+        }
       }
 
       /* Authentication feedback styles */
@@ -1419,90 +1483,136 @@
 
     <!-- Voice Controls Panel -->
     <div id="voiceControls" class="voice-controls">
-      <h4>🔊 Voice Controls - For All Users</h4>
+      <h4 onclick="toggleVoiceMinimize()">
+        🔊 Voice Controls - For All Users
+        <span class="minimize-icon">▼</span>
+      </h4>
 
-      <div
-        style="
-          margin-bottom: 12px;
-          padding: 8px;
-          background: #e8f5e8;
-          border-radius: 4px;
-          font-size: 11px;
-          color: #2d5a2d;
-        "
-      >
-        ♿ <strong>Accessibility Feature:</strong> Available to everyone!
-        Perfect for visually impaired users, hands-free browsing, or anyone who
-        prefers audio.
-      </div>
-
-      <div class="voice-control-group">
-        <label>Voice:</label>
-        <select id="voiceSelect"></select>
-      </div>
-
-      <div class="voice-control-group">
-        <label>Speed:</label>
-        <input
-          type="range"
-          id="speechRate"
-          min="0.5"
-          max="2"
-          step="0.1"
-          value="1"
-        />
-        <span id="rateDisplay">1.0x</span>
-      </div>
-
-      <div class="voice-control-group">
-        <label>Pitch:</label>
-        <input
-          type="range"
-          id="speechPitch"
-          min="0.5"
-          max="2"
-          step="0.1"
-          value="1"
-        />
-        <span id="pitchDisplay">1.0</span>
-      </div>
-
-      <div class="voice-control-group">
-        <button
-          id="voiceToggle"
-          class="voice-toggle"
-          onclick="toggleVoiceMode()"
-        >
-          Enable Voice
-        </button>
-        <button
-          onclick="testVoice()"
+      <div class="voice-control-content">
+        <div
           style="
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 8px 12px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #e8f5e8;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            color: #2d5a2d;
           "
         >
-          Test Voice
-        </button>
-      </div>
+          ♿ <strong>Accessibility Feature:</strong> Available to everyone!
+          Perfect for visually impaired users, hands-free browsing, or anyone
+          who prefers audio.
+        </div>
 
-      <div
-        style="
-          margin-top: 10px;
-          padding-top: 10px;
-          border-top: 1px solid #eee;
-          font-size: 11px;
-          color: #666;
-        "
-      >
-        💡 <strong>How to use:</strong> Click any menu item or header to hear it
-        read aloud
+        <div class="voice-control-group">
+          <label>Voice:</label>
+          <select id="voiceSelect"></select>
+        </div>
+
+        <div class="voice-control-group">
+          <label>Speed:</label>
+          <input
+            type="range"
+            id="speechRate"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value="1"
+          />
+          <span id="rateDisplay">1.0x</span>
+        </div>
+
+        <div class="voice-control-group">
+          <label>Pitch:</label>
+          <input
+            type="range"
+            id="speechPitch"
+            min="0.5"
+            max="2"
+            step="0.1"
+            value="1"
+          />
+          <span id="pitchDisplay">1.0</span>
+        </div>
+
+        <div class="voice-control-group">
+          <button
+            id="voiceToggle"
+            class="voice-toggle"
+            onclick="toggleVoiceMode()"
+          >
+            Enable Voice
+          </button>
+          <button
+            onclick="testVoice()"
+            style="
+              background: #3498db;
+              color: white;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-size: 12px;
+            "
+          >
+            Test Voice
+          </button>
+        </div>
+
+        <div class="voice-control-group">
+          <button
+            onclick="debugVoiceSystem()"
+            style="
+              background: #e67e22;
+              color: white;
+              border: none;
+              padding: 6px 10px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-size: 11px;
+              width: 100%;
+            "
+          >
+            🔧 Debug Voice System
+          </button>
+        </div>
+
+        <div class="voice-control-group">
+          <button
+            onclick="reloadVoices()"
+            style="
+              background: #3498db;
+              color: white;
+              border: none;
+              padding: 6px 10px;
+              border-radius: 4px;
+              cursor: pointer;
+              font-size: 11px;
+              width: 100%;
+            "
+          >
+            🔄 Reload Voices
+          </button>
+        </div>
+
+        <div
+          style="
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 11px;
+            color: #666;
+          "
+        >
+          💡 <strong>How to use:</strong> Click any menu item or header to hear
+          it read aloud
+        </div>
       </div>
+    </div>
+
+    <!-- Voice Status Indicator -->
+    <div id="voiceStatusIndicator" class="voice-status-indicator">
+      🔊 Voice Active
     </div>
 
     <script type="module">
@@ -1575,9 +1685,27 @@
         updateHamburgerDisplay();
 
         // Initialize voice system
-        initVoiceSystem();
+        console.log("🚀 About to initialize voice system...");
+        console.log("🔍 Browser support check:");
+        console.log("  - speechSynthesis:", typeof speechSynthesis);
+        console.log(
+          "  - SpeechSynthesisUtterance:",
+          typeof SpeechSynthesisUtterance
+        );
+        console.log(
+          "  - speechSynthesis.getVoices:",
+          typeof speechSynthesis?.getVoices
+        );
+
+        try {
+          initVoiceSystem();
+          console.log("✅ Voice system initialization call completed");
+        } catch (error) {
+          console.error("❌ Voice system initialization failed:", error);
+        }
 
         // Load custom audio if available
+        console.log("🎵 Loading custom audio...");
         await loadCustomAudio();
 
         // Debug mode for iOS troubleshooting
@@ -3352,21 +3480,67 @@
       // Initialize Speech Synthesis
       function initVoiceSystem() {
         if ("speechSynthesis" in window) {
-          // Load available voices
+          console.log("🔊 Speech synthesis supported, initializing...");
+
+          // Load available voices with multiple fallback methods
           function loadVoices() {
             voices = speechSynthesis.getVoices();
-            populateVoiceSelect();
+            console.log("🎭 Voices loaded:", voices.length);
+
+            if (voices.length > 0) {
+              populateVoiceSelect();
+            } else {
+              console.warn(
+                "⚠️ No voices loaded yet, trying fallback methods..."
+              );
+
+              // Method 1: Trigger with silent speech
+              try {
+                const trigger = new SpeechSynthesisUtterance("");
+                trigger.volume = 0;
+                speechSynthesis.speak(trigger);
+              } catch (e) {
+                console.log("Silent trigger failed, continuing...");
+              }
+
+              // Method 2: Wait for voices changed event
+              speechSynthesis.onvoiceschanged = function () {
+                voices = speechSynthesis.getVoices();
+                if (voices.length > 0) {
+                  console.log(
+                    "✅ Voices loaded via voiceschanged event:",
+                    voices.length
+                  );
+                  populateVoiceSelect();
+                }
+              };
+
+              // Method 3: Retry after delay
+              setTimeout(() => {
+                voices = speechSynthesis.getVoices();
+                if (voices.length > 0) {
+                  console.log(
+                    "✅ Voices loaded via timeout retry:",
+                    voices.length
+                  );
+                  populateVoiceSelect();
+                }
+              }, 1000);
+            }
           }
 
+          // Load voices immediately
           loadVoices();
-          speechSynthesis.onvoiceschanged = loadVoices;
 
           // Setup voice controls
           setupVoiceControls();
 
-          console.log("🔊 Voice system initialized");
+          console.log("✅ Voice system initialization complete");
         } else {
           console.warn("⚠️ Speech synthesis not supported in this browser");
+          const voiceSelect = document.getElementById("voiceSelect");
+          voiceSelect.innerHTML =
+            '<option value="">Speech not supported</option>';
         }
       }
 
@@ -3374,14 +3548,60 @@
         const voiceSelect = document.getElementById("voiceSelect");
         voiceSelect.innerHTML = "";
 
+        console.log("🔊 Loading voices... Found:", voices.length, "voices");
+
+        if (voices.length === 0) {
+          console.warn("⚠️ No voices available yet, retrying...");
+          setTimeout(populateVoiceSelect, 100);
+          return;
+        }
+
+        // SIMPLE APPROACH: Add all voices to ensure they show up
+        console.log("📝 Adding all available voices:");
         voices.forEach((voice, index) => {
+          console.log(`  ${index}: ${voice.name} (${voice.lang})`);
           const option = document.createElement("option");
           option.value = index;
           option.textContent = `${voice.name} (${voice.lang})`;
-          if (voice.default) option.selected = true;
+          if (voice.default) {
+            option.selected = true;
+            console.log("✅ Default voice:", voice.name);
+          }
           voiceSelect.appendChild(option);
         });
+
+        console.log(
+          "✅ Voice dropdown populated with",
+          voiceSelect.options.length,
+          "options"
+        );
+
+        // Try to select an accent voice if available
+        for (let i = 0; i < voiceSelect.options.length; i++) {
+          const optionText = voiceSelect.options[i].textContent.toLowerCase();
+          if (
+            optionText.includes("daniel") ||
+            optionText.includes("karen") ||
+            optionText.includes("british") ||
+            optionText.includes("australia") ||
+            optionText.includes("gb") ||
+            optionText.includes("au")
+          ) {
+            voiceSelect.selectedIndex = i;
+            console.log(
+              "🎭 Auto-selected accent voice:",
+              voiceSelect.options[i].textContent
+            );
+            break;
+          }
+        }
       }
+
+      // Add voice panel minimize functionality
+      window.toggleVoiceMinimize = function () {
+        const voiceControls = document.getElementById("voiceControls");
+        voiceControls.classList.toggle("minimized");
+      };
 
       function setupVoiceControls() {
         const rateSlider = document.getElementById("speechRate");
@@ -3402,17 +3622,28 @@
         voiceEnabled = !voiceEnabled;
         const toggleButton = document.getElementById("voiceToggle");
         const voiceControls = document.getElementById("voiceControls");
+        const statusIndicator = document.getElementById("voiceStatusIndicator");
 
         if (voiceEnabled) {
           toggleButton.textContent = "Disable Voice";
           toggleButton.classList.remove("disabled");
           enableAudioInteractions();
+          statusIndicator.classList.add("active");
+
+          // Auto-minimize the controls panel when voice is enabled
+          voiceControls.classList.add("minimized");
+
           console.log("🔊 Voice mode enabled");
         } else {
           toggleButton.textContent = "Enable Voice";
           toggleButton.classList.add("disabled");
           disableAudioInteractions();
           stopSpeaking();
+          statusIndicator.classList.remove("active");
+
+          // Expand the controls panel when voice is disabled
+          voiceControls.classList.remove("minimized");
+
           console.log("🔇 Voice mode disabled");
         }
 
@@ -3422,6 +3653,12 @@
       window.toggleVoiceControls = function () {
         const voiceControls = document.getElementById("voiceControls");
         voiceControls.classList.toggle("show");
+
+        // If showing for first time and voice is enabled, start minimized
+        if (voiceControls.classList.contains("show") && voiceEnabled) {
+          voiceControls.classList.add("minimized");
+        }
+
         closeHamburgerMenu();
       };
 
@@ -3638,6 +3875,79 @@
         } catch (error) {
           console.log("ℹ️ No custom audio mappings found (this is optional)");
         }
+      };
+
+      window.debugVoiceSystem = function () {
+        console.log("🔧 DEBUG: Manual voice system check");
+        console.log("🔍 Browser support:");
+        console.log(
+          "  - speechSynthesis available:",
+          typeof speechSynthesis !== "undefined"
+        );
+        console.log(
+          "  - getVoices function:",
+          typeof speechSynthesis?.getVoices
+        );
+
+        if (typeof speechSynthesis !== "undefined") {
+          console.log("🎭 Attempting to load voices manually...");
+          const testVoices = speechSynthesis.getVoices();
+          console.log("  - Voices found:", testVoices.length);
+
+          if (testVoices.length > 0) {
+            console.log("  - First 5 voices:");
+            testVoices.slice(0, 5).forEach((voice, index) => {
+              console.log(
+                `    ${index}: ${voice.name} (${voice.lang}) - Default: ${voice.default}`
+              );
+            });
+
+            // Try to populate the dropdown manually
+            console.log("🔄 Manually populating dropdown...");
+            voices = testVoices;
+            populateVoiceSelect();
+          } else {
+            console.warn("⚠️ No voices found. This could be:");
+            console.warn("  - Browser needs user interaction first");
+            console.warn("  - Voices still loading");
+            console.warn("  - Browser doesn't support speech synthesis");
+
+            // Try again after a delay
+            setTimeout(() => {
+              console.log("🔄 Retrying voice detection...");
+              const retryVoices = speechSynthesis.getVoices();
+              console.log("  - Retry found:", retryVoices.length, "voices");
+              if (retryVoices.length > 0) {
+                voices = retryVoices;
+                populateVoiceSelect();
+              }
+            }, 1000);
+          }
+        } else {
+          console.error("❌ Speech synthesis not supported in this browser");
+        }
+
+        // Test basic speech synthesis
+        if (
+          typeof speechSynthesis !== "undefined" &&
+          typeof SpeechSynthesisUtterance !== "undefined"
+        ) {
+          console.log("🗣️ Testing basic speech...");
+          try {
+            const testUtterance = new SpeechSynthesisUtterance(
+              "Testing voice system"
+            );
+            testUtterance.volume = 0.1; // Low volume for testing
+            speechSynthesis.speak(testUtterance);
+            console.log("✅ Basic speech test initiated");
+          } catch (error) {
+            console.error("❌ Speech test failed:", error);
+          }
+        }
+      };
+
+      window.reloadVoices = function () {
+        initVoiceSystem();
       };
     </script>
   </body>

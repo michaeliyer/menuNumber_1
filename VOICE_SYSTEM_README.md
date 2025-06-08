@@ -240,7 +240,7 @@ Gather feedback on:
 
 For technical support or questions about the voice system:
 
-1. Check the browser console for detailed error messages
+1. Check the browser console for detailed error messagesThat was very confusing
 2. Use debug mode (`?debug=true`) for troubleshooting
 3. Verify Web Speech API support in browser
 4. Test with simple text before custom audio implementation
