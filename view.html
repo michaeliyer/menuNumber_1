@@ -220,7 +220,7 @@
         visibility: hidden;
         transform: translateY(-10px);
         transition: all 0.3s ease;
-        min-width: 160px;
+        min-width: 180px;
         overflow: hidden;
       }
 
@@ -259,6 +259,123 @@
         width: 18px;
         text-align: center;
         font-size: 16px;
+      }
+
+      /* Voice/Audio Accessibility Styles */
+      .audio-enabled {
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+      }
+
+      .audio-enabled:hover {
+        background-color: rgba(52, 152, 219, 0.1);
+        transform: scale(1.02);
+      }
+
+      .audio-enabled:active {
+        transform: scale(0.98);
+      }
+
+      .speaking {
+        background-color: rgba(52, 152, 219, 0.2) !important;
+        animation: pulse-speaking 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse-speaking {
+        0%,
+        100% {
+          background-color: rgba(52, 152, 219, 0.2);
+        }
+        50% {
+          background-color: rgba(52, 152, 219, 0.35);
+        }
+      }
+
+      .audio-icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        background: rgba(52, 152, 219, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      .audio-enabled:hover .audio-icon {
+        opacity: 1;
+      }
+
+      .voice-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        display: none;
+        min-width: 250px;
+      }
+
+      .voice-controls.show {
+        display: block;
+      }
+
+      .voice-controls h4 {
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+        font-size: 14px;
+      }
+
+      .voice-control-group {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .voice-control-group label {
+        font-size: 12px;
+        color: #666;
+        min-width: 60px;
+      }
+
+      .voice-control-group select,
+      .voice-control-group input {
+        flex: 1;
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      .voice-toggle {
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.2s ease;
+      }
+
+      .voice-toggle:hover {
+        background: #219a52;
+      }
+
+      .voice-toggle.disabled {
+        background: #95a5a6;
       }
 
       /* Authentication feedback styles */
@@ -1300,6 +1417,78 @@
     <div id="menuContainer"></div>
     <button class="print-button" onclick="window.print()">Print Menu</button>
 
+    <!-- Voice Controls Panel -->
+    <div id="voiceControls" class="voice-controls">
+      <h4>🔊 Voice Controls</h4>
+
+      <div class="voice-control-group">
+        <label>Voice:</label>
+        <select id="voiceSelect"></select>
+      </div>
+
+      <div class="voice-control-group">
+        <label>Speed:</label>
+        <input
+          type="range"
+          id="speechRate"
+          min="0.5"
+          max="2"
+          step="0.1"
+          value="1"
+        />
+        <span id="rateDisplay">1.0x</span>
+      </div>
+
+      <div class="voice-control-group">
+        <label>Pitch:</label>
+        <input
+          type="range"
+          id="speechPitch"
+          min="0.5"
+          max="2"
+          step="0.1"
+          value="1"
+        />
+        <span id="pitchDisplay">1.0</span>
+      </div>
+
+      <div class="voice-control-group">
+        <button
+          id="voiceToggle"
+          class="voice-toggle"
+          onclick="toggleVoiceMode()"
+        >
+          Enable Voice
+        </button>
+        <button
+          onclick="testVoice()"
+          style="
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+          "
+        >
+          Test Voice
+        </button>
+      </div>
+
+      <div
+        style="
+          margin-top: 10px;
+          padding-top: 10px;
+          border-top: 1px solid #eee;
+          font-size: 11px;
+          color: #666;
+        "
+      >
+        💡 Click any menu item or header to hear it read aloud
+      </div>
+    </div>
+
     <script type="module">
       import { initDB, getMenu, saveMenu } from "./script/db.js";
 
@@ -1357,8 +1546,13 @@
         }
         updateHamburgerDisplay();
 
+        // Initialize voice system
+        initVoiceSystem();
+
+        // Load custom audio if available
+        await loadCustomAudio();
+
         // Debug mode for iOS troubleshooting
-        const params = new URLSearchParams(window.location.search);
         if (params.get("debug") === "true") {
           console.log("🚨 DEBUG MODE ENABLED");
 
@@ -1754,7 +1948,7 @@
         }
       }
 
-      function updateHamburgerDisplay() {
+      window.updateHamburgerDisplay = function () {
         const dropdown = document.getElementById("hamburgerDropdown");
         const button = document.querySelector(".hamburger-button");
 
@@ -1773,6 +1967,10 @@
               <span class="hamburger-icon">🖨️</span>
               Print Menu
             </button>
+            <button class="hamburger-item" onclick="toggleVoiceControls()">
+              <span class="hamburger-icon">🔊</span>
+              Voice Controls
+            </button>
             <button class="hamburger-item" onclick="lockMenu()" style="border-top: 1px solid #e9ecef; margin-top: 4px;">
               <span class="hamburger-icon">🔒</span>
               Lock Menu
@@ -1786,7 +1984,7 @@
           // Hide dropdown content for unauthenticated users
           dropdown.innerHTML = "";
         }
-      }
+      };
 
       function lockMenu() {
         authenticated = false;
@@ -2999,6 +3197,313 @@
         document.body.appendChild(overlay);
         document.body.classList.add("has-background-overlay");
       }
+
+      // Voice/Audio System
+      let voiceEnabled = false;
+      let currentSpeech = null;
+      let voices = [];
+      let customAudioFiles = new Map(); // For custom recorded audio
+
+      // Initialize Speech Synthesis
+      function initVoiceSystem() {
+        if ("speechSynthesis" in window) {
+          // Load available voices
+          function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            populateVoiceSelect();
+          }
+
+          loadVoices();
+          speechSynthesis.onvoiceschanged = loadVoices;
+
+          // Setup voice controls
+          setupVoiceControls();
+
+          console.log("🔊 Voice system initialized");
+        } else {
+          console.warn("⚠️ Speech synthesis not supported in this browser");
+        }
+      }
+
+      function populateVoiceSelect() {
+        const voiceSelect = document.getElementById("voiceSelect");
+        voiceSelect.innerHTML = "";
+
+        voices.forEach((voice, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = `${voice.name} (${voice.lang})`;
+          if (voice.default) option.selected = true;
+          voiceSelect.appendChild(option);
+        });
+      }
+
+      function setupVoiceControls() {
+        const rateSlider = document.getElementById("speechRate");
+        const pitchSlider = document.getElementById("speechPitch");
+        const rateDisplay = document.getElementById("rateDisplay");
+        const pitchDisplay = document.getElementById("pitchDisplay");
+
+        rateSlider.addEventListener("input", (e) => {
+          rateDisplay.textContent = parseFloat(e.target.value).toFixed(1) + "x";
+        });
+
+        pitchSlider.addEventListener("input", (e) => {
+          pitchDisplay.textContent = parseFloat(e.target.value).toFixed(1);
+        });
+      }
+
+      window.toggleVoiceMode = function () {
+        if (!authenticated) {
+          promptForAccessCode();
+          return;
+        }
+
+        voiceEnabled = !voiceEnabled;
+        const toggleButton = document.getElementById("voiceToggle");
+        const voiceControls = document.getElementById("voiceControls");
+
+        if (voiceEnabled) {
+          toggleButton.textContent = "Disable Voice";
+          toggleButton.classList.remove("disabled");
+          enableAudioInteractions();
+          console.log("🔊 Voice mode enabled");
+        } else {
+          toggleButton.textContent = "Enable Voice";
+          toggleButton.classList.add("disabled");
+          disableAudioInteractions();
+          stopSpeaking();
+          console.log("🔇 Voice mode disabled");
+        }
+
+        closeHamburgerMenu();
+      };
+
+      window.toggleVoiceControls = function () {
+        if (!authenticated) {
+          promptForAccessCode();
+          return;
+        }
+
+        const voiceControls = document.getElementById("voiceControls");
+        voiceControls.classList.toggle("show");
+        closeHamburgerMenu();
+      };
+
+      function enableAudioInteractions() {
+        // Add click listeners and visual indicators to menu items
+        document.querySelectorAll(".menu-card").forEach((card) => {
+          card.classList.add("audio-enabled");
+          card.addEventListener("click", handleCardClick);
+
+          // Add audio icon
+          if (!card.querySelector(".audio-icon")) {
+            const audioIcon = document.createElement("div");
+            audioIcon.className = "audio-icon";
+            audioIcon.innerHTML = "🔊";
+            card.appendChild(audioIcon);
+          }
+        });
+
+        // Add click listeners to headers
+        document.querySelectorAll("h2").forEach((header) => {
+          header.classList.add("audio-enabled");
+          header.addEventListener("click", handleHeaderClick);
+
+          // Add audio icon
+          if (!header.querySelector(".audio-icon")) {
+            const audioIcon = document.createElement("div");
+            audioIcon.className = "audio-icon";
+            audioIcon.innerHTML = "🔊";
+            header.appendChild(audioIcon);
+          }
+        });
+
+        // Add click listener to main header
+        const mainHeader = document.querySelector(".menu-header");
+        if (mainHeader) {
+          mainHeader.classList.add("audio-enabled");
+          mainHeader.addEventListener("click", handleMainHeaderClick);
+
+          if (!mainHeader.querySelector(".audio-icon")) {
+            const audioIcon = document.createElement("div");
+            audioIcon.className = "audio-icon";
+            audioIcon.innerHTML = "🔊";
+            mainHeader.appendChild(audioIcon);
+          }
+        }
+      }
+
+      function disableAudioInteractions() {
+        document.querySelectorAll(".audio-enabled").forEach((element) => {
+          element.classList.remove("audio-enabled", "speaking");
+          element.removeEventListener("click", handleCardClick);
+          element.removeEventListener("click", handleHeaderClick);
+          element.removeEventListener("click", handleMainHeaderClick);
+
+          const audioIcon = element.querySelector(".audio-icon");
+          if (audioIcon) audioIcon.remove();
+        });
+      }
+
+      function handleCardClick(event) {
+        if (!voiceEnabled) return;
+
+        event.preventDefault();
+        const card = event.currentTarget;
+
+        // Extract text content
+        const title = card.querySelector("h3").textContent;
+        const ingredients =
+          card.querySelector(".ingredients")?.textContent || "";
+        const description =
+          card.querySelector(".description")?.textContent || "";
+
+        let textToSpeak = title;
+        if (ingredients) textToSpeak += ". Ingredients: " + ingredients;
+        if (description) textToSpeak += ". " + description;
+
+        speakText(textToSpeak, card);
+      }
+
+      function handleHeaderClick(event) {
+        if (!voiceEnabled) return;
+
+        event.preventDefault();
+        const header = event.currentTarget;
+        const textToSpeak = "Menu section: " + header.textContent;
+
+        speakText(textToSpeak, header);
+      }
+
+      function handleMainHeaderClick(event) {
+        if (!voiceEnabled) return;
+
+        event.preventDefault();
+        const header = event.currentTarget;
+        const title = header.querySelector("h1").textContent;
+        const date = header.querySelector("p").textContent;
+        const textToSpeak = title + " for " + date;
+
+        speakText(textToSpeak, header);
+      }
+
+      function speakText(text, element) {
+        // Stop any current speech
+        stopSpeaking();
+
+        // Check for custom audio first
+        const customAudio = getCustomAudio(text);
+        if (customAudio) {
+          playCustomAudio(customAudio, element);
+          return;
+        }
+
+        // Use Web Speech API
+        if ("speechSynthesis" in window) {
+          currentSpeech = new SpeechSynthesisUtterance(text);
+
+          // Get current settings
+          const voiceSelect = document.getElementById("voiceSelect");
+          const rateSlider = document.getElementById("speechRate");
+          const pitchSlider = document.getElementById("speechPitch");
+
+          if (voices[voiceSelect.value]) {
+            currentSpeech.voice = voices[voiceSelect.value];
+          }
+          currentSpeech.rate = parseFloat(rateSlider.value);
+          currentSpeech.pitch = parseFloat(pitchSlider.value);
+
+          // Visual feedback
+          element.classList.add("speaking");
+
+          currentSpeech.onend = () => {
+            element.classList.remove("speaking");
+            currentSpeech = null;
+          };
+
+          currentSpeech.onerror = (event) => {
+            console.error("Speech synthesis error:", event.error);
+            element.classList.remove("speaking");
+            currentSpeech = null;
+          };
+
+          speechSynthesis.speak(currentSpeech);
+          console.log("🔊 Speaking:", text.substring(0, 50) + "...");
+        }
+      }
+
+      function stopSpeaking() {
+        if (currentSpeech) {
+          speechSynthesis.cancel();
+          currentSpeech = null;
+        }
+
+        // Remove visual feedback from all elements
+        document.querySelectorAll(".speaking").forEach((el) => {
+          el.classList.remove("speaking");
+        });
+      }
+
+      window.testVoice = function () {
+        if (!voiceEnabled) {
+          alert("Please enable voice mode first");
+          return;
+        }
+
+        const testText =
+          "Hello! This is a test of the voice system. The menu reading feature is working correctly.";
+        const dummyElement = document.createElement("div");
+        speakText(testText, dummyElement);
+      };
+
+      // Custom Audio System (for user's recorded audio files)
+      function getCustomAudio(text) {
+        // Check if custom audio exists for this text
+        return customAudioFiles.get(text.toLowerCase().trim());
+      }
+
+      function playCustomAudio(audioUrl, element) {
+        const audio = new Audio(audioUrl);
+
+        element.classList.add("speaking");
+
+        audio.onended = () => {
+          element.classList.remove("speaking");
+        };
+
+        audio.onerror = () => {
+          console.warn("Custom audio failed, falling back to speech synthesis");
+          element.classList.remove("speaking");
+          // Fallback to speech synthesis
+          speakText(text, element);
+        };
+
+        audio.play();
+      }
+
+      // Function to load custom audio mappings
+      window.loadCustomAudio = async function () {
+        try {
+          const response = await fetch("audio/menu-audio-mappings.json");
+          if (response.ok) {
+            const mappings = await response.json();
+            Object.entries(mappings).forEach(([text, audioFile]) => {
+              customAudioFiles.set(
+                text.toLowerCase().trim(),
+                `audio/${audioFile}`
+              );
+            });
+            console.log(
+              "🎵 Custom audio mappings loaded:",
+              customAudioFiles.size,
+              "files"
+            );
+          }
+        } catch (error) {
+          console.log("ℹ️ No custom audio mappings found (this is optional)");
+        }
+      };
     </script>
   </body>
 </html>

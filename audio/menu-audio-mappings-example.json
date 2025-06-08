@@ -1,0 +1,30 @@
+{
+  "_comment": "Audio mappings for custom voice recordings",
+  "_instructions": "Map exact menu text to audio file names. Text must match exactly what appears in the menu.",
+
+  "Lunch Menu for 2024-01-15": "welcome-lunch-menu.mp3",
+  "Dinner Menu for 2024-01-15": "welcome-dinner-menu.mp3",
+
+  "Menu section: Appetizers": "appetizers-section.mp3",
+  "Menu section: Entrées": "entrees-section.mp3",
+  "Menu section: Desserts": "desserts-section.mp3",
+
+  "Caesar Salad - $14": "caesar-salad.mp3",
+  "Grilled Salmon - $28": "grilled-salmon.mp3",
+  "Ribeye Steak - $32": "ribeye-steak.mp3",
+  "Chocolate Cake - $9": "chocolate-cake.mp3",
+  "Tiramisu - $8": "tiramisu.mp3",
+
+  "Caesar Salad - $14. Ingredients: Romaine lettuce, parmesan cheese, croutons, caesar dressing. Fresh crisp romaine lettuce topped with house-made croutons and shaved parmesan cheese": "caesar-salad-full.mp3",
+
+  "Grilled Salmon - $28. Ingredients: Atlantic salmon, lemon, herbs, seasonal vegetables. Fresh Atlantic salmon grilled to perfection with lemon herb butter, served with seasonal roasted vegetables": "grilled-salmon-full.mp3",
+
+  "_recording_tips": {
+    "format": "MP3, 44.1kHz, 128kbps minimum",
+    "tone": "Professional, clear, welcoming",
+    "pace": "Moderate speed, clear pronunciation",
+    "environment": "Quiet recording space, good microphone quality"
+  },
+
+  "_fallback_note": "If custom audio file is not found or fails to load, the system automatically falls back to text-to-speech"
+}
