@@ -137,6 +137,7 @@
         cursor: pointer;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         transition: all 0.2s ease;
+        display: none; /* Hidden by default, shown through hamburger menu */
       }
 
       .print-button:hover {
@@ -156,12 +157,113 @@
         border-radius: 4px;
         cursor: pointer;
         z-index: 1001;
+        display: none; /* Hidden by default, shown through hamburger menu */
+      }
+
+      /* Hamburger Menu Styles */
+      .hamburger-menu {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1001;
+      }
+
+      .hamburger-button {
+        background: transparent;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        box-shadow: none;
+      }
+
+      .hamburger-button:hover {
+        background: rgba(0, 0, 0, 0.05);
+        transform: scale(1.05);
+      }
+
+      .hamburger-line {
+        width: 24px;
+        height: 3px;
+        background: #666;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .hamburger-button.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+      }
+
+      .hamburger-button.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger-button.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+      }
+
+      .hamburger-dropdown {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        min-width: 160px;
+        overflow: hidden;
+      }
+
+      .hamburger-dropdown.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .hamburger-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-size: 14px;
+        color: #2c3e50;
+        text-decoration: none;
+      }
+
+      .hamburger-item:hover {
+        background-color: #f8f9fa;
+      }
+
+      .hamburger-item:not(:last-child) {
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .hamburger-icon {
+        margin-right: 10px;
+        width: 16px;
+        text-align: center;
       }
 
       @media print {
         .settings-panel,
         .print-button,
-        .toggle-settings {
+        .toggle-settings,
+        .hamburger-menu {
           display: none;
         }
       }
@@ -236,6 +338,26 @@
     </style>
   </head>
   <body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu">
+      <button class="hamburger-button" onclick="toggleHamburgerMenu()">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </button>
+      <div id="hamburgerDropdown" class="hamburger-dropdown">
+        <button class="hamburger-item" onclick="openSettings()">
+          <span class="hamburger-icon">⚙️</span>
+          Settings
+        </button>
+        <button class="hamburger-item" onclick="printMenu()">
+          <span class="hamburger-icon">🖨️</span>
+          Print Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- Keep original buttons hidden for fallback -->
     <button class="toggle-settings" onclick="toggleSettings()">
       ⚙️ Settings
     </button>
@@ -1337,6 +1459,50 @@
 
         updateStyle();
       }
+
+      // Hamburger Menu Functions
+      window.toggleHamburgerMenu = function () {
+        const button = document.querySelector(".hamburger-button");
+        const dropdown = document.getElementById("hamburgerDropdown");
+
+        button.classList.toggle("active");
+        dropdown.classList.toggle("open");
+      };
+
+      window.openSettings = function () {
+        toggleSettings();
+        // Close hamburger menu
+        closeHamburgerMenu();
+      };
+
+      window.printMenu = function () {
+        window.print();
+        // Close hamburger menu
+        closeHamburgerMenu();
+      };
+
+      function closeHamburgerMenu() {
+        const button = document.querySelector(".hamburger-button");
+        const dropdown = document.getElementById("hamburgerDropdown");
+
+        button.classList.remove("active");
+        dropdown.classList.remove("open");
+      }
+
+      // Close hamburger menu when clicking outside
+      document.addEventListener("click", function (event) {
+        const hamburgerMenu = document.querySelector(".hamburger-menu");
+        if (hamburgerMenu && !hamburgerMenu.contains(event.target)) {
+          closeHamburgerMenu();
+        }
+      });
+
+      // Close hamburger menu on escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeHamburgerMenu();
+        }
+      });
 
       window.toggleSettings = function () {
         const panel = document.getElementById("settingsPanel");
