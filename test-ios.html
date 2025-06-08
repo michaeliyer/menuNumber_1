@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iOS Access Code Test</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1rem;
+        line-height: 1.6;
+      }
+      .test-result {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+      .success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+      }
+      .info {
+        background: #d1ecf1;
+        border-color: #bee5eb;
+      }
+      button {
+        background: #007aff;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        margin: 8px 4px;
+        cursor: pointer;
+      }
+      #console {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🍎 iOS Access Code Diagnostic</h1>
+
+    <div class="test-result info">
+      <h3>Device Information</h3>
+      <div id="deviceInfo"></div>
+    </div>
+
+    <div class="test-result">
+      <h3>Tests</h3>
+      <button onclick="testPrompt()">Test Prompt Function</button>
+      <button onclick="testSessionStorage()">Test Session Storage</button>
+      <button onclick="testFetch()">Test Config Fetch</button>
+      <button onclick="testAccessCodes()">Test All Access Codes</button>
+      <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <div class="test-result">
+      <h3>Expected Access Codes</h3>
+      <p><strong>Fallback codes:</strong> admin123, menu2024, settings</p>
+      <p><strong>Custom codes:</strong> 12345, francina</p>
+      <p><strong>Dynamic code:</strong> <span id="dynamicCode"></span></p>
+    </div>
+
+    <div class="test-result">
+      <h3>Console Output</h3>
+      <div id="console"></div>
+    </div>
+
+    <script>
+      // Capture console output
+      const originalLog = console.log;
+      const originalWarn = console.warn;
+      const originalError = console.error;
+
+      function addToConsole(type, ...args) {
+        const consoleDiv = document.getElementById("console");
+        const timestamp = new Date().toLocaleTimeString();
+        consoleDiv.textContent += `[${timestamp}] ${type.toUpperCase()}: ${args.join(
+          " "
+        )}\n`;
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+      }
+
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+        addToConsole("log", ...args);
+      };
+
+      console.warn = function (...args) {
+        originalWarn.apply(console, args);
+        addToConsole("warn", ...args);
+      };
+
+      console.error = function (...args) {
+        originalError.apply(console, args);
+        addToConsole("error", ...args);
+      };
+
+      // Access codes setup (same as main app)
+      let ACCESS_CODES = ["admin123", "menu2024", "settings"];
+      let DYNAMIC_CODE_ENABLED = true;
+      let DYNAMIC_CODE_PREFIX = "day";
+
+      function showDeviceInfo() {
+        const info = {
+          userAgent: navigator.userAgent,
+          isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+          isSafari:
+            /Safari/.test(navigator.userAgent) &&
+            !/Chrome/.test(navigator.userAgent),
+          platform: navigator.platform,
+          sessionStorageSupported: typeof Storage !== "undefined",
+          fetchSupported: typeof fetch !== "undefined",
+        };
+
+        document.getElementById("deviceInfo").innerHTML = Object.entries(info)
+          .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
+          .join("<br>");
+
+        console.log("📱 Device info:", info);
+      }
+
+      function generateDynamicCode() {
+        if (!DYNAMIC_CODE_ENABLED) return null;
+        const today = new Date();
+        const dayOfYear = Math.floor(
+          (today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24
+        );
+        return `${DYNAMIC_CODE_PREFIX}${dayOfYear}`;
+      }
+
+      async function loadAccessCodes() {
+        try {
+          console.log("🔄 Loading access codes configuration...");
+          const response = await fetch("config/access-codes.json");
+          if (response.ok) {
+            const config = await response.json();
+            ACCESS_CODES = config.accessCodes || ACCESS_CODES;
+            DYNAMIC_CODE_ENABLED = config.enableDynamicCode !== false;
+            DYNAMIC_CODE_PREFIX = config.dynamicCodePrefix || "day";
+            console.log(
+              "✅ Access codes loaded from configuration:",
+              ACCESS_CODES
+            );
+            return true;
+          } else {
+            console.warn(
+              "⚠️ Could not load access codes config (HTTP",
+              response.status,
+              ")"
+            );
+            console.log("📋 Using fallback codes:", ACCESS_CODES);
+            return false;
+          }
+        } catch (error) {
+          console.error("❌ Error loading access codes config:", error.message);
+          console.log("📋 Using fallback access codes:", ACCESS_CODES);
+          return false;
+        }
+      }
+
+      function testPrompt() {
+        console.log("🧪 Testing prompt function...");
+        try {
+          const result = prompt("Test prompt - enter any text:");
+          console.log("✅ Prompt result:", result);
+          if (result === null) {
+            console.log("ℹ️ User cancelled prompt");
+          } else if (result === "") {
+            console.log("ℹ️ User entered empty string");
+          }
+        } catch (error) {
+          console.error("❌ Prompt failed:", error);
+        }
+      }
+
+      function testSessionStorage() {
+        console.log("🧪 Testing session storage...");
+        try {
+          sessionStorage.setItem("test", "value");
+          const retrieved = sessionStorage.getItem("test");
+          if (retrieved === "value") {
+            console.log("✅ Session storage works");
+            sessionStorage.removeItem("test");
+          } else {
+            console.error("❌ Session storage read failed");
+          }
+        } catch (error) {
+          console.error("❌ Session storage failed:", error);
+        }
+      }
+
+      async function testFetch() {
+        console.log("🧪 Testing fetch...");
+        const success = await loadAccessCodes();
+        if (success) {
+          console.log("✅ Config fetch successful");
+        } else {
+          console.log("⚠️ Config fetch failed, but fallback codes available");
+        }
+      }
+
+      function testAccessCodes() {
+        console.log("🧪 Testing access code validation...");
+
+        const dynamicCode = generateDynamicCode();
+        const validCodes = [...ACCESS_CODES];
+        if (dynamicCode) {
+          validCodes.push(dynamicCode);
+        }
+
+        console.log("📋 All valid codes:", validCodes);
+
+        // Test each code
+        validCodes.forEach((code) => {
+          const isValid =
+            validCodes.includes(code) ||
+            validCodes.includes(code.toLowerCase());
+          console.log(
+            `🔑 Testing "${code}": ${isValid ? "✅ VALID" : "❌ INVALID"}`
+          );
+        });
+
+        // Test some invalid codes
+        ["wrong", "invalid", ""].forEach((code) => {
+          const isValid =
+            validCodes.includes(code) ||
+            validCodes.includes(code.toLowerCase());
+          console.log(
+            `🔑 Testing "${code}": ${isValid ? "✅ VALID" : "❌ INVALID"}`
+          );
+        });
+      }
+
+      function clearConsole() {
+        document.getElementById("console").textContent = "";
+      }
+
+      // Initialize
+      window.addEventListener("DOMContentLoaded", async () => {
+        showDeviceInfo();
+
+        const dynamicCode = generateDynamicCode();
+        document.getElementById("dynamicCode").textContent =
+          dynamicCode || "None";
+
+        console.log("🚀 iOS diagnostic page loaded");
+        console.log("🗓️ Today's dynamic code:", dynamicCode);
+
+        // Auto-load config
+        await loadAccessCodes();
+      });
+    </script>
+  </body>
+</html>

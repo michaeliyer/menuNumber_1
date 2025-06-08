@@ -233,16 +233,17 @@
       .hamburger-item {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
+        padding: 16px 20px;
         border: none;
         background: none;
         width: 100%;
         text-align: left;
         cursor: pointer;
         transition: background-color 0.2s ease;
-        font-size: 14px;
-        color: #2c3e50;
+        font-size: 16px;
+        color: #1a1a1a;
         text-decoration: none;
+        font-weight: 500;
       }
 
       .hamburger-item:hover {
@@ -254,9 +255,10 @@
       }
 
       .hamburger-icon {
-        margin-right: 10px;
-        width: 16px;
+        margin-right: 12px;
+        width: 18px;
         text-align: center;
+        font-size: 16px;
       }
 
       /* Authentication feedback styles */
@@ -1307,6 +1309,7 @@
 
           const params = new URLSearchParams(window.location.search);
           const menuId = params.get("id");
+          const debugMode = params.get("debug") === "true";
 
           if (!menuId) {
             document.getElementById("menuContainer").innerHTML =
@@ -1331,14 +1334,129 @@
             "<p>Error loading menu. Please try again.</p>";
         }
 
-        // Load access codes configuration
+        // Load access codes configuration - ensure this completes before proceeding
         await loadAccessCodes();
+
+        // iOS debugging info
+        const deviceInfo = {
+          userAgent: navigator.userAgent,
+          isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+          isSafari:
+            /Safari/.test(navigator.userAgent) &&
+            !/Chrome/.test(navigator.userAgent),
+          platform: navigator.platform,
+          sessionStorageSupported: typeof Storage !== "undefined",
+          fetchSupported: typeof fetch !== "undefined",
+        };
+        console.log("🍎 Device info:", deviceInfo);
 
         // Check authentication state
         if (sessionStorage.getItem("menuAuthenticated") === "true") {
           authenticated = true;
+          console.log("🔓 Found existing authentication session");
         }
         updateHamburgerDisplay();
+
+        // Debug mode for iOS troubleshooting
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("debug") === "true") {
+          console.log("🚨 DEBUG MODE ENABLED");
+
+          // Create debug info panel
+          const debugPanel = document.createElement("div");
+          debugPanel.id = "debugPanel";
+          debugPanel.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 9999;
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+          `;
+
+          const dynamicCode = generateDynamicCode();
+          const validCodes = [...ACCESS_CODES];
+          if (dynamicCode) validCodes.push(dynamicCode);
+
+          debugPanel.innerHTML = `
+            <h4 style="margin: 0 0 10px 0; color: #ff6b6b;">🐛 DEBUG INFO</h4>
+            <div><strong>iOS Device:</strong> ${deviceInfo.isIOS}</div>
+            <div><strong>Safari:</strong> ${deviceInfo.isSafari}</div>
+            <div><strong>Platform:</strong> ${deviceInfo.platform}</div>
+            <div><strong>Session Storage:</strong> ${
+              deviceInfo.sessionStorageSupported
+            }</div>
+            <div><strong>Fetch Support:</strong> ${
+              deviceInfo.fetchSupported
+            }</div>
+            <div><strong>Auth State:</strong> ${authenticated}</div>
+            <div><strong>Valid Codes:</strong><br>${validCodes.join(", ")}</div>
+            <div style="margin-top: 10px;">
+              <button onclick="testDebugPrompt()" style="background: #007AFF; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px;">Test Prompt</button>
+              <button onclick="forceAuth()" style="background: #34c759; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; margin-left: 5px;">Force Auth</button>
+            </div>
+            <div style="margin-top: 5px;">
+              <button onclick="document.getElementById('debugPanel').remove()" style="background: #ff3b30; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px;">Close</button>
+            </div>
+          `;
+
+          document.body.appendChild(debugPanel);
+
+          // Debug functions
+          window.testDebugPrompt = function () {
+            console.log("🧪 Testing prompt in debug mode...");
+            try {
+              const result = prompt("DEBUG: Enter any access code:");
+              console.log("📝 Debug prompt result:", result);
+              if (result) {
+                const isValid =
+                  validCodes.includes(result) ||
+                  validCodes.includes(result.toLowerCase());
+                console.log(
+                  `🔍 Code "${result}" is ${isValid ? "VALID" : "INVALID"}`
+                );
+                alert(
+                  `Code "${result}" is ${
+                    isValid ? "VALID ✅" : "INVALID ❌"
+                  }\n\nValid codes: ${validCodes.join(", ")}`
+                );
+              }
+            } catch (error) {
+              console.error("❌ Debug prompt failed:", error);
+              alert("Prompt failed: " + error.message);
+            }
+          };
+
+          window.forceAuth = function () {
+            authenticated = true;
+            sessionStorage.setItem("menuAuthenticated", "true");
+            updateHamburgerDisplay();
+            console.log("🔓 Force authentication enabled");
+            alert("Authentication forced on for this session");
+          };
+        }
+
+        // Test function for debugging (can be called from console)
+        window.testAccessCodes = function () {
+          console.log("🧪 Testing access codes...");
+          console.log("Available codes:", ACCESS_CODES);
+          console.log("Dynamic code enabled:", DYNAMIC_CODE_ENABLED);
+          console.log("Dynamic code prefix:", DYNAMIC_CODE_PREFIX);
+          const dynamicCode = generateDynamicCode();
+          if (dynamicCode) console.log("Today's dynamic code:", dynamicCode);
+          console.log("Authentication state:", authenticated);
+          console.log(
+            "Session storage:",
+            sessionStorage.getItem("menuAuthenticated")
+          );
+        };
       });
 
       function initializeSettings(menu) {
@@ -1536,21 +1654,29 @@
       // Load access codes from configuration file
       async function loadAccessCodes() {
         try {
+          console.log("Loading access codes configuration...");
           const response = await fetch("config/access-codes.json");
           if (response.ok) {
             const config = await response.json();
             ACCESS_CODES = config.accessCodes || ACCESS_CODES;
             DYNAMIC_CODE_ENABLED = config.enableDynamicCode !== false;
             DYNAMIC_CODE_PREFIX = config.dynamicCodePrefix || "day";
-            console.log("Access codes loaded from configuration");
+            console.log(
+              "✅ Access codes loaded from configuration:",
+              ACCESS_CODES.length,
+              "codes"
+            );
           } else {
             console.warn(
-              "Could not load access codes config, using fallback codes"
+              "⚠️ Could not load access codes config (HTTP",
+              response.status,
+              "), using fallback codes"
             );
+            console.log("📋 Fallback codes available:", ACCESS_CODES);
           }
         } catch (error) {
-          console.warn("Error loading access codes config:", error.message);
-          console.log("Using fallback access codes");
+          console.warn("❌ Error loading access codes config:", error.message);
+          console.log("📋 Using fallback access codes:", ACCESS_CODES);
         }
       }
 
@@ -1561,7 +1687,9 @@
         const dayOfYear = Math.floor(
           (today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24
         );
-        return `${DYNAMIC_CODE_PREFIX}${dayOfYear}`;
+        const dynamicCode = `${DYNAMIC_CODE_PREFIX}${dayOfYear}`;
+        console.log("🗓️ Today's dynamic code:", dynamicCode);
+        return dynamicCode;
       }
 
       function isAuthenticated() {
@@ -1569,16 +1697,23 @@
       }
 
       function promptForAccessCode() {
+        // Show current valid codes in console for debugging (remove in production)
+        const dynamicCode = generateDynamicCode();
+        const validCodes = [...ACCESS_CODES];
+        if (dynamicCode) validCodes.push(dynamicCode);
+        console.log("🔑 Valid codes for debugging:", validCodes);
+
         const code = prompt("Enter access code to unlock menu settings:");
         if (code) {
-          const dynamicCode = generateDynamicCode();
-          const validCodes = [...ACCESS_CODES];
-          if (dynamicCode) validCodes.push(dynamicCode);
+          console.log("🎯 Entered code:", code);
 
-          if (
-            validCodes.includes(code.toLowerCase()) ||
-            validCodes.includes(code)
-          ) {
+          // Check both original case and lowercase
+          const isValidCode =
+            validCodes.includes(code) ||
+            validCodes.includes(code.toLowerCase());
+
+          if (isValidCode) {
+            console.log("✅ Access granted");
             authenticated = true;
             sessionStorage.setItem("menuAuthenticated", "true");
             updateHamburgerDisplay();
@@ -1586,10 +1721,14 @@
             toggleHamburgerMenuAuthenticated();
             showAuthenticationFeedback(true);
           } else {
+            console.log("❌ Access denied for code:", code);
+            console.log("📋 Available codes:", validCodes);
             // Show hint alert for incorrect code
             alert("❌ Incorrect access code.\n\n💡 Hint: Word before gordita");
             showAuthenticationFeedback(false);
           }
+        } else {
+          console.log("⏹️ User cancelled code entry");
         }
       }
 
