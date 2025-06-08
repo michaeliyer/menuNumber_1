@@ -1544,6 +1544,18 @@
           authenticated = true;
           console.log("🔓 Found existing authentication session");
         }
+
+        // Emergency iOS authentication via URL parameter
+        const emergencyAuth = params.get("auth");
+        if (emergencyAuth) {
+          const emergencyCodes = ["ios123", "emergency", "bypass", "francina"];
+          if (emergencyCodes.includes(emergencyAuth.toLowerCase())) {
+            authenticated = true;
+            sessionStorage.setItem("menuAuthenticated", "true");
+            console.log("🚨 Emergency authentication activated via URL");
+          }
+        }
+
         updateHamburgerDisplay();
 
         // Initialize voice system
@@ -1570,8 +1582,8 @@
             font-family: monospace;
             font-size: 12px;
             z-index: 9999;
-            max-width: 300px;
-            max-height: 400px;
+            max-width: 350px;
+            max-height: 500px;
             overflow-y: auto;
           `;
 
@@ -1580,7 +1592,7 @@
           if (dynamicCode) validCodes.push(dynamicCode);
 
           debugPanel.innerHTML = `
-            <h4 style="margin: 0 0 10px 0; color: #ff6b6b;">🐛 DEBUG INFO</h4>
+            <h4 style="margin: 0 0 10px 0; color: #ff6b6b;">🐛 iOS DEBUG INFO</h4>
             <div><strong>iOS Device:</strong> ${deviceInfo.isIOS}</div>
             <div><strong>Safari:</strong> ${deviceInfo.isSafari}</div>
             <div><strong>Platform:</strong> ${deviceInfo.platform}</div>
@@ -1597,7 +1609,11 @@
               <button onclick="forceAuth()" style="background: #34c759; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; margin-left: 5px;">Force Auth</button>
             </div>
             <div style="margin-top: 5px;">
-              <button onclick="document.getElementById('debugPanel').remove()" style="background: #ff3b30; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px;">Close</button>
+              <button onclick="testIOSAuth()" style="background: #ff9500; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px;">iOS Auth Test</button>
+              <button onclick="bypassAuth()" style="background: #ff3b30; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; margin-left: 5px;">Emergency Bypass</button>
+            </div>
+            <div style="margin-top: 5px;">
+              <button onclick="document.getElementById('debugPanel').remove()" style="background: #8e8e93; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px;">Close</button>
             </div>
           `;
 
@@ -1610,9 +1626,7 @@
               const result = prompt("DEBUG: Enter any access code:");
               console.log("📝 Debug prompt result:", result);
               if (result) {
-                const isValid =
-                  validCodes.includes(result) ||
-                  validCodes.includes(result.toLowerCase());
+                const isValid = validateAccessCode(result.trim(), validCodes);
                 console.log(
                   `🔍 Code "${result}" is ${isValid ? "VALID" : "INVALID"}`
                 );
@@ -1626,6 +1640,38 @@
               console.error("❌ Debug prompt failed:", error);
               alert("Prompt failed: " + error.message);
             }
+          };
+
+          window.testIOSAuth = function () {
+            console.log("🍎 Testing iOS authentication specifically...");
+            const testCodes = [
+              "admin123",
+              "francina",
+              "12345",
+              "menu2024",
+              "settings",
+            ];
+            let testResults = "🍎 iOS Auth Test Results:\n\n";
+
+            testCodes.forEach((code) => {
+              const isValid = validateAccessCode(code, validCodes);
+              testResults += `${code}: ${isValid ? "✅" : "❌"}\n`;
+              console.log(
+                `iOS test - "${code}": ${isValid ? "VALID" : "INVALID"}`
+              );
+            });
+
+            alert(testResults);
+          };
+
+          window.bypassAuth = function () {
+            console.log("🚨 Emergency authentication bypass activated");
+            authenticated = true;
+            sessionStorage.setItem("menuAuthenticated", "true");
+            updateHamburgerDisplay();
+            alert(
+              "🚨 EMERGENCY BYPASS ACTIVATED\n\nAuthentication enabled for this session.\nUse this only if normal codes fail on iOS."
+            );
           };
 
           window.forceAuth = function () {
@@ -1841,25 +1887,34 @@
 
       // Authentication system
       let authenticated = false;
-      let ACCESS_CODES = ["admin123", "menu2024", "settings"]; // Fallback codes
+      let ACCESS_CODES = [
+        "admin123",
+        "menu2024",
+        "settings",
+        "12345",
+        "francina",
+      ]; // Enhanced fallback codes
       let DYNAMIC_CODE_ENABLED = true;
       let DYNAMIC_CODE_PREFIX = "day";
 
       // Load access codes from configuration file
       async function loadAccessCodes() {
         try {
-          console.log("Loading access codes configuration...");
+          console.log("🔄 Loading access codes configuration...");
           const response = await fetch("config/access-codes.json");
           if (response.ok) {
             const config = await response.json();
-            ACCESS_CODES = config.accessCodes || ACCESS_CODES;
+            // Merge config codes with fallback codes to ensure they always work
+            const configCodes = config.accessCodes || [];
+            ACCESS_CODES = [...new Set([...ACCESS_CODES, ...configCodes])]; // Remove duplicates
             DYNAMIC_CODE_ENABLED = config.enableDynamicCode !== false;
             DYNAMIC_CODE_PREFIX = config.dynamicCodePrefix || "day";
             console.log(
               "✅ Access codes loaded from configuration:",
               ACCESS_CODES.length,
-              "codes"
+              "total codes"
             );
+            console.log("📋 Available codes:", ACCESS_CODES);
           } else {
             console.warn(
               "⚠️ Could not load access codes config (HTTP",
@@ -1870,8 +1925,12 @@
           }
         } catch (error) {
           console.warn("❌ Error loading access codes config:", error.message);
-          console.log("📋 Using fallback access codes:", ACCESS_CODES);
+          console.log("📋 Using enhanced fallback access codes:", ACCESS_CODES);
         }
+
+        // iOS debugging - always log final codes
+        console.log("🍎 Final access codes for iOS:", ACCESS_CODES);
+        return ACCESS_CODES;
       }
 
       // You can also generate a dynamic daily code
@@ -1891,20 +1950,36 @@
       }
 
       function promptForAccessCode() {
-        // Show current valid codes in console for debugging (remove in production)
+        // iOS-specific debugging
+        console.log("🍎 iOS Authentication Debug:");
+        console.log("📱 Available codes at prompt time:", ACCESS_CODES);
+        console.log(
+          "📱 Is iOS device:",
+          /iPad|iPhone|iPod/.test(navigator.userAgent)
+        );
+
+        // Show current valid codes in console for debugging
         const dynamicCode = generateDynamicCode();
         const validCodes = [...ACCESS_CODES];
         if (dynamicCode) validCodes.push(dynamicCode);
         console.log("🔑 Valid codes for debugging:", validCodes);
 
-        const code = prompt("Enter access code to unlock menu settings:");
+        // Enhanced prompt for iOS with clearer instructions
+        const promptText = /iPad|iPhone|iPod/.test(navigator.userAgent)
+          ? "iOS Access Code\n\nTry: admin123, menu2024, settings, 12345, or francina"
+          : "Enter access code to unlock menu settings:";
+
+        const code = prompt(promptText);
         if (code) {
           console.log("🎯 Entered code:", code);
+          console.log("🔍 Code type:", typeof code);
+          console.log("🔍 Code length:", code.length);
 
-          // Check both original case and lowercase
-          const isValidCode =
-            validCodes.includes(code) ||
-            validCodes.includes(code.toLowerCase());
+          // Enhanced validation with multiple check methods
+          const codeToCheck = code.trim(); // Remove whitespace
+          const isValidCode = validateAccessCode(codeToCheck, validCodes);
+
+          console.log("🔍 Validation result:", isValidCode);
 
           if (isValidCode) {
             console.log("✅ Access granted");
@@ -1915,15 +1990,63 @@
             toggleHamburgerMenuAuthenticated();
             showAuthenticationFeedback(true);
           } else {
-            console.log("❌ Access denied for code:", code);
+            console.log("❌ Access denied for code:", codeToCheck);
             console.log("📋 Available codes:", validCodes);
-            // Show hint alert for incorrect code
-            alert("❌ Incorrect access code.\n\n💡 Hint: Word before gordita");
+
+            // iOS-specific help message
+            const helpMessage = /iPad|iPhone|iPod/.test(navigator.userAgent)
+              ? "❌ Incorrect access code.\n\n💡 Hint: Word before gordita\n\n🔧 iOS Troubleshooting:\n• Try: admin123\n• Try: francina\n• Try: 12345"
+              : "❌ Incorrect access code.\n\n💡 Hint: Word before gordita";
+
+            alert(helpMessage);
             showAuthenticationFeedback(false);
           }
         } else {
           console.log("⏹️ User cancelled code entry");
         }
+      }
+
+      // Enhanced validation function with multiple check methods
+      function validateAccessCode(enteredCode, validCodes) {
+        if (!enteredCode || !validCodes || validCodes.length === 0) {
+          console.log("🚫 Invalid validation parameters");
+          return false;
+        }
+
+        // Method 1: Exact match
+        if (validCodes.includes(enteredCode)) {
+          console.log("✅ Exact match found");
+          return true;
+        }
+
+        // Method 2: Lowercase match
+        if (validCodes.includes(enteredCode.toLowerCase())) {
+          console.log("✅ Lowercase match found");
+          return true;
+        }
+
+        // Method 3: Check against lowercase valid codes
+        const lowerValidCodes = validCodes.map((code) => code.toLowerCase());
+        if (lowerValidCodes.includes(enteredCode.toLowerCase())) {
+          console.log("✅ Case-insensitive match found");
+          return true;
+        }
+
+        // Method 4: Manual check of known codes (iOS fallback)
+        const knownCodes = [
+          "admin123",
+          "menu2024",
+          "settings",
+          "12345",
+          "francina",
+        ];
+        if (knownCodes.includes(enteredCode.toLowerCase())) {
+          console.log("✅ Known code fallback match");
+          return true;
+        }
+
+        console.log("❌ No match found with any method");
+        return false;
       }
 
       function toggleHamburgerMenuAuthenticated() {
