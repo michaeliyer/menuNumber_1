@@ -1,0 +1,13 @@
+{
+  "accessCodes": [
+    "admin123",
+    "menu2024",
+    "settings",
+    "restaurant",
+    "manager",
+    "your-custom-code-here"
+  ],
+  "enableDynamicCode": true,
+  "dynamicCodePrefix": "day",
+  "adminNote": "Instructions: Copy this file to 'access-codes.json' and modify the codes as needed. The actual config file will be ignored by git for security."
+}

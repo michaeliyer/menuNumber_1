@@ -259,6 +259,56 @@
         text-align: center;
       }
 
+      /* Authentication feedback styles */
+      .hamburger-button.authenticated {
+        opacity: 0.9;
+      }
+
+      .hamburger-button.locked {
+        opacity: 0.6;
+      }
+
+      .hamburger-button.success-feedback {
+        background: rgba(39, 174, 96, 0.15) !important;
+        transform: scale(1.02);
+      }
+
+      .hamburger-button.error-feedback {
+        background: rgba(231, 76, 60, 0.15) !important;
+        animation: shake 0.3s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-2px);
+        }
+        75% {
+          transform: translateX(2px);
+        }
+      }
+
+      /* Subtle indicator for authenticated state */
+      .hamburger-button::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: transparent;
+        transition: all 0.3s ease;
+      }
+
+      .hamburger-button.authenticated::after {
+        background: #27ae60;
+        box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+      }
+
       @media print {
         .settings-panel,
         .print-button,
@@ -346,14 +396,7 @@
         <div class="hamburger-line"></div>
       </button>
       <div id="hamburgerDropdown" class="hamburger-dropdown">
-        <button class="hamburger-item" onclick="openSettings()">
-          <span class="hamburger-icon">⚙️</span>
-          Settings
-        </button>
-        <button class="hamburger-item" onclick="printMenu()">
-          <span class="hamburger-icon">🖨️</span>
-          Print Menu
-        </button>
+        <!-- Menu items will be populated dynamically after authentication -->
       </div>
     </div>
 
@@ -1287,6 +1330,15 @@
           document.getElementById("menuContainer").innerHTML =
             "<p>Error loading menu. Please try again.</p>";
         }
+
+        // Load access codes configuration
+        await loadAccessCodes();
+
+        // Check authentication state
+        if (sessionStorage.getItem("menuAuthenticated") === "true") {
+          authenticated = true;
+        }
+        updateHamburgerDisplay();
       });
 
       function initializeSettings(menu) {
@@ -1465,21 +1517,191 @@
         const button = document.querySelector(".hamburger-button");
         const dropdown = document.getElementById("hamburgerDropdown");
 
-        button.classList.toggle("active");
-        dropdown.classList.toggle("open");
+        // Check if user is already authenticated
+        if (isAuthenticated()) {
+          button.classList.toggle("active");
+          dropdown.classList.toggle("open");
+        } else {
+          // Prompt for access code
+          promptForAccessCode();
+        }
       };
 
+      // Authentication system
+      let authenticated = false;
+      let ACCESS_CODES = ["admin123", "menu2024", "settings"]; // Fallback codes
+      let DYNAMIC_CODE_ENABLED = true;
+      let DYNAMIC_CODE_PREFIX = "day";
+
+      // Load access codes from configuration file
+      async function loadAccessCodes() {
+        try {
+          const response = await fetch("config/access-codes.json");
+          if (response.ok) {
+            const config = await response.json();
+            ACCESS_CODES = config.accessCodes || ACCESS_CODES;
+            DYNAMIC_CODE_ENABLED = config.enableDynamicCode !== false;
+            DYNAMIC_CODE_PREFIX = config.dynamicCodePrefix || "day";
+            console.log("Access codes loaded from configuration");
+          } else {
+            console.warn(
+              "Could not load access codes config, using fallback codes"
+            );
+          }
+        } catch (error) {
+          console.warn("Error loading access codes config:", error.message);
+          console.log("Using fallback access codes");
+        }
+      }
+
+      // You can also generate a dynamic daily code
+      function generateDynamicCode() {
+        if (!DYNAMIC_CODE_ENABLED) return null;
+        const today = new Date();
+        const dayOfYear = Math.floor(
+          (today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24
+        );
+        return `${DYNAMIC_CODE_PREFIX}${dayOfYear}`;
+      }
+
+      function isAuthenticated() {
+        return authenticated;
+      }
+
+      function promptForAccessCode() {
+        const code = prompt("Enter access code to unlock menu settings:");
+        if (code) {
+          const dynamicCode = generateDynamicCode();
+          const validCodes = [...ACCESS_CODES];
+          if (dynamicCode) validCodes.push(dynamicCode);
+
+          if (
+            validCodes.includes(code.toLowerCase()) ||
+            validCodes.includes(code)
+          ) {
+            authenticated = true;
+            sessionStorage.setItem("menuAuthenticated", "true");
+            updateHamburgerDisplay();
+            // Auto-open menu after successful authentication
+            toggleHamburgerMenuAuthenticated();
+            showAuthenticationFeedback(true);
+          } else {
+            // Show hint alert for incorrect code
+            alert("❌ Incorrect access code.\n\n💡 Hint: Word before gordita");
+            showAuthenticationFeedback(false);
+          }
+        }
+      }
+
+      function toggleHamburgerMenuAuthenticated() {
+        const button = document.querySelector(".hamburger-button");
+        const dropdown = document.getElementById("hamburgerDropdown");
+        button.classList.toggle("active");
+        dropdown.classList.toggle("open");
+      }
+
+      function showAuthenticationFeedback(success) {
+        const button = document.querySelector(".hamburger-button");
+        if (success) {
+          button.classList.add("success-feedback");
+          setTimeout(() => {
+            button.classList.remove("success-feedback");
+          }, 1000);
+        } else {
+          button.classList.add("error-feedback");
+          setTimeout(() => {
+            button.classList.remove("error-feedback");
+          }, 500);
+        }
+      }
+
+      function updateHamburgerDisplay() {
+        const dropdown = document.getElementById("hamburgerDropdown");
+        const button = document.querySelector(".hamburger-button");
+
+        if (authenticated) {
+          // Add authenticated visual state
+          button.classList.add("authenticated");
+          button.classList.remove("locked");
+
+          // Show full menu options
+          dropdown.innerHTML = `
+            <button class="hamburger-item" onclick="openSettings()">
+              <span class="hamburger-icon">⚙️</span>
+              Settings
+            </button>
+            <button class="hamburger-item" onclick="printMenu()">
+              <span class="hamburger-icon">🖨️</span>
+              Print Menu
+            </button>
+            <button class="hamburger-item" onclick="lockMenu()" style="border-top: 1px solid #e9ecef; margin-top: 4px;">
+              <span class="hamburger-icon">🔒</span>
+              Lock Menu
+            </button>
+          `;
+        } else {
+          // Add locked visual state
+          button.classList.remove("authenticated");
+          button.classList.add("locked");
+
+          // Hide dropdown content for unauthenticated users
+          dropdown.innerHTML = "";
+        }
+      }
+
+      function lockMenu() {
+        authenticated = false;
+        sessionStorage.removeItem("menuAuthenticated");
+
+        // Close settings panel if it's open
+        const settingsPanel = document.getElementById("settingsPanel");
+        if (settingsPanel) {
+          settingsPanel.style.display = "none";
+        }
+
+        updateHamburgerDisplay();
+        closeHamburgerMenu();
+
+        // Visual feedback for locking
+        const button = document.querySelector(".hamburger-button");
+        button.style.background = "rgba(149, 165, 166, 0.1)";
+        setTimeout(() => {
+          button.style.background = "";
+        }, 800);
+      }
+
+      // Check authentication on page load
+      window.addEventListener("DOMContentLoaded", function () {
+        // Check if user was authenticated in this session
+        if (sessionStorage.getItem("menuAuthenticated") === "true") {
+          authenticated = true;
+        }
+        updateHamburgerDisplay();
+      });
+
       window.openSettings = function () {
+        if (!authenticated) {
+          // If not authenticated, prompt for code again
+          promptForAccessCode();
+          return;
+        }
         toggleSettings();
         // Close hamburger menu
         closeHamburgerMenu();
       };
 
       window.printMenu = function () {
+        if (!authenticated) {
+          // If not authenticated, prompt for code again
+          promptForAccessCode();
+          return;
+        }
         window.print();
         // Close hamburger menu
         closeHamburgerMenu();
       };
+
+      window.lockMenu = lockMenu;
 
       function closeHamburgerMenu() {
         const button = document.querySelector(".hamburger-button");
@@ -1505,6 +1727,11 @@
       });
 
       window.toggleSettings = function () {
+        if (!authenticated) {
+          // If trying to access settings without authentication, prompt for code
+          promptForAccessCode();
+          return;
+        }
         const panel = document.getElementById("settingsPanel");
         panel.style.display = panel.style.display === "none" ? "block" : "none";
       };
